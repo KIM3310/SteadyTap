@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Optional
 
 from fastapi import Depends, FastAPI, Header, HTTPException
@@ -14,6 +15,7 @@ from .schemas import (
     CoachPlanRequest,
     CoachPlanResponse,
     HealthResponse,
+    ServiceMetaResponse,
     SessionUploadPayload,
     UploadSessionResponse,
 )
@@ -55,6 +57,36 @@ def health() -> HealthResponse:
         status="ok",
         session_count=db.count_sessions(),
         timestamp=datetime.now(tz=timezone.utc),
+    )
+
+
+@app.get("/v1/meta", response_model=ServiceMetaResponse)
+def meta() -> ServiceMetaResponse:
+    return ServiceMetaResponse(
+        service="steadytap-backend",
+        version=APP_VERSION,
+        generated_at=datetime.now(tz=timezone.utc),
+        auth={
+            "api_key_required": bool(API_KEY),
+        },
+        storage={
+            "db_path": str(Path(DB_PATH)),
+            "session_count": db.count_sessions(),
+        },
+        capabilities=[
+            "session-ingestion",
+            "coach-plan-generation",
+            "benchmark-snapshots",
+            "user-session-history",
+        ],
+        routes=[
+            "/v1/health",
+            "/v1/meta",
+            "/v1/sessions",
+            "/v1/coach/plan",
+            "/v1/benchmarks",
+            "/v1/sessions/{user_id}",
+        ],
     )
 
 
