@@ -72,3 +72,13 @@ class HealthResponse(BaseModel):
     status: str
     session_count: int
     timestamp: datetime
+
+
+class ServiceMetaResponse(BaseModel):
+    service: str
+    version: str
+    generated_at: datetime
+    auth: dict[str, bool]
+    storage: dict[str, str | int]
+    capabilities: list[str]
+    routes: list[str]
