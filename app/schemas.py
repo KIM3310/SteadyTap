@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Union
 from pydantic import BaseModel, Field
 
 
@@ -79,6 +81,6 @@ class ServiceMetaResponse(BaseModel):
     version: str
     generated_at: datetime
     auth: dict[str, bool]
-    storage: dict[str, str | int]
+    storage: dict[str, Union[str, int]]
     capabilities: list[str]
     routes: list[str]
