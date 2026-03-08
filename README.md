@@ -70,10 +70,18 @@ Backend API surface:
 
 - `GET /v1/health`
 - `GET /v1/meta`
+- `GET /v1/runtime-brief`
+- `GET /v1/schema/coach-report`
 - `POST /v1/sessions`
 - `POST /v1/coach/plan`
 - `POST /v1/benchmarks`
 - `GET /v1/sessions/{user_id}`
+
+Service-grade surfaces:
+
+- backend service brief for sync boundary, auth mode, trust boundary, and reviewer flow
+- coach-report schema route for explicit remote coaching contract
+- app home dashboard card that surfaces backend posture before cloud mode is enabled
 
 ## Cloud mode in the app
 

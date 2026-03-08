@@ -118,6 +118,7 @@ struct RootView: View {
             bestScoreDelta: model.bestScoreDelta,
             pendingSyncCount: model.pendingSyncCount,
             syncState: model.syncState,
+            serviceBrief: model.serviceBrief,
             coachPlan: model.coachPlan,
             benchmark: model.benchmark,
             trendPoints: model.momentumTrendPoints,

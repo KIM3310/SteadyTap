@@ -480,6 +480,42 @@ struct BenchmarkSnapshot: Codable {
     )
 }
 
+struct ServiceBrief: Codable {
+    let generatedAt: Date
+    let readinessContract: String
+    let headline: String
+    let reportContractSchema: String
+    let authMode: String
+    let storageMode: String
+    let sessionCount: Int
+    let reviewFlow: [String]
+    let watchouts: [String]
+    let trustBoundary: [String]
+
+    static let placeholder = ServiceBrief(
+        generatedAt: .now,
+        readinessContract: "steadytap-service-brief-v1",
+        headline: "Local-first motor accessibility coaching with explicit review and upload boundaries.",
+        reportContractSchema: "steadytap-coach-report-v1",
+        authMode: "open-review",
+        storageMode: "sqlite-local",
+        sessionCount: 4,
+        reviewFlow: [
+            "Calibrate locally before creating a new coaching plan.",
+            "Upload only run summaries when cloud sync is enabled.",
+            "Refresh the remote coach after queue health is stable."
+        ],
+        watchouts: [
+            "Cloud mode falls back to local coaching if the base URL or token is invalid.",
+            "Only summaries are uploaded; raw tap traces stay on-device."
+        ],
+        trustBoundary: [
+            "Calibration and adaptive profile generation run on-device.",
+            "Remote coaching only receives session summaries and preference context."
+        ]
+    )
+}
+
 struct SessionUploadPayload: Identifiable, Codable {
     let id: UUID
     let userID: String
