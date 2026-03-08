@@ -20,6 +20,7 @@ enum BackendError: LocalizedError {
 protocol SteadyTapBackendClient {
     func fetchCoachPlan(userID: String, history: [SessionSummary]) async throws -> CoachPlan
     func fetchBenchmark(userID: String, history: [SessionSummary]) async throws -> BenchmarkSnapshot
+    func fetchServiceBrief() async throws -> ServiceBrief
     func uploadSession(_ payload: SessionUploadPayload) async throws
 }
 
@@ -65,6 +66,11 @@ struct MockBackendClient: SteadyTapBackendClient {
             percentile: percentile,
             averageScoreDelta: (5.8 + (avgDelta * 0.15)).clamped(to: -5...25)
         )
+    }
+
+    func fetchServiceBrief() async throws -> ServiceBrief {
+        try await Task.sleep(nanoseconds: 140_000_000)
+        return .placeholder
     }
 
     func uploadSession(_ payload: SessionUploadPayload) async throws {
@@ -128,6 +134,12 @@ struct CloudBackendClient: SteadyTapBackendClient {
         return response.toDomain()
     }
 
+    func fetchServiceBrief() async throws -> ServiceBrief {
+        let request = try makeRequest(path: "/v1/runtime-brief")
+        let response: ServiceBriefResponse = try await send(request)
+        return response.toDomain()
+    }
+
     func uploadSession(_ payload: SessionUploadPayload) async throws {
         let request = try makeRequest(
             path: "/v1/sessions",
@@ -135,6 +147,19 @@ struct CloudBackendClient: SteadyTapBackendClient {
             body: payload
         )
         let _: UploadSessionResponse = try await send(request)
+    }
+
+    private func makeRequest(path: String) throws -> URLRequest {
+        let cleanPath = path.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+        let url = baseURL.appendingPathComponent(cleanPath)
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        if let token, !token.isEmpty {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+        return request
     }
 
     private func makeRequest<Body: Encodable>(path: String, method: String, body: Body) throws -> URLRequest {
@@ -247,6 +272,59 @@ private struct BenchmarkResponse: Decodable {
             percentile: percentile,
             averageScoreDelta: averageScoreDelta
         )
+    }
+}
+
+private struct ServiceBriefResponse: Decodable {
+    let generatedAt: Date
+    let readinessContract: String
+    let headline: String
+    let reportContract: ReportContractResponse
+    let authMode: String
+    let storageMode: String
+    let reviewFlow: [String]
+    let watchouts: [String]
+    let trustBoundary: [String]
+    let evidenceCounts: EvidenceCountsResponse
+
+    enum CodingKeys: String, CodingKey {
+        case generatedAt = "generated_at"
+        case readinessContract = "readiness_contract"
+        case headline
+        case reportContract = "report_contract"
+        case authMode = "auth_mode"
+        case storageMode = "storage_mode"
+        case reviewFlow = "review_flow"
+        case watchouts
+        case trustBoundary = "trust_boundary"
+        case evidenceCounts = "evidence_counts"
+    }
+
+    func toDomain() -> ServiceBrief {
+        ServiceBrief(
+            generatedAt: generatedAt,
+            readinessContract: readinessContract,
+            headline: headline,
+            reportContractSchema: reportContract.schema,
+            authMode: authMode,
+            storageMode: storageMode,
+            sessionCount: evidenceCounts.sessionCount,
+            reviewFlow: reviewFlow,
+            watchouts: watchouts,
+            trustBoundary: trustBoundary
+        )
+    }
+}
+
+private struct ReportContractResponse: Decodable {
+    let schema: String
+}
+
+private struct EvidenceCountsResponse: Decodable {
+    let sessionCount: Int
+
+    enum CodingKeys: String, CodingKey {
+        case sessionCount = "session_count"
     }
 }
 

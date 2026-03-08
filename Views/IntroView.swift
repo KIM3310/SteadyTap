@@ -15,6 +15,7 @@ struct IntroView: View {
     let bestScoreDelta: Double
     let pendingSyncCount: Int
     let syncState: SyncState
+    let serviceBrief: ServiceBrief?
     let coachPlan: CoachPlan?
     let benchmark: BenchmarkSnapshot?
     let trendPoints: [Double]
@@ -71,17 +72,18 @@ struct IntroView: View {
                 scoringCard.staged(index: 2, appear: appear)
                 challengeCard.staged(index: 3, appear: appear)
                 opsCard.staged(index: 4, appear: appear)
-                coachCard.staged(index: 5, appear: appear)
-                momentumCard.staged(index: 6, appear: appear)
-                intelligenceCard.staged(index: 7, appear: appear)
-                benchmarkCard.staged(index: 8, appear: appear)
-                preferencesCard.staged(index: 9, appear: appear)
-                progressCard.staged(index: 10, appear: appear)
+                serviceBriefCard.staged(index: 5, appear: appear)
+                coachCard.staged(index: 6, appear: appear)
+                momentumCard.staged(index: 7, appear: appear)
+                intelligenceCard.staged(index: 8, appear: appear)
+                benchmarkCard.staged(index: 9, appear: appear)
+                preferencesCard.staged(index: 10, appear: appear)
+                progressCard.staged(index: 11, appear: appear)
 
                 Button("Start Calibration", action: onStart)
                     .buttonStyle(PrimaryButtonStyle())
                     .accessibilityHint("Begins tap and drag calibration")
-                    .staged(index: 11, appear: appear)
+                    .staged(index: 12, appear: appear)
             }
             .padding(.top, 16)
             .padding(.bottom, 32)
@@ -325,6 +327,64 @@ struct IntroView: View {
         }
     }
 
+    private var serviceBriefCard: some View {
+        GlassCard {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Service Brief")
+                    .font(.title3.weight(.bold))
+                    .foregroundStyle(AppTheme.textPrimary)
+
+                if let serviceBrief {
+                    HStack(spacing: 10) {
+                        MetricTile(title: "Schema", value: serviceBrief.reportContractSchema)
+                        MetricTile(title: "Auth", value: serviceBrief.authMode)
+                    }
+
+                    HStack(spacing: 10) {
+                        MetricTile(title: "Storage", value: serviceBrief.storageMode)
+                        MetricTile(title: "Sessions", value: "\(serviceBrief.sessionCount)")
+                    }
+
+                    Text(serviceBrief.headline)
+                        .font(.footnote)
+                        .foregroundStyle(AppTheme.textSecondary)
+
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Review Flow")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(AppTheme.textPrimary)
+                        ForEach(serviceBrief.reviewFlow, id: \.self) { item in
+                            briefLine(item, tone: AppTheme.mint)
+                        }
+                    }
+
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Trust Boundary")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(AppTheme.textPrimary)
+                        ForEach(serviceBrief.trustBoundary, id: \.self) { item in
+                            briefLine(item, tone: AppTheme.amber)
+                        }
+                    }
+
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Watchouts")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(AppTheme.textPrimary)
+                        ForEach(serviceBrief.watchouts, id: \.self) { item in
+                            briefLine(item, tone: .red.opacity(0.8))
+                        }
+                    }
+                } else {
+                    Text("Generating service brief from the active backend path.")
+                        .font(.footnote)
+                        .foregroundStyle(AppTheme.textSecondary)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+
     private var momentumCard: some View {
         GlassCard {
             VStack(alignment: .leading, spacing: 10) {
@@ -524,6 +584,18 @@ struct IntroView: View {
     private func signedScore(_ value: Double) -> String {
         let magnitude = String(format: "%.1f", abs(value))
         return value >= 0 ? "+\(magnitude)" : "-\(magnitude)"
+    }
+
+    private func briefLine(_ text: String, tone: Color) -> some View {
+        HStack(alignment: .top, spacing: 6) {
+            Circle()
+                .fill(tone)
+                .frame(width: 5, height: 5)
+                .padding(.top, 6)
+            Text(text)
+                .font(.footnote)
+                .foregroundStyle(AppTheme.textSecondary)
+        }
     }
 
     private func syncTone(_ state: SyncState) -> StatusChip.Tone {

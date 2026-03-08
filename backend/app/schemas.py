@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import Optional, Union
+from typing import Any, Optional, Union
 from pydantic import BaseModel, Field
 
 
@@ -74,13 +74,43 @@ class HealthResponse(BaseModel):
     status: str
     session_count: int
     timestamp: datetime
+    readiness_contract: str
+    report_contract: dict[str, Any]
+    links: dict[str, str]
 
 
 class ServiceMetaResponse(BaseModel):
     service: str
     version: str
     generated_at: datetime
+    readiness_contract: str
+    report_contract: dict[str, Any]
     auth: dict[str, bool]
     storage: dict[str, Union[str, int]]
     capabilities: list[str]
     routes: list[str]
+
+
+class ServiceBriefResponse(BaseModel):
+    status: str
+    service: str
+    generated_at: datetime
+    readiness_contract: str
+    headline: str
+    report_contract: dict[str, Any]
+    auth_mode: str
+    storage_mode: str
+    evidence_counts: dict[str, int]
+    review_flow: list[str]
+    watchouts: list[str]
+    trust_boundary: list[str]
+    routes: list[str]
+
+
+class CoachReportSchemaResponse(BaseModel):
+    status: str
+    service: str
+    generated_at: datetime
+    schema_name: str = Field(alias="schema")
+    required_sections: list[str]
+    operator_rules: list[str]

@@ -9,6 +9,9 @@ Integrated FastAPI service for SteadyTap cloud mode.
 - Coach plan includes recommended preset + recommended intensity + action items
 - `POST /v1/benchmarks`: return cohort benchmark snapshot
 - `GET /v1/health`: health check
+- `GET /v1/meta`: runtime metadata and route inventory
+- `GET /v1/runtime-brief`: reviewer-facing service brief for sync boundary and operator flow
+- `GET /v1/schema/coach-report`: remote coaching contract
 - Optional bearer-token auth via `STEADYTAP_API_KEY`
 - SQLite persistence for uploaded sessions
 - Session storage includes challenge intensity and weekly goal target

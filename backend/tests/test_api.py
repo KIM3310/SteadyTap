@@ -26,9 +26,14 @@ def test_health_and_meta_report_runtime_state(tmp_path: Path):
 
     health = client.get("/v1/health")
     meta = client.get("/v1/meta")
+    brief = client.get("/v1/runtime-brief")
+    schema = client.get("/v1/schema/coach-report")
 
     assert health.status_code == 200
     assert health.json()["session_count"] == 0
+    assert health.json()["readiness_contract"] == "steadytap-service-brief-v1"
+    assert health.json()["report_contract"]["schema"] == "steadytap-coach-report-v1"
+    assert health.json()["links"]["runtime_brief"] == "/v1/runtime-brief"
 
     assert meta.status_code == 200
     body = meta.json()
@@ -36,6 +41,20 @@ def test_health_and_meta_report_runtime_state(tmp_path: Path):
     assert body["auth"]["api_key_required"] is False
     assert body["storage"]["db_path"].endswith("steadytap.sqlite")
     assert "/v1/meta" in body["routes"]
+    assert "/v1/runtime-brief" in body["routes"]
+    assert body["readiness_contract"] == "steadytap-service-brief-v1"
+    assert body["report_contract"]["schema"] == "steadytap-coach-report-v1"
+
+    assert brief.status_code == 200
+    brief_body = brief.json()
+    assert brief_body["readiness_contract"] == "steadytap-service-brief-v1"
+    assert brief_body["report_contract"]["schema"] == "steadytap-coach-report-v1"
+    assert brief_body["evidence_counts"]["service_routes"] >= 8
+
+    assert schema.status_code == 200
+    schema_body = schema.json()
+    assert schema_body["schema"] == "steadytap-coach-report-v1"
+    assert "action_items" in schema_body["required_sections"]
 
 
 def test_protected_routes_require_bearer_token_when_api_key_is_configured(tmp_path: Path):
