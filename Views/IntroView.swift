@@ -401,6 +401,12 @@ struct IntroView: View {
                             briefLine("\(item.label) -> \(item.href)", tone: AppTheme.amber.opacity(0.85))
                         }
                     }
+
+                    Button("Copy Service Brief") {
+                        copyReviewerText(serviceBriefSnapshot, success: "Copied service brief snapshot.")
+                    }
+                    .buttonStyle(.bordered)
+                    .tint(AppTheme.mint.opacity(0.8))
                 } else {
                     Text("Generating service brief from the active backend path.")
                         .font(.footnote)
@@ -582,6 +588,26 @@ struct IntroView: View {
             "Health -> /v1/health",
             "Runtime Brief -> /v1/runtime-brief",
             "Review Pack -> /v1/review-pack",
+        ].joined(separator: "\n")
+    }
+
+    private var serviceBriefSnapshot: String {
+        guard let serviceBrief else {
+            return "Service brief unavailable."
+        }
+
+        return [
+            "Headline: \(serviceBrief.headline)",
+            "Schema: \(serviceBrief.reportContractSchema)",
+            "Auth: \(serviceBrief.authMode)",
+            "Storage: \(serviceBrief.storageMode)",
+            "Sessions: \(serviceBrief.sessionCount)",
+            "Review Flow:",
+            serviceBrief.reviewFlow.joined(separator: "\n"),
+            "2-Minute Review:",
+            serviceBrief.twoMinuteReview.joined(separator: "\n"),
+            "Proof Assets:",
+            serviceBrief.proofAssets.map { "\($0.label) -> \($0.href)" }.joined(separator: "\n"),
         ].joined(separator: "\n")
     }
 
