@@ -361,6 +361,15 @@ struct IntroView: View {
                     }
 
                     VStack(alignment: .leading, spacing: 6) {
+                        Text("2-Minute Review")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(AppTheme.textPrimary)
+                        ForEach(serviceBrief.twoMinuteReview, id: \.self) { item in
+                            briefLine(item, tone: AppTheme.mint.opacity(0.8))
+                        }
+                    }
+
+                    VStack(alignment: .leading, spacing: 6) {
                         Text("Trust Boundary")
                             .font(.subheadline.weight(.semibold))
                             .foregroundStyle(AppTheme.textPrimary)
@@ -375,6 +384,15 @@ struct IntroView: View {
                             .foregroundStyle(AppTheme.textPrimary)
                         ForEach(serviceBrief.watchouts, id: \.self) { item in
                             briefLine(item, tone: .red.opacity(0.8))
+                        }
+                    }
+
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Proof Assets")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(AppTheme.textPrimary)
+                        ForEach(serviceBrief.proofAssets, id: \.self) { item in
+                            briefLine("\(item.label) -> \(item.href)", tone: AppTheme.amber.opacity(0.85))
                         }
                     }
                 } else {
@@ -454,6 +472,15 @@ struct IntroView: View {
                     }
 
                     VStack(alignment: .leading, spacing: 6) {
+                        Text("2-Minute Review")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(AppTheme.textPrimary)
+                        ForEach(reviewPack.twoMinuteReview, id: \.self) { item in
+                            briefLine(item, tone: AppTheme.mint.opacity(0.8))
+                        }
+                    }
+
+                    VStack(alignment: .leading, spacing: 6) {
                         Text("Sync Boundary")
                             .font(.subheadline.weight(.semibold))
                             .foregroundStyle(AppTheme.textPrimary)
@@ -468,6 +495,15 @@ struct IntroView: View {
                             .foregroundStyle(AppTheme.textPrimary)
                         ForEach(reviewPack.watchouts, id: \.self) { item in
                             briefLine(item, tone: .red.opacity(0.8))
+                        }
+                    }
+
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Proof Assets")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(AppTheme.textPrimary)
+                        ForEach(reviewPack.proofAssets, id: \.self) { item in
+                            briefLine("\(item.label) -> \(item.href)", tone: AppTheme.amber.opacity(0.85))
                         }
                     }
                 } else {

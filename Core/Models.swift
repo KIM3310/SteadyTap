@@ -481,6 +481,11 @@ struct BenchmarkSnapshot: Codable {
 }
 
 struct ServiceBrief: Codable {
+    struct ProofAsset: Codable, Hashable {
+        let label: String
+        let href: String
+    }
+
     let generatedAt: Date
     let readinessContract: String
     let headline: String
@@ -489,8 +494,10 @@ struct ServiceBrief: Codable {
     let storageMode: String
     let sessionCount: Int
     let reviewFlow: [String]
+    let twoMinuteReview: [String]
     let watchouts: [String]
     let trustBoundary: [String]
+    let proofAssets: [ProofAsset]
 
     static let placeholder = ServiceBrief(
         generatedAt: .now,
@@ -505,6 +512,12 @@ struct ServiceBrief: Codable {
             "Upload only run summaries when cloud sync is enabled.",
             "Refresh the remote coach after queue health is stable."
         ],
+        twoMinuteReview: [
+            "Open health or meta to confirm auth and storage posture.",
+            "Read runtime brief for sync boundary and watchouts.",
+            "Compare coach outputs against recent local sessions.",
+            "Check the sync queue before trusting cloud guidance."
+        ],
         watchouts: [
             "Cloud mode falls back to local coaching if the base URL or token is invalid.",
             "Only summaries are uploaded; raw tap traces stay on-device."
@@ -512,11 +525,22 @@ struct ServiceBrief: Codable {
         trustBoundary: [
             "Calibration and adaptive profile generation run on-device.",
             "Remote coaching only receives session summaries and preference context."
+        ],
+        proofAssets: [
+            ProofAsset(label: "Health Surface", href: "/v1/health"),
+            ProofAsset(label: "Runtime Brief", href: "/v1/runtime-brief"),
+            ProofAsset(label: "Review Pack", href: "/v1/review-pack"),
+            ProofAsset(label: "Coach Schema", href: "/v1/schema/coach-report"),
         ]
     )
 }
 
 struct ServiceReviewPack: Codable {
+    struct ProofAsset: Codable, Hashable {
+        let label: String
+        let href: String
+    }
+
     let generatedAt: Date
     let readinessContract: String
     let headline: String
@@ -524,8 +548,10 @@ struct ServiceReviewPack: Codable {
     let uploadedSurfaceCount: Int
     let reviewRouteCount: Int
     let reviewSequence: [String]
+    let twoMinuteReview: [String]
     let syncBoundary: [String]
     let watchouts: [String]
+    let proofAssets: [ProofAsset]
 
     static let placeholder = ServiceReviewPack(
         generatedAt: .now,
@@ -539,6 +565,12 @@ struct ServiceReviewPack: Codable {
             "Compare remote coach guidance against recent local sessions.",
             "Keep sync queue visible so cloud failures never hide local progress."
         ],
+        twoMinuteReview: [
+            "Open health or meta to confirm auth and storage posture.",
+            "Read runtime brief for sync boundary and watchouts.",
+            "Read review pack before enabling shared cloud testing.",
+            "Compare remote coach outputs against local history."
+        ],
         syncBoundary: [
             "Calibration raw traces stay on device.",
             "Uploaded payloads are limited to session summaries and adaptive profile outcomes."
@@ -546,6 +578,12 @@ struct ServiceReviewPack: Codable {
         watchouts: [
             "Cloud coaching augments the app and should always have a local fallback.",
             "Sparse or stale uploads weaken remote recommendations."
+        ],
+        proofAssets: [
+            ProofAsset(label: "Health Surface", href: "/v1/health"),
+            ProofAsset(label: "Review Pack", href: "/v1/review-pack"),
+            ProofAsset(label: "Coach Schema", href: "/v1/schema/coach-report"),
+            ProofAsset(label: "Runtime Brief", href: "/v1/runtime-brief"),
         ]
     )
 }

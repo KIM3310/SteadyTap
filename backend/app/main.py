@@ -115,6 +115,12 @@ def build_service_brief() -> dict[str, object]:
             "Use /v1/coach/plan and /v1/benchmarks with representative session history, then compare against local insights.",
             "Review queued uploads in the app before trusting remote guidance as the source of truth.",
         ],
+        "two_minute_review": [
+            "Open /v1/health or /v1/meta to confirm auth mode and storage posture.",
+            "Read /v1/runtime-brief for sync boundary and current watchouts.",
+            "Compare /v1/coach/plan and /v1/benchmarks against recent local sessions before enabling cloud mode.",
+            "Check the in-app sync queue and /v1/review-pack before treating remote guidance as authoritative.",
+        ],
         "watchouts": [
             "The backend stores run summaries, not raw calibration traces or full touch telemetry.",
             "Coach and benchmark outputs depend on the quality and recency of uploaded session summaries.",
@@ -124,6 +130,12 @@ def build_service_brief() -> dict[str, object]:
             "On-device calibration and local history remain available without network dependency.",
             "Uploaded payloads are limited to session summaries and adaptive profile outcomes.",
             "Bearer-token protection is optional for local review but should be enabled for shared environments.",
+        ],
+        "proof_assets": [
+            {"label": "Health Surface", "href": "/v1/health"},
+            {"label": "Runtime Brief", "href": "/v1/runtime-brief"},
+            {"label": "Review Pack", "href": "/v1/review-pack"},
+            {"label": "Coach Schema", "href": "/v1/schema/coach-report"},
         ],
         "routes": SERVICE_ROUTES,
     }
@@ -164,6 +176,18 @@ def build_review_pack() -> dict[str, object]:
             "Read /v1/runtime-brief and /v1/review-pack before enabling cloud mode for shared testing.",
             "Compare /v1/coach/plan and /v1/benchmarks against recent local sessions before adopting remote guidance.",
             "Keep queued uploads reviewable in the app so sync failures never become silent data loss.",
+        ],
+        "two_minute_review": [
+            "Open /v1/health or /v1/meta to confirm auth and storage posture.",
+            "Read /v1/runtime-brief for sync boundary and watchouts.",
+            "Read /v1/review-pack before enabling shared cloud testing.",
+            "Compare remote coach outputs against local sessions before adopting them in the app.",
+        ],
+        "proof_assets": [
+            {"label": "Health Surface", "href": "/v1/health"},
+            {"label": "Review Pack", "href": "/v1/review-pack"},
+            {"label": "Coach Schema", "href": "/v1/schema/coach-report"},
+            {"label": "Runtime Brief", "href": "/v1/runtime-brief"},
         ],
         "watchouts": [
             "A healthy backend does not prove the mobile device has current local history or a valid token configured.",
