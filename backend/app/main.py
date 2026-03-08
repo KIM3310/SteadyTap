@@ -18,6 +18,7 @@ from .schemas import (
     HealthResponse,
     ServiceBriefResponse,
     ServiceMetaResponse,
+    ServiceReviewPackResponse,
     SessionUploadPayload,
     UploadSessionResponse,
 )
@@ -28,11 +29,13 @@ APP_VERSION = "1.0.0"
 API_KEY = os.getenv("STEADYTAP_API_KEY", "").strip()
 DB_PATH = os.getenv("STEADYTAP_DB_PATH", "./data/steadytap.sqlite")
 READINESS_CONTRACT = "steadytap-service-brief-v1"
+REVIEW_PACK_CONTRACT = "steadytap-review-pack-v1"
 COACH_REPORT_SCHEMA = "steadytap-coach-report-v1"
 SERVICE_ROUTES = [
     "/v1/health",
     "/v1/meta",
     "/v1/runtime-brief",
+    "/v1/review-pack",
     "/v1/schema/coach-report",
     "/v1/sessions",
     "/v1/coach/plan",
@@ -126,6 +129,57 @@ def build_service_brief() -> dict[str, object]:
     }
 
 
+def build_review_pack() -> dict[str, object]:
+    session_count = db.count_sessions()
+    auth_mode = "bearer-required" if API_KEY else "open-review"
+    return {
+        "status": "ok",
+        "service": "steadytap-backend",
+        "generated_at": datetime.now(tz=timezone.utc),
+        "readiness_contract": REVIEW_PACK_CONTRACT,
+        "headline": (
+            "Reviewer pack for SteadyTap cloud coaching: mobile-first sync boundary, auth posture, "
+            "and remote guidance handoff in one contract."
+        ),
+        "proof_bundle": {
+            "auth_mode": auth_mode,
+            "storage_mode": "sqlite-local",
+            "session_count": session_count,
+            "uploaded_surface_count": 5,
+            "review_routes": [
+                "/v1/health",
+                "/v1/meta",
+                "/v1/runtime-brief",
+                "/v1/review-pack",
+                "/v1/schema/coach-report",
+            ],
+        },
+        "sync_boundary": [
+            "Calibration raw samples, adaptive profile generation, and local history remain on device.",
+            "Cloud sync uploads session summaries and adaptive profile outcomes, not full touch telemetry.",
+            "Remote coach outputs should augment the mobile experience, not replace local fallback behavior.",
+        ],
+        "review_sequence": [
+            "Open /v1/health or /v1/meta to confirm auth mode, storage posture, and route availability.",
+            "Read /v1/runtime-brief and /v1/review-pack before enabling cloud mode for shared testing.",
+            "Compare /v1/coach/plan and /v1/benchmarks against recent local sessions before adopting remote guidance.",
+            "Keep queued uploads reviewable in the app so sync failures never become silent data loss.",
+        ],
+        "watchouts": [
+            "A healthy backend does not prove the mobile device has current local history or a valid token configured.",
+            "Uploaded summaries can drift from live motor performance if sessions are stale or sparse.",
+            "Cloud review should always degrade to local/mock coaching when network or auth breaks.",
+        ],
+        "links": {
+            "health": "/v1/health",
+            "meta": "/v1/meta",
+            "runtime_brief": "/v1/runtime-brief",
+            "review_pack": "/v1/review-pack",
+            "coach_schema": "/v1/schema/coach-report",
+        },
+    }
+
+
 @app.get("/v1/health", response_model=HealthResponse)
 def health() -> HealthResponse:
     return HealthResponse(
@@ -137,6 +191,7 @@ def health() -> HealthResponse:
         links={
             "meta": "/v1/meta",
             "runtime_brief": "/v1/runtime-brief",
+            "review_pack": "/v1/review-pack",
             "coach_schema": "/v1/schema/coach-report",
         },
     )
@@ -164,6 +219,7 @@ def meta() -> ServiceMetaResponse:
             "user-session-history",
             "service-brief-surface",
             "coach-report-schema",
+            "review-pack-surface",
         ],
         routes=SERVICE_ROUTES,
     )
@@ -172,6 +228,11 @@ def meta() -> ServiceMetaResponse:
 @app.get("/v1/runtime-brief", response_model=ServiceBriefResponse)
 def runtime_brief() -> ServiceBriefResponse:
     return ServiceBriefResponse(**build_service_brief())
+
+
+@app.get("/v1/review-pack", response_model=ServiceReviewPackResponse)
+def review_pack() -> ServiceReviewPackResponse:
+    return ServiceReviewPackResponse(**build_review_pack())
 
 
 @app.get("/v1/schema/coach-report", response_model=CoachReportSchemaResponse)

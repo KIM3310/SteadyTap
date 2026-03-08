@@ -516,6 +516,40 @@ struct ServiceBrief: Codable {
     )
 }
 
+struct ServiceReviewPack: Codable {
+    let generatedAt: Date
+    let readinessContract: String
+    let headline: String
+    let authMode: String
+    let uploadedSurfaceCount: Int
+    let reviewRouteCount: Int
+    let reviewSequence: [String]
+    let syncBoundary: [String]
+    let watchouts: [String]
+
+    static let placeholder = ServiceReviewPack(
+        generatedAt: .now,
+        readinessContract: "steadytap-review-pack-v1",
+        headline: "Reviewer pack for mobile-to-cloud coaching sync and local-first fallback posture.",
+        authMode: "open-review",
+        uploadedSurfaceCount: 5,
+        reviewRouteCount: 5,
+        reviewSequence: [
+            "Review health, runtime brief, and review pack before enabling cloud mode.",
+            "Compare remote coach guidance against recent local sessions.",
+            "Keep sync queue visible so cloud failures never hide local progress."
+        ],
+        syncBoundary: [
+            "Calibration raw traces stay on device.",
+            "Uploaded payloads are limited to session summaries and adaptive profile outcomes."
+        ],
+        watchouts: [
+            "Cloud coaching augments the app and should always have a local fallback.",
+            "Sparse or stale uploads weaken remote recommendations."
+        ]
+    )
+}
+
 struct SessionUploadPayload: Identifiable, Codable {
     let id: UUID
     let userID: String

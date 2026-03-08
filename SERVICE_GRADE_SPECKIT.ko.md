@@ -11,8 +11,8 @@ Last updated: 2026-03-08
 - 리뷰어는 app flow와 backend contract를 함께 읽을 수 있어야 한다.
 
 ## E - Execution
-- `GET /v1/runtime-brief`와 `GET /v1/schema/coach-report`로 backend reviewer surface를 고정한다.
-- 앱 홈 화면에 service brief card를 넣어 auth mode, storage mode, schema, review flow를 먼저 보여준다.
+- `GET /v1/runtime-brief`, `GET /v1/review-pack`, `GET /v1/schema/coach-report`로 backend reviewer surface를 고정한다.
+- 앱 홈 화면에 service brief + review pack card를 넣어 auth mode, storage mode, schema, sync boundary를 먼저 보여준다.
 - iOS flow, session model, backend endpoints를 같은 narrative로 유지한다.
 
 ## C - Criteria

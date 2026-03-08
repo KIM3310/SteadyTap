@@ -107,6 +107,19 @@ class ServiceBriefResponse(BaseModel):
     routes: list[str]
 
 
+class ServiceReviewPackResponse(BaseModel):
+    status: str
+    service: str
+    generated_at: datetime
+    readiness_contract: str
+    headline: str
+    proof_bundle: dict[str, Any]
+    sync_boundary: list[str]
+    review_sequence: list[str]
+    watchouts: list[str]
+    links: dict[str, str]
+
+
 class CoachReportSchemaResponse(BaseModel):
     status: str
     service: str
