@@ -1,8 +1,21 @@
-# SteadyTap (Swift Student Challenge App Playground)
+# SteadyTap
 
-SteadyTap is an accessibility-first App Playground that adapts touch interaction settings from a short calibration.
+SteadyTap is an accessibility-first iOS App Playground with an integrated FastAPI service for cloud sync, coach-plan generation, and cohort benchmarks.
 
-Flow:
+The product is designed to be reviewable in two modes:
+
+1. fully local, offline-first app behavior
+2. app + backend mode with explicit API contracts and reproducible verification
+
+## What this repo includes
+
+- Swift App Playground for calibration, baseline/adaptive challenges, and results review
+- local persistence, sync queue, and backend settings UX
+- integrated FastAPI backend under `backend/`
+- stable HTTP contract for session upload, coach plans, and benchmark snapshots
+
+## User flow
+
 1. Tap calibration
 2. Drag calibration
 3. Calibration review
@@ -10,79 +23,103 @@ Flow:
 5. Adaptive challenge
 6. Before/after report
 
-Quality upgrades included:
-- Input filtering that uses adaptive `swipeThreshold` to reject unstable tap drags
-- Three scoring presets selectable before each run
-- Local session history with best-improvement tracking
-- Haptic feedback toggle and local-history reset controls
-- Coach insight text on the results screen
-- Animated aurora background, frosted cards, and staged screen reveal animations
-- Flow header with step progress and safe exit confirmation
-- Calibration confidence scoring + review screen before challenge start
-- Shareable result summary from results screen
-- Cloud-ready backend mode with sync queue, health state, and retry controls
-- Remote coach plan + cohort benchmark cards on the home dashboard
-- Momentum dashboard with trend sparkline, weekly cadence, and streak tracking
-- Challenge intensity modes (Supportive/Standard/Advanced) with adaptive profile tuning
-- Weekly goal planner with live progress tracking
-- One-tap apply of full coach setup (preset + intensity + weekly target)
-- Backward-compatible sync queue decoding across model upgrades
-- Debounced cloud insight refresh while editing backend settings
-- Predictive intelligence layer: readiness score, trend direction, and local next-intensity recommendation
-- Weekly pace projection with actionable goal-closure guidance
+## Key product behaviors
 
-Scoring presets:
-- Mistake-first (default): stronger penalty on misses/accidental touches
-- Balanced: moderate penalties across speed and mistakes
-- Speed-first: higher time pressure with lighter mistake penalties
+- adaptive `swipeThreshold` filtering to reject unstable tap drags
+- three scoring presets: `Mistake-first`, `Balanced`, `Speed-first`
+- challenge intensity modes: `Supportive`, `Standard`, `Advanced`
+- local history, streak, trend, and weekly goal tracking
+- optional cloud sync queue with retry controls
+- remote coach-plan and cohort benchmark cards
+- readiness score, trend direction, and next-intensity recommendation
 
-## Why this project is challenge-friendly
+## Repository layout
 
-- Fully offline and self-contained
-- Clear 3-minute demo narrative
-- Personal and social impact angle (motor accessibility)
-- Measurable before/after output for judges
+```text
+SteadyTap/
+  Package.swift
+  Core/
+  Views/
+  backend/
+    app/
+    tests/
+    requirements.txt
+    requirements-dev.txt
+  SPECKIT.md
+  DECISION_LOG.md
+```
 
-## Open in Xcode
+## Run the app
 
-1. Open `SteadyTap.swiftpm` in Xcode 26+ (or Swift Playgrounds with App Playground support).
-2. Update `teamIdentifier` in `Package.swift` if code signing is needed.
-3. Run on iPad or iPhone simulator.
+1. Open the Swift package in Xcode or Swift Playgrounds with App Playground support.
+2. Update `teamIdentifier` in `Package.swift` if signing is needed.
+3. Run on iPhone or iPad simulator.
 
-## Cloud backend integration
+## Run the backend
 
-The app now supports two backend modes from home settings:
-- `Local AI`: uses local/mock backend logic only
-- `Cloud API`: uses HTTP API and falls back to local when URL is missing
+```bash
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -U pip
+python -m pip install -r requirements.txt -r requirements-dev.txt
+uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload
+```
 
-When a session ends, the app enqueues an upload job and syncs automatically (if enabled).
-You can also set optional `Bearer Token` for secured cloud APIs (stored in Keychain).
+Backend API surface:
 
-## Companion backend service
+- `GET /v1/health`
+- `GET /v1/meta`
+- `POST /v1/sessions`
+- `POST /v1/coach/plan`
+- `POST /v1/benchmarks`
+- `GET /v1/sessions/{user_id}`
 
-A production-oriented FastAPI starter backend is included at:
-- `/Users/kim/SteadyTap-backend`
+## Cloud mode in the app
 
-See `/Users/kim/SteadyTap-backend/README.md` for run instructions.
+From the home settings screen:
 
-## Submission checklist
+- `Local AI`: local/mock backend behavior only
+- `Cloud API`: HTTP API with local fallback when URL is missing
 
-- [ ] Confirm app works without internet
-- [ ] Keep total size under challenge limits
-- [ ] Keep in-app text in English
-- [ ] Zip the `.swiftpm` package for submission
+Recommended simulator URL:
+
+- `http://127.0.0.1:8080`
+
+If `STEADYTAP_API_KEY` is set on the backend, paste the same bearer token into the app settings.
+
+## Why this structure is intentional
+
+- the app remains reviewable by itself
+- the service contract is explicit and testable
+- mobile UI and backend logic live in one canonical repo without hiding deployment boundaries
 
 ## Main files
 
 - `Package.swift`: App Playground product setup
 - `Core/BackendClient.swift`: remote/mock backend client layer
-- `Core/PersistenceStore.swift`: local persistence (history, preferences, sync queue)
-- `Core/AppViewModel.swift`: app orchestration, sync queue, remote insight state
+- `Core/PersistenceStore.swift`: local persistence, preferences, sync queue
+- `Core/AppViewModel.swift`: app orchestration and remote insight state
 - `Core/CalibrationEngine.swift`: touch metric analysis and adaptive profile generation
-- `Views/CalibrationFlowView.swift`: calibration UI
-- `Views/IntroView.swift`: production-style home dashboard and backend ops panel
+- `Views/IntroView.swift`: home dashboard and backend settings panel
 - `Views/PracticeView.swift`: baseline/adaptive challenge
-- `Views/ResultsView.swift`: comparison report
-- `Views/CalibrationReviewView.swift`: calibration quality review + continue/recalibrate
-- `SPECKIT.md`: full product specification
-- `DECISION_LOG.md`: structured implementation reasoning log
+- `Views/ResultsView.swift`: before/after report
+- `backend/app/main.py`: FastAPI service entrypoint
+- `backend/app/service.py`: coach-plan and benchmark logic
+- `backend/tests/test_api.py`: backend contract coverage
+
+## Verification
+
+App:
+
+- open in Xcode
+- confirm offline flow works without backend
+- switch to `Cloud API` mode and confirm coach-plan / benchmark cards load
+
+Backend:
+
+```bash
+cd backend
+python -m compileall -q .
+pytest -q
+```
