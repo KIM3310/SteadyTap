@@ -16,6 +16,7 @@ struct IntroView: View {
     let pendingSyncCount: Int
     let syncState: SyncState
     let serviceBrief: ServiceBrief?
+    let reviewPack: ServiceReviewPack?
     let coachPlan: CoachPlan?
     let benchmark: BenchmarkSnapshot?
     let trendPoints: [Double]
@@ -73,17 +74,18 @@ struct IntroView: View {
                 challengeCard.staged(index: 3, appear: appear)
                 opsCard.staged(index: 4, appear: appear)
                 serviceBriefCard.staged(index: 5, appear: appear)
-                coachCard.staged(index: 6, appear: appear)
-                momentumCard.staged(index: 7, appear: appear)
-                intelligenceCard.staged(index: 8, appear: appear)
-                benchmarkCard.staged(index: 9, appear: appear)
-                preferencesCard.staged(index: 10, appear: appear)
-                progressCard.staged(index: 11, appear: appear)
+                reviewPackCard.staged(index: 6, appear: appear)
+                coachCard.staged(index: 7, appear: appear)
+                momentumCard.staged(index: 8, appear: appear)
+                intelligenceCard.staged(index: 9, appear: appear)
+                benchmarkCard.staged(index: 10, appear: appear)
+                preferencesCard.staged(index: 11, appear: appear)
+                progressCard.staged(index: 12, appear: appear)
 
                 Button("Start Calibration", action: onStart)
                     .buttonStyle(PrimaryButtonStyle())
                     .accessibilityHint("Begins tap and drag calibration")
-                    .staged(index: 12, appear: appear)
+                    .staged(index: 13, appear: appear)
             }
             .padding(.top, 16)
             .padding(.bottom, 32)
@@ -417,6 +419,64 @@ struct IntroView: View {
                 )
                 .frame(height: 76)
             }
+        }
+    }
+
+    private var reviewPackCard: some View {
+        GlassCard {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Review Pack")
+                    .font(.title3.weight(.bold))
+                    .foregroundStyle(AppTheme.textPrimary)
+
+                if let reviewPack {
+                    HStack(spacing: 10) {
+                        MetricTile(title: "Contract", value: reviewPack.readinessContract)
+                        MetricTile(title: "Auth", value: reviewPack.authMode)
+                    }
+
+                    HStack(spacing: 10) {
+                        MetricTile(title: "Uploaded Surfaces", value: "\(reviewPack.uploadedSurfaceCount)")
+                        MetricTile(title: "Review Routes", value: "\(reviewPack.reviewRouteCount)")
+                    }
+
+                    Text(reviewPack.headline)
+                        .font(.footnote)
+                        .foregroundStyle(AppTheme.textSecondary)
+
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Review Sequence")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(AppTheme.textPrimary)
+                        ForEach(reviewPack.reviewSequence, id: \.self) { item in
+                            briefLine(item, tone: AppTheme.mint)
+                        }
+                    }
+
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Sync Boundary")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(AppTheme.textPrimary)
+                        ForEach(reviewPack.syncBoundary, id: \.self) { item in
+                            briefLine(item, tone: AppTheme.amber)
+                        }
+                    }
+
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Watchouts")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(AppTheme.textPrimary)
+                        ForEach(reviewPack.watchouts, id: \.self) { item in
+                            briefLine(item, tone: .red.opacity(0.8))
+                        }
+                    }
+                } else {
+                    Text("Generating review pack from the active backend path.")
+                        .font(.footnote)
+                        .foregroundStyle(AppTheme.textSecondary)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
 

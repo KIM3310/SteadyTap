@@ -21,6 +21,7 @@ protocol SteadyTapBackendClient {
     func fetchCoachPlan(userID: String, history: [SessionSummary]) async throws -> CoachPlan
     func fetchBenchmark(userID: String, history: [SessionSummary]) async throws -> BenchmarkSnapshot
     func fetchServiceBrief() async throws -> ServiceBrief
+    func fetchReviewPack() async throws -> ServiceReviewPack
     func uploadSession(_ payload: SessionUploadPayload) async throws
 }
 
@@ -70,6 +71,11 @@ struct MockBackendClient: SteadyTapBackendClient {
 
     func fetchServiceBrief() async throws -> ServiceBrief {
         try await Task.sleep(nanoseconds: 140_000_000)
+        return .placeholder
+    }
+
+    func fetchReviewPack() async throws -> ServiceReviewPack {
+        try await Task.sleep(nanoseconds: 160_000_000)
         return .placeholder
     }
 
@@ -137,6 +143,12 @@ struct CloudBackendClient: SteadyTapBackendClient {
     func fetchServiceBrief() async throws -> ServiceBrief {
         let request = try makeRequest(path: "/v1/runtime-brief")
         let response: ServiceBriefResponse = try await send(request)
+        return response.toDomain()
+    }
+
+    func fetchReviewPack() async throws -> ServiceReviewPack {
+        let request = try makeRequest(path: "/v1/review-pack")
+        let response: ServiceReviewPackResponse = try await send(request)
         return response.toDomain()
     }
 
@@ -316,8 +328,54 @@ private struct ServiceBriefResponse: Decodable {
     }
 }
 
+private struct ServiceReviewPackResponse: Decodable {
+    let generatedAt: Date
+    let readinessContract: String
+    let headline: String
+    let proofBundle: ReviewPackProofBundleResponse
+    let reviewSequence: [String]
+    let syncBoundary: [String]
+    let watchouts: [String]
+
+    enum CodingKeys: String, CodingKey {
+        case generatedAt = "generated_at"
+        case readinessContract = "readiness_contract"
+        case headline
+        case proofBundle = "proof_bundle"
+        case reviewSequence = "review_sequence"
+        case syncBoundary = "sync_boundary"
+        case watchouts
+    }
+
+    func toDomain() -> ServiceReviewPack {
+        ServiceReviewPack(
+            generatedAt: generatedAt,
+            readinessContract: readinessContract,
+            headline: headline,
+            authMode: proofBundle.authMode,
+            uploadedSurfaceCount: proofBundle.uploadedSurfaceCount,
+            reviewRouteCount: proofBundle.reviewRoutes.count,
+            reviewSequence: reviewSequence,
+            syncBoundary: syncBoundary,
+            watchouts: watchouts
+        )
+    }
+}
+
 private struct ReportContractResponse: Decodable {
     let schema: String
+}
+
+private struct ReviewPackProofBundleResponse: Decodable {
+    let authMode: String
+    let uploadedSurfaceCount: Int
+    let reviewRoutes: [String]
+
+    enum CodingKeys: String, CodingKey {
+        case authMode = "auth_mode"
+        case uploadedSurfaceCount = "uploaded_surface_count"
+        case reviewRoutes = "review_routes"
+    }
 }
 
 private struct EvidenceCountsResponse: Decodable {

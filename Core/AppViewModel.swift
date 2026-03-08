@@ -17,6 +17,7 @@ final class AppViewModel: ObservableObject {
     @Published private(set) var coachPlan: CoachPlan?
     @Published private(set) var benchmark: BenchmarkSnapshot?
     @Published private(set) var serviceBrief: ServiceBrief?
+    @Published private(set) var reviewPack: ServiceReviewPack?
     @Published private(set) var syncState: SyncState = .idle
     @Published private(set) var isRefreshingBackend = false
 
@@ -424,11 +425,13 @@ final class AppViewModel: ObservableObject {
             async let plan = client.fetchCoachPlan(userID: resolvedUserID, history: sessionHistory)
             async let benchmark = client.fetchBenchmark(userID: resolvedUserID, history: sessionHistory)
             async let brief = client.fetchServiceBrief()
-            let (resolvedPlan, resolvedBenchmark, resolvedBrief) = try await (plan, benchmark, brief)
+            async let pack = client.fetchReviewPack()
+            let (resolvedPlan, resolvedBenchmark, resolvedBrief, resolvedPack) = try await (plan, benchmark, brief, pack)
 
             coachPlan = resolvedPlan
             self.benchmark = resolvedBenchmark
             serviceBrief = resolvedBrief
+            reviewPack = resolvedPack
             PersistenceStore.saveCoachPlan(resolvedPlan)
             PersistenceStore.saveBenchmark(resolvedBenchmark)
 
@@ -448,6 +451,9 @@ final class AppViewModel: ObservableObject {
             }
             if serviceBrief == nil {
                 serviceBrief = .placeholder
+            }
+            if reviewPack == nil {
+                reviewPack = .placeholder
             }
             syncState = .failed(error.userFacingMessage)
         }
