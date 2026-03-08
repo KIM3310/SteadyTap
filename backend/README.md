@@ -1,6 +1,6 @@
 # SteadyTap Backend (FastAPI)
 
-Production-ready starter backend for SteadyTap cloud mode.
+Integrated FastAPI service for SteadyTap cloud mode.
 
 ## Features
 
@@ -16,10 +16,11 @@ Production-ready starter backend for SteadyTap cloud mode.
 ## Run locally
 
 ```bash
-cd /Users/kim/SteadyTap-backend
+cd backend
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
+python -m pip install -U pip
+python -m pip install -r requirements.txt -r requirements-dev.txt
 uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload
 ```
 
@@ -30,7 +31,7 @@ uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload
 
 ## Cloud mode setup in app
 
-In `SteadyTap` app settings:
+In the SteadyTap app settings:
 1. Set backend mode to `Cloud API`.
 2. Set API base URL to `http://127.0.0.1:8080` (simulator local test).
 3. If `STEADYTAP_API_KEY` is set, paste it into app `Bearer Token`.
