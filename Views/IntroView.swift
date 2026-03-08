@@ -565,9 +565,7 @@ struct IntroView: View {
                     TextField("demo-user", text: $userID)
                         .multilineTextAlignment(.trailing)
                         .foregroundStyle(AppTheme.textPrimary)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
-                        .submitLabel(.done)
+                        .steadyTapTextEntryBehavior()
                 }
                 .foregroundStyle(AppTheme.textSecondary)
 
@@ -576,9 +574,7 @@ struct IntroView: View {
                         TextField("https://api.example.com", text: $backendBaseURL)
                             .multilineTextAlignment(.trailing)
                             .foregroundStyle(AppTheme.textPrimary)
-                            .textInputAutocapitalization(.never)
-                            .autocorrectionDisabled()
-                            .submitLabel(.done)
+                            .steadyTapTextEntryBehavior()
                     }
                     .foregroundStyle(AppTheme.textSecondary)
 
@@ -586,9 +582,7 @@ struct IntroView: View {
                         SecureField("Optional token", text: $backendAuthToken)
                             .multilineTextAlignment(.trailing)
                             .foregroundStyle(AppTheme.textPrimary)
-                            .textInputAutocapitalization(.never)
-                            .autocorrectionDisabled()
-                            .submitLabel(.done)
+                            .steadyTapTextEntryBehavior()
                     }
                     .foregroundStyle(AppTheme.textSecondary)
                 }
@@ -669,6 +663,20 @@ struct IntroView: View {
         case .failed:
             return .critical
         }
+    }
+}
+
+private extension View {
+    @ViewBuilder
+    func steadyTapTextEntryBehavior() -> some View {
+        #if os(iOS)
+        self
+            .textInputAutocapitalization(.never)
+            .autocorrectionDisabled()
+            .submitLabel(.done)
+        #else
+        self
+        #endif
     }
 }
 

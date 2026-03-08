@@ -4,6 +4,7 @@ import Foundation
 import UIKit
 #endif
 
+@MainActor
 enum HapticsManager {
     static var isEnabled = true
 
