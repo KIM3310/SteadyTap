@@ -566,7 +566,7 @@ final class AppViewModel: ObservableObject {
         }
     }
 
-    private func makeBackendClient() -> SteadyTapBackendClient {
+    private func makeBackendClient() -> any SteadyTapBackendClient {
         switch backendMode {
         case .localOnly:
             return MockBackendClient()

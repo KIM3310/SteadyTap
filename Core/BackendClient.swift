@@ -17,7 +17,7 @@ enum BackendError: LocalizedError {
     }
 }
 
-protocol SteadyTapBackendClient {
+protocol SteadyTapBackendClient: Sendable {
     func fetchCoachPlan(userID: String, history: [SessionSummary]) async throws -> CoachPlan
     func fetchBenchmark(userID: String, history: [SessionSummary]) async throws -> BenchmarkSnapshot
     func fetchServiceBrief() async throws -> ServiceBrief
