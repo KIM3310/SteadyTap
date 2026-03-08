@@ -1,0 +1,37 @@
+name: app-ci
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "Core/**"
+      - "Views/**"
+      - "Package.swift"
+      - "RootView.swift"
+      - "SteadyTapApp.swift"
+      - ".github/workflows/app-ci.yml"
+  pull_request:
+    paths:
+      - "Core/**"
+      - "Views/**"
+      - "Package.swift"
+      - "RootView.swift"
+      - "SteadyTapApp.swift"
+      - ".github/workflows/app-ci.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  swift-build:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+
+      - name: Swift build
+        run: swift build
