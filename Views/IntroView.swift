@@ -1,4 +1,9 @@
 import SwiftUI
+#if canImport(UIKit)
+import UIKit
+#elseif canImport(AppKit)
+import AppKit
+#endif
 
 struct IntroView: View {
     @Binding var scoringPreset: ScoringPreset
@@ -46,6 +51,7 @@ struct IntroView: View {
     let onStart: () -> Void
 
     @State private var appear = false
+    @State private var reviewerActionStatus = "Reviewer shortcuts keep the cloud sync proof path one tap away."
 
     private var latestResultText: String {
         guard let latest = history.first else {
@@ -506,6 +512,24 @@ struct IntroView: View {
                             briefLine("\(item.label) -> \(item.href)", tone: AppTheme.amber.opacity(0.85))
                         }
                     }
+
+                    HStack(spacing: 10) {
+                        Button("Copy Review Pack") {
+                            copyReviewerText(reviewPackSnapshot, success: "Copied review pack snapshot.")
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .tint(AppTheme.mint.opacity(0.84))
+
+                        Button("Copy Review Routes") {
+                            copyReviewerText(reviewRouteSnapshot, success: "Copied review route checklist.")
+                        }
+                        .buttonStyle(.bordered)
+                        .tint(AppTheme.amber.opacity(0.9))
+                    }
+
+                    Text(reviewerActionStatus)
+                        .font(.caption)
+                        .foregroundStyle(AppTheme.textSecondary)
                 } else {
                     Text("Generating review pack from the active backend path.")
                         .font(.footnote)
@@ -539,6 +563,57 @@ struct IntroView: View {
                 }
             }
         }
+    }
+
+    private var reviewRouteSnapshot: String {
+        if let reviewPack {
+            let proofRoutes = reviewPack.proofAssets.map(\.href).joined(separator: "\n")
+            return [
+                "Health -> /v1/health",
+                "Runtime Brief -> /v1/runtime-brief",
+                "Review Pack -> /v1/review-pack",
+                proofRoutes,
+            ]
+            .filter { !$0.isEmpty }
+            .joined(separator: "\n")
+        }
+
+        return [
+            "Health -> /v1/health",
+            "Runtime Brief -> /v1/runtime-brief",
+            "Review Pack -> /v1/review-pack",
+        ].joined(separator: "\n")
+    }
+
+    private var reviewPackSnapshot: String {
+        guard let reviewPack else {
+            return "Review pack unavailable."
+        }
+
+        return [
+            "Contract: \(reviewPack.readinessContract)",
+            "Headline: \(reviewPack.headline)",
+            "Auth: \(reviewPack.authMode)",
+            "Sync Boundary:",
+            reviewPack.syncBoundary.joined(separator: "\n"),
+            "2-Minute Review:",
+            reviewPack.twoMinuteReview.joined(separator: "\n"),
+            "Proof Assets:",
+            reviewPack.proofAssets.map { "\($0.label) -> \($0.href)" }.joined(separator: "\n"),
+        ].joined(separator: "\n")
+    }
+
+    private func copyReviewerText(_ text: String, success: String) {
+        #if canImport(UIKit)
+        UIPasteboard.general.string = text
+        reviewerActionStatus = success
+        #elseif canImport(AppKit)
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(text, forType: .string)
+        reviewerActionStatus = success
+        #else
+        reviewerActionStatus = "Clipboard copy is unavailable on this platform."
+        #endif
     }
 
     private var intelligenceCard: some View {
