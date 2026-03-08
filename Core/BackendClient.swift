@@ -288,6 +288,11 @@ private struct BenchmarkResponse: Decodable {
 }
 
 private struct ServiceBriefResponse: Decodable {
+    struct ProofAsset: Decodable {
+        let label: String
+        let href: String
+    }
+
     let generatedAt: Date
     let readinessContract: String
     let headline: String
@@ -295,8 +300,10 @@ private struct ServiceBriefResponse: Decodable {
     let authMode: String
     let storageMode: String
     let reviewFlow: [String]
+    let twoMinuteReview: [String]
     let watchouts: [String]
     let trustBoundary: [String]
+    let proofAssets: [ProofAsset]
     let evidenceCounts: EvidenceCountsResponse
 
     enum CodingKeys: String, CodingKey {
@@ -307,8 +314,10 @@ private struct ServiceBriefResponse: Decodable {
         case authMode = "auth_mode"
         case storageMode = "storage_mode"
         case reviewFlow = "review_flow"
+        case twoMinuteReview = "two_minute_review"
         case watchouts
         case trustBoundary = "trust_boundary"
+        case proofAssets = "proof_assets"
         case evidenceCounts = "evidence_counts"
     }
 
@@ -322,20 +331,29 @@ private struct ServiceBriefResponse: Decodable {
             storageMode: storageMode,
             sessionCount: evidenceCounts.sessionCount,
             reviewFlow: reviewFlow,
+            twoMinuteReview: twoMinuteReview,
             watchouts: watchouts,
-            trustBoundary: trustBoundary
+            trustBoundary: trustBoundary,
+            proofAssets: proofAssets.map { .init(label: $0.label, href: $0.href) }
         )
     }
 }
 
 private struct ServiceReviewPackResponse: Decodable {
+    struct ProofAsset: Decodable {
+        let label: String
+        let href: String
+    }
+
     let generatedAt: Date
     let readinessContract: String
     let headline: String
     let proofBundle: ReviewPackProofBundleResponse
     let reviewSequence: [String]
+    let twoMinuteReview: [String]
     let syncBoundary: [String]
     let watchouts: [String]
+    let proofAssets: [ProofAsset]
 
     enum CodingKeys: String, CodingKey {
         case generatedAt = "generated_at"
@@ -343,8 +361,10 @@ private struct ServiceReviewPackResponse: Decodable {
         case headline
         case proofBundle = "proof_bundle"
         case reviewSequence = "review_sequence"
+        case twoMinuteReview = "two_minute_review"
         case syncBoundary = "sync_boundary"
         case watchouts
+        case proofAssets = "proof_assets"
     }
 
     func toDomain() -> ServiceReviewPack {
@@ -356,8 +376,10 @@ private struct ServiceReviewPackResponse: Decodable {
             uploadedSurfaceCount: proofBundle.uploadedSurfaceCount,
             reviewRouteCount: proofBundle.reviewRoutes.count,
             reviewSequence: reviewSequence,
+            twoMinuteReview: twoMinuteReview,
             syncBoundary: syncBoundary,
-            watchouts: watchouts
+            watchouts: watchouts,
+            proofAssets: proofAssets.map { .init(label: $0.label, href: $0.href) }
         )
     }
 }

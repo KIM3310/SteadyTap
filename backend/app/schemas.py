@@ -102,8 +102,10 @@ class ServiceBriefResponse(BaseModel):
     storage_mode: str
     evidence_counts: dict[str, int]
     review_flow: list[str]
+    two_minute_review: list[str]
     watchouts: list[str]
     trust_boundary: list[str]
+    proof_assets: list[dict[str, str]]
     routes: list[str]
 
 
@@ -116,6 +118,8 @@ class ServiceReviewPackResponse(BaseModel):
     proof_bundle: dict[str, Any]
     sync_boundary: list[str]
     review_sequence: list[str]
+    two_minute_review: list[str]
+    proof_assets: list[dict[str, str]]
     watchouts: list[str]
     links: dict[str, str]
 

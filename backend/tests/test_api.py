@@ -54,6 +54,8 @@ def test_health_and_meta_report_runtime_state(tmp_path: Path):
     assert brief_body["readiness_contract"] == "steadytap-service-brief-v1"
     assert brief_body["report_contract"]["schema"] == "steadytap-coach-report-v1"
     assert brief_body["evidence_counts"]["service_routes"] >= 8
+    assert len(brief_body["two_minute_review"]) == 4
+    assert brief_body["proof_assets"][0]["href"] == "/v1/health"
 
     assert review_pack.status_code == 200
     review_pack_body = review_pack.json()
@@ -61,6 +63,8 @@ def test_health_and_meta_report_runtime_state(tmp_path: Path):
     assert review_pack_body["proof_bundle"]["auth_mode"] in {"open-review", "bearer-required"}
     assert "/v1/review-pack" in review_pack_body["proof_bundle"]["review_routes"]
     assert isinstance(review_pack_body["review_sequence"], list)
+    assert len(review_pack_body["two_minute_review"]) == 4
+    assert review_pack_body["proof_assets"][0]["href"] == "/v1/health"
 
     assert schema.status_code == 200
     schema_body = schema.json()

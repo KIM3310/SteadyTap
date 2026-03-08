@@ -85,6 +85,20 @@ Service-grade surfaces:
 - coach-report schema route for explicit remote coaching contract
 - app home dashboard cards that surface backend posture and review pack before cloud mode is enabled
 
+## 2-Minute Review Path
+
+1. Open `/v1/health` or `/v1/meta` to confirm auth mode and storage posture.
+2. Read `/v1/runtime-brief` for sync boundary and current watchouts.
+3. Compare `/v1/coach/plan` and `/v1/benchmarks` against recent local sessions before enabling cloud mode.
+4. Check the in-app sync queue and `/v1/review-pack` before treating remote guidance as authoritative.
+
+## Proof Assets
+
+- `/v1/health`
+- `/v1/runtime-brief`
+- `/v1/review-pack`
+- `/v1/schema/coach-report`
+
 ## Cloud mode in the app
 
 From the home settings screen:
