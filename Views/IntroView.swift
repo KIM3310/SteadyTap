@@ -367,7 +367,7 @@ struct IntroView: View {
                     }
 
                     VStack(alignment: .leading, spacing: 6) {
-                        Text("Quick Review")
+                        Text("Review Flow")
                             .font(.subheadline.weight(.semibold))
                             .foregroundStyle(AppTheme.textPrimary)
                         ForEach(serviceBrief.twoMinuteReview, id: \.self) { item in
@@ -484,7 +484,7 @@ struct IntroView: View {
                     }
 
                     VStack(alignment: .leading, spacing: 6) {
-                        Text("Quick Review")
+                        Text("Review Flow")
                             .font(.subheadline.weight(.semibold))
                             .foregroundStyle(AppTheme.textPrimary)
                         ForEach(reviewPack.twoMinuteReview, id: \.self) { item in
@@ -610,7 +610,7 @@ struct IntroView: View {
             "Sessions: \(serviceBrief.sessionCount)",
             "Review Flow:",
             serviceBrief.reviewFlow.joined(separator: "\n"),
-            "Quick Review:",
+            "Review Flow:",
             serviceBrief.twoMinuteReview.joined(separator: "\n"),
             "Proof Assets:",
             serviceBrief.proofAssets.map { "\($0.label) -> \($0.href)" }.joined(separator: "\n"),
@@ -628,7 +628,7 @@ struct IntroView: View {
             "Auth: \(reviewPack.authMode)",
             "Sync Boundary:",
             reviewPack.syncBoundary.joined(separator: "\n"),
-            "Quick Review:",
+            "Review Flow:",
             reviewPack.twoMinuteReview.joined(separator: "\n"),
             "Proof Assets:",
             reviewPack.proofAssets.map { "\($0.label) -> \($0.href)" }.joined(separator: "\n"),
