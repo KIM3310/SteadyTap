@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "steadytap-backend"
+version = "0.1.0"
+description = "FastAPI backend for SteadyTap cloud sync, coach planning, and reviewer-facing runtime surfaces."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{ name = "Kim", email = "kim@example.com" }]
+license = { text = "MIT" }
+dependencies = [
+  "fastapi==0.116.1",
+  "uvicorn[standard]==0.35.0",
+  "pydantic==2.12.5"
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0.0",
+  "httpx>=0.27.0,<1.0.0"
+]
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
