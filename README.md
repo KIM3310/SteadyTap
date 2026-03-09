@@ -85,7 +85,7 @@ Service-grade surfaces:
 - coach-report schema route for explicit remote coaching contract
 - app home dashboard cards that surface backend posture and review pack before cloud mode is enabled
 
-## Quick Review Path
+## Review Flow
 
 1. Open `/v1/health` or `/v1/meta` to confirm auth mode and storage posture.
 2. Read `/v1/runtime-brief` for sync boundary and current watchouts.
