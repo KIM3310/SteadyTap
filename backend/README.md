@@ -43,7 +43,6 @@ In the SteadyTap app settings:
 3. If `STEADYTAP_API_KEY` is set, paste it into app `Bearer Token`.
 4. Run sessions and trigger `Sync Now`.
 
-<!-- codex:local-verification:start -->
 ## Local Verification
 ```bash
 /Library/Developer/CommandLineTools/usr/bin/python3 -m venv .venv
@@ -59,6 +58,3 @@ python scripts/exercise_runtime.py
 - Keep runtime artifacts out of commits (`.codex_runs/`, cache folders, temporary venvs).
 - Prefer running verification commands above before opening a PR.
 - Use `infra/terraform/README.md` for the Cloud Run deployment skeleton.
-
-_Last updated: 2026-03-04_
-<!-- codex:local-verification:end -->
