@@ -531,6 +531,12 @@ struct IntroView: View {
                         }
                         .buttonStyle(.bordered)
                         .tint(AppTheme.amber.opacity(0.9))
+
+                        Button("Copy Cloud Snapshot") {
+                            copyReviewerText(cloudSnapshot, success: "Copied cloud sync snapshot.")
+                        }
+                        .buttonStyle(.bordered)
+                        .tint(AppTheme.ink.opacity(0.72))
                     }
 
                     Text(reviewerActionStatus)
@@ -626,6 +632,30 @@ struct IntroView: View {
             reviewPack.twoMinuteReview.joined(separator: "\n"),
             "Proof Assets:",
             reviewPack.proofAssets.map { "\($0.label) -> \($0.href)" }.joined(separator: "\n"),
+        ].joined(separator: "\n")
+    }
+
+    private var cloudSnapshot: String {
+        guard let reviewPack else {
+            return "Cloud sync snapshot unavailable."
+        }
+
+        let storage = serviceBrief?.storageMode ?? "local-first"
+        let sessions = serviceBrief?.sessionCount ?? 0
+        return [
+            "SteadyTap cloud sync snapshot",
+            "Weekly Goal: \(weeklySessionCount)/\(weeklyGoalTarget)",
+            "Remaining: \(weeklyGoalRemaining)",
+            "Avg Delta: \(signedScore(averageScoreDelta))",
+            "Status: \(weeklyGoalStatusText)",
+            "Auth: \(reviewPack.authMode)",
+            "Storage: \(storage)",
+            "Sessions: \(sessions)",
+            "Uploaded Surfaces: \(reviewPack.uploadedSurfaceCount)",
+            "Review Routes: \(reviewPack.reviewRouteCount)",
+            "",
+            "Sync Boundary:",
+            reviewPack.syncBoundary.joined(separator: "\n"),
         ].joined(separator: "\n")
     }
 
