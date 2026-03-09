@@ -740,7 +740,6 @@ struct AppPreferences: Codable {
     var autoSyncEnabled: Bool
     var userID: String
     var backendBaseURL: String
-    var backendAuthToken: String
 
     static let `default` = AppPreferences(
         scoringPresetRawValue: ScoringPreset.missFocused.rawValue,
@@ -750,8 +749,7 @@ struct AppPreferences: Codable {
         backendModeRawValue: BackendMode.localOnly.rawValue,
         autoSyncEnabled: true,
         userID: "demo-user",
-        backendBaseURL: "",
-        backendAuthToken: ""
+        backendBaseURL: ""
     )
 
     var scoringPreset: ScoringPreset {
@@ -777,8 +775,7 @@ struct AppPreferences: Codable {
         backendModeRawValue: String,
         autoSyncEnabled: Bool,
         userID: String,
-        backendBaseURL: String,
-        backendAuthToken: String
+        backendBaseURL: String
     ) {
         self.scoringPresetRawValue = scoringPresetRawValue
         self.challengeIntensityRawValue = challengeIntensityRawValue
@@ -788,7 +785,6 @@ struct AppPreferences: Codable {
         self.autoSyncEnabled = autoSyncEnabled
         self.userID = userID
         self.backendBaseURL = backendBaseURL
-        self.backendAuthToken = backendAuthToken
     }
 
     init(from decoder: Decoder) throws {
@@ -801,7 +797,6 @@ struct AppPreferences: Codable {
         self.autoSyncEnabled = try container.decodeIfPresent(Bool.self, forKey: .autoSyncEnabled) ?? true
         self.userID = try container.decodeIfPresent(String.self, forKey: .userID) ?? "demo-user"
         self.backendBaseURL = try container.decodeIfPresent(String.self, forKey: .backendBaseURL) ?? ""
-        self.backendAuthToken = try container.decodeIfPresent(String.self, forKey: .backendAuthToken) ?? ""
     }
 }
 
