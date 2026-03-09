@@ -14,12 +14,14 @@ if str(BACKEND_ROOT) not in sys.path:
 
 def load_main_module(tmp_path: Path, api_key: str = ""):
     os.environ["STEADYTAP_DB_PATH"] = str(tmp_path / "steadytap.sqlite")
+    os.environ["STEADYTAP_RUNTIME_STORE_PATH"] = str(tmp_path / "runtime-events.jsonl")
     if api_key:
         os.environ["STEADYTAP_API_KEY"] = api_key
     else:
         os.environ.pop("STEADYTAP_API_KEY", None)
 
     sys.modules.pop("app.main", None)
+    sys.modules.pop("app.runtime_store", None)
     module = importlib.import_module("app.main")
     return importlib.reload(module)
 
@@ -31,6 +33,7 @@ def test_health_and_meta_report_runtime_state(tmp_path: Path):
     health = client.get("/v1/health")
     meta = client.get("/v1/meta")
     brief = client.get("/v1/runtime-brief")
+    scorecard = client.get("/v1/runtime-scorecard")
     review_pack = client.get("/v1/review-pack")
     schema = client.get("/v1/schema/coach-report")
 
@@ -39,6 +42,7 @@ def test_health_and_meta_report_runtime_state(tmp_path: Path):
     assert health.json()["readiness_contract"] == "steadytap-service-brief-v1"
     assert health.json()["report_contract"]["schema"] == "steadytap-coach-report-v1"
     assert health.json()["links"]["runtime_brief"] == "/v1/runtime-brief"
+    assert health.json()["links"]["runtime_scorecard"] == "/v1/runtime-scorecard"
     assert health.json()["links"]["review_pack"] == "/v1/review-pack"
 
     assert meta.status_code == 200
@@ -48,9 +52,11 @@ def test_health_and_meta_report_runtime_state(tmp_path: Path):
     assert body["storage"]["db_path"].endswith("steadytap.sqlite")
     assert "/v1/meta" in body["routes"]
     assert "/v1/runtime-brief" in body["routes"]
+    assert "/v1/runtime-scorecard" in body["routes"]
     assert "/v1/review-pack" in body["routes"]
     assert body["readiness_contract"] == "steadytap-service-brief-v1"
     assert body["report_contract"]["schema"] == "steadytap-coach-report-v1"
+    assert "runtime-scorecard-surface" in body["capabilities"]
     assert "review-pack-surface" in body["capabilities"]
 
     assert brief.status_code == 200
@@ -58,17 +64,27 @@ def test_health_and_meta_report_runtime_state(tmp_path: Path):
     assert brief_body["readiness_contract"] == "steadytap-service-brief-v1"
     assert brief_body["report_contract"]["schema"] == "steadytap-coach-report-v1"
     assert brief_body["evidence_counts"]["service_routes"] >= 8
-    assert len(brief_body["two_minute_review"]) == 4
+    assert brief_body["evidence_counts"]["runtime_events"] >= 3
+    assert len(brief_body["two_minute_review"]) == 5
     assert brief_body["proof_assets"][0]["href"] == "/v1/health"
+    assert brief_body["proof_assets"][1]["href"] == "/v1/runtime-scorecard"
+
+    assert scorecard.status_code == 200
+    scorecard_body = scorecard.json()
+    assert scorecard_body["readiness_contract"] == "steadytap-runtime-scorecard-v1"
+    assert scorecard_body["summary"]["runtime_event_count"] >= 4
+    assert scorecard_body["links"]["runtime_scorecard"] == "/v1/runtime-scorecard"
 
     assert review_pack.status_code == 200
     review_pack_body = review_pack.json()
     assert review_pack_body["readiness_contract"] == "steadytap-review-pack-v1"
     assert review_pack_body["proof_bundle"]["auth_mode"] in {"open-review", "bearer-required"}
+    assert "/v1/runtime-scorecard" in review_pack_body["proof_bundle"]["review_routes"]
     assert "/v1/review-pack" in review_pack_body["proof_bundle"]["review_routes"]
     assert isinstance(review_pack_body["review_sequence"], list)
-    assert len(review_pack_body["two_minute_review"]) == 4
+    assert len(review_pack_body["two_minute_review"]) == 5
     assert review_pack_body["proof_assets"][0]["href"] == "/v1/health"
+    assert review_pack_body["proof_assets"][1]["href"] == "/v1/runtime-scorecard"
 
     assert schema.status_code == 200
     schema_body = schema.json()
