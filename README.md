@@ -45,7 +45,6 @@ SteadyTap/
     tests/
     requirements.txt
     requirements-dev.txt
-  SPECKIT.md
   DECISION_LOG.md
 ```
 
@@ -80,8 +79,8 @@ Backend API surface:
 
 Service-grade surfaces:
 
-- backend service brief for sync boundary, auth mode, trust boundary, and reviewer flow
-- backend review pack for mobile/cloud handoff, auth posture, and queue-safe sync review
+- backend service brief for sync boundary, auth mode, trust boundary, and review flow
+- backend review pack for mobile/cloud handoff, auth posture, and queue-safe sync checks
 - coach-report schema route for explicit remote coaching contract
 - app home dashboard cards that surface backend posture and review pack before cloud mode is enabled
 
