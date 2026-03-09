@@ -58,7 +58,6 @@ let package = Package(
                 "backend",
                 "README.md",
                 "DECISION_LOG.md",
-                "SERVICE_GRADE_SPECKIT.ko.md",
                 "SPECKIT.md",
             ]
         )
