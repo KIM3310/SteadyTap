@@ -24,7 +24,7 @@ cd backend
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -U pip
-python -m pip install -r requirements.txt -r requirements-dev.txt
+python -m pip install -e ".[dev]"
 uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload
 ```
 
@@ -47,8 +47,9 @@ In the SteadyTap app settings:
 /Library/Developer/CommandLineTools/usr/bin/python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -U pip
-python -m pip install -r requirements.txt
+python -m pip install -e ".[dev]"
 python -m compileall -q .
+python -m pytest
 ```
 
 ## Repository Hygiene
