@@ -48,6 +48,17 @@ enum PersistenceStore {
         }
     }
 
+    static func loadLegacyBackendAuthToken() -> String? {
+        guard let data = UserDefaults.standard.data(forKey: preferencesKey),
+              let payload = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let token = payload["backendAuthToken"] as? String else {
+            return nil
+        }
+
+        let trimmed = token.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.isEmpty ? nil : trimmed
+    }
+
     static func savePreferences(_ preferences: AppPreferences) {
         do {
             let data = try encoder.encode(preferences)

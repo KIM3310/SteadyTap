@@ -117,7 +117,7 @@ final class AppViewModel: ObservableObject {
             service: Self.tokenService,
             account: Self.tokenAccount
         )
-        backendAuthToken = tokenInKeychain ?? preferences.backendAuthToken
+        backendAuthToken = tokenInKeychain ?? PersistenceStore.loadLegacyBackendAuthToken() ?? ""
         HapticsManager.isEnabled = hapticsEnabled
 
         sessionHistory = PersistenceStore.loadHistory()
@@ -547,8 +547,7 @@ final class AppViewModel: ObservableObject {
             backendModeRawValue: backendMode.rawValue,
             autoSyncEnabled: autoSyncEnabled,
             userID: userID,
-            backendBaseURL: backendBaseURL,
-            backendAuthToken: ""
+            backendBaseURL: backendBaseURL
         )
         PersistenceStore.savePreferences(preferences)
     }
