@@ -754,7 +754,7 @@ struct IntroView: View {
                     .foregroundStyle(AppTheme.textSecondary)
                 }
 
-                Text("All local data is stored only on-device. Cloud mode uploads only run summaries.")
+                Text("All local data stays on-device. If cloud mode needs a bearer token, the token is stored in Keychain while uploads remain limited to run summaries.")
                     .font(.footnote)
                     .foregroundStyle(AppTheme.textTertiary)
 
