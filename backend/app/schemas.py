@@ -131,3 +131,14 @@ class CoachReportSchemaResponse(BaseModel):
     schema_name: str = Field(alias="schema")
     required_sections: list[str]
     operator_rules: list[str]
+
+
+class RuntimeScorecardResponse(BaseModel):
+    status: str
+    service: str
+    generated_at: datetime
+    readiness_contract: str
+    headline: str
+    summary: dict[str, Any]
+    runtime: dict[str, Any]
+    links: dict[str, str]

@@ -16,12 +16,14 @@ from .schemas import (
     CoachPlanRequest,
     CoachPlanResponse,
     HealthResponse,
+    RuntimeScorecardResponse,
     ServiceBriefResponse,
     ServiceMetaResponse,
     ServiceReviewPackResponse,
     SessionUploadPayload,
     UploadSessionResponse,
 )
+from .runtime_store import build_runtime_summary, record_runtime_event
 from .service import build_benchmark, build_coach_plan
 
 APP_TITLE = "SteadyTap Backend API"
@@ -30,11 +32,13 @@ API_KEY = os.getenv("STEADYTAP_API_KEY", "").strip()
 DB_PATH = os.getenv("STEADYTAP_DB_PATH", "./data/steadytap.sqlite")
 READINESS_CONTRACT = "steadytap-service-brief-v1"
 REVIEW_PACK_CONTRACT = "steadytap-review-pack-v1"
+RUNTIME_SCORECARD_CONTRACT = "steadytap-runtime-scorecard-v1"
 COACH_REPORT_SCHEMA = "steadytap-coach-report-v1"
 SERVICE_ROUTES = [
     "/v1/health",
     "/v1/meta",
     "/v1/runtime-brief",
+    "/v1/runtime-scorecard",
     "/v1/review-pack",
     "/v1/schema/coach-report",
     "/v1/sessions",
@@ -91,6 +95,7 @@ def build_coach_report_schema() -> dict[str, object]:
 
 def build_service_brief() -> dict[str, object]:
     session_count = db.count_sessions()
+    runtime_summary = build_runtime_summary()
     return {
         "status": "ok",
         "service": "steadytap-backend",
@@ -105,18 +110,20 @@ def build_service_brief() -> dict[str, object]:
         "storage_mode": "sqlite-local",
         "evidence_counts": {
             "session_count": session_count,
+            "runtime_events": runtime_summary["event_count"],
             "service_routes": len(SERVICE_ROUTES),
             "coach_actions": 4,
             "benchmark_surfaces": 2,
         },
         "review_flow": [
             "Open /v1/health or /v1/meta to confirm storage posture and auth mode.",
-            "Read /v1/runtime-brief before enabling cloud mode in the app.",
+            "Read /v1/runtime-scorecard and /v1/runtime-brief before enabling cloud mode in the app.",
             "Use /v1/coach/plan and /v1/benchmarks with representative session history, then compare against local insights.",
             "Review queued uploads in the app before trusting remote guidance as the source of truth.",
         ],
         "two_minute_review": [
             "Open /v1/health or /v1/meta to confirm auth mode and storage posture.",
+            "Read /v1/runtime-scorecard for event volume, busiest routes, and sync posture.",
             "Read /v1/runtime-brief for sync boundary and current watchouts.",
             "Compare /v1/coach/plan and /v1/benchmarks against recent local sessions before enabling cloud mode.",
             "Check the in-app sync queue and /v1/review-pack before treating remote guidance as authoritative.",
@@ -133,6 +140,7 @@ def build_service_brief() -> dict[str, object]:
         ],
         "proof_assets": [
             {"label": "Health Surface", "href": "/v1/health"},
+            {"label": "Runtime Scorecard", "href": "/v1/runtime-scorecard"},
             {"label": "Runtime Brief", "href": "/v1/runtime-brief"},
             {"label": "Review Pack", "href": "/v1/review-pack"},
             {"label": "Coach Schema", "href": "/v1/schema/coach-report"},
@@ -144,6 +152,7 @@ def build_service_brief() -> dict[str, object]:
 def build_review_pack() -> dict[str, object]:
     session_count = db.count_sessions()
     auth_mode = "bearer-required" if API_KEY else "open-review"
+    runtime_summary = build_runtime_summary()
     return {
         "status": "ok",
         "service": "steadytap-backend",
@@ -157,10 +166,12 @@ def build_review_pack() -> dict[str, object]:
             "auth_mode": auth_mode,
             "storage_mode": "sqlite-local",
             "session_count": session_count,
+            "runtime_event_count": runtime_summary["event_count"],
             "uploaded_surface_count": 5,
             "review_routes": [
                 "/v1/health",
                 "/v1/meta",
+                "/v1/runtime-scorecard",
                 "/v1/runtime-brief",
                 "/v1/review-pack",
                 "/v1/schema/coach-report",
@@ -173,18 +184,20 @@ def build_review_pack() -> dict[str, object]:
         ],
         "review_sequence": [
             "Open /v1/health or /v1/meta to confirm auth mode, storage posture, and route availability.",
-            "Read /v1/runtime-brief and /v1/review-pack before enabling cloud mode for shared testing.",
+            "Read /v1/runtime-scorecard, /v1/runtime-brief, and /v1/review-pack before enabling cloud mode for shared testing.",
             "Compare /v1/coach/plan and /v1/benchmarks against recent local sessions before adopting remote guidance.",
             "Keep queued uploads reviewable in the app so sync failures never become silent data loss.",
         ],
         "two_minute_review": [
             "Open /v1/health or /v1/meta to confirm auth and storage posture.",
+            "Read /v1/runtime-scorecard for runtime event pressure and busiest sync surfaces.",
             "Read /v1/runtime-brief for sync boundary and watchouts.",
             "Read /v1/review-pack before enabling shared cloud testing.",
             "Compare remote coach outputs against local sessions before adopting them in the app.",
         ],
         "proof_assets": [
             {"label": "Health Surface", "href": "/v1/health"},
+            {"label": "Runtime Scorecard", "href": "/v1/runtime-scorecard"},
             {"label": "Review Pack", "href": "/v1/review-pack"},
             {"label": "Coach Schema", "href": "/v1/schema/coach-report"},
             {"label": "Runtime Brief", "href": "/v1/runtime-brief"},
@@ -197,6 +210,50 @@ def build_review_pack() -> dict[str, object]:
         "links": {
             "health": "/v1/health",
             "meta": "/v1/meta",
+            "runtime_scorecard": "/v1/runtime-scorecard",
+            "runtime_brief": "/v1/runtime-brief",
+            "review_pack": "/v1/review-pack",
+            "coach_schema": "/v1/schema/coach-report",
+        },
+    }
+
+
+def build_runtime_scorecard() -> dict[str, object]:
+    session_count = db.count_sessions()
+    runtime_summary = build_runtime_summary()
+    top_route = runtime_summary["top_routes"][0] if runtime_summary["top_routes"] else {"route": "n/a", "count": 0}
+    runtime_score = max(45, 100 - min(int(runtime_summary["event_count"]), 30))
+    return {
+        "status": "ok",
+        "service": "steadytap-backend",
+        "generated_at": datetime.now(tz=timezone.utc),
+        "readiness_contract": RUNTIME_SCORECARD_CONTRACT,
+        "headline": (
+            "Compact runtime scorecard for session uploads, remote coaching calls, and sync posture "
+            "in the SteadyTap cloud backend."
+        ),
+        "summary": {
+            "runtime_score": runtime_score,
+            "auth_mode": "bearer-required" if API_KEY else "open-review",
+            "storage_mode": "sqlite-local",
+            "session_count": session_count,
+            "runtime_event_count": runtime_summary["event_count"],
+            "busiest_route": top_route,
+        },
+        "runtime": {
+            "persistence": runtime_summary,
+            "review_routes": [
+                "/v1/health",
+                "/v1/meta",
+                "/v1/runtime-scorecard",
+                "/v1/runtime-brief",
+                "/v1/review-pack",
+            ],
+        },
+        "links": {
+            "health": "/v1/health",
+            "meta": "/v1/meta",
+            "runtime_scorecard": "/v1/runtime-scorecard",
             "runtime_brief": "/v1/runtime-brief",
             "review_pack": "/v1/review-pack",
             "coach_schema": "/v1/schema/coach-report",
@@ -206,6 +263,7 @@ def build_review_pack() -> dict[str, object]:
 
 @app.get("/v1/health", response_model=HealthResponse)
 def health() -> HealthResponse:
+    record_runtime_event(event_type="route_hit", route="/v1/health")
     return HealthResponse(
         status="ok",
         session_count=db.count_sessions(),
@@ -214,6 +272,7 @@ def health() -> HealthResponse:
         report_contract=build_coach_report_schema(),
         links={
             "meta": "/v1/meta",
+            "runtime_scorecard": "/v1/runtime-scorecard",
             "runtime_brief": "/v1/runtime-brief",
             "review_pack": "/v1/review-pack",
             "coach_schema": "/v1/schema/coach-report",
@@ -223,6 +282,7 @@ def health() -> HealthResponse:
 
 @app.get("/v1/meta", response_model=ServiceMetaResponse)
 def meta() -> ServiceMetaResponse:
+    record_runtime_event(event_type="route_hit", route="/v1/meta")
     return ServiceMetaResponse(
         service="steadytap-backend",
         version=APP_VERSION,
@@ -242,6 +302,7 @@ def meta() -> ServiceMetaResponse:
             "benchmark-snapshots",
             "user-session-history",
             "service-brief-surface",
+            "runtime-scorecard-surface",
             "coach-report-schema",
             "review-pack-surface",
         ],
@@ -251,16 +312,25 @@ def meta() -> ServiceMetaResponse:
 
 @app.get("/v1/runtime-brief", response_model=ServiceBriefResponse)
 def runtime_brief() -> ServiceBriefResponse:
+    record_runtime_event(event_type="route_hit", route="/v1/runtime-brief")
     return ServiceBriefResponse(**build_service_brief())
+
+
+@app.get("/v1/runtime-scorecard", response_model=RuntimeScorecardResponse)
+def runtime_scorecard() -> RuntimeScorecardResponse:
+    record_runtime_event(event_type="route_hit", route="/v1/runtime-scorecard")
+    return RuntimeScorecardResponse(**build_runtime_scorecard())
 
 
 @app.get("/v1/review-pack", response_model=ServiceReviewPackResponse)
 def review_pack() -> ServiceReviewPackResponse:
+    record_runtime_event(event_type="route_hit", route="/v1/review-pack")
     return ServiceReviewPackResponse(**build_review_pack())
 
 
 @app.get("/v1/schema/coach-report", response_model=CoachReportSchemaResponse)
 def coach_report_schema() -> CoachReportSchemaResponse:
+    record_runtime_event(event_type="route_hit", route="/v1/schema/coach-report")
     return CoachReportSchemaResponse(
         status="ok",
         service="steadytap-backend",
@@ -272,6 +342,12 @@ def coach_report_schema() -> CoachReportSchemaResponse:
 @app.post("/v1/sessions", response_model=UploadSessionResponse, dependencies=[Depends(verify_api_key)])
 def upload_session(payload: SessionUploadPayload) -> UploadSessionResponse:
     db.insert_session(payload.model_dump(mode="json"))
+    record_runtime_event(
+        event_type="session_upload",
+        route="/v1/sessions",
+        user_id=payload.user_id,
+        details={"session_id": payload.id},
+    )
     return UploadSessionResponse(accepted=True)
 
 
@@ -280,6 +356,12 @@ def coach_plan(request: CoachPlanRequest) -> CoachPlanResponse:
     aggregate = db.user_aggregate(request.user_id)
     recent = [s.model_dump(mode="python") for s in request.recent_sessions]
     plan = build_coach_plan(request.user_id, recent, aggregate)
+    record_runtime_event(
+        event_type="coach_plan",
+        route="/v1/coach/plan",
+        user_id=request.user_id,
+        details={"recent_sessions": len(recent)},
+    )
     return CoachPlanResponse(**plan)
 
 
@@ -293,12 +375,24 @@ def benchmarks(request: BenchmarkRequest) -> BenchmarkResponse:
         aggregate,
         db.global_average_delta(),
     )
+    record_runtime_event(
+        event_type="benchmark_snapshot",
+        route="/v1/benchmarks",
+        user_id=request.user_id,
+        details={"recent_sessions": len(recent)},
+    )
     return BenchmarkResponse(**snapshot)
 
 
 @app.get("/v1/sessions/{user_id}", dependencies=[Depends(verify_api_key)])
 def sessions(user_id: str, limit: int = 20) -> dict:
     limit = max(1, min(limit, 100))
+    record_runtime_event(
+        event_type="session_lookup",
+        route="/v1/sessions/{user_id}",
+        user_id=user_id,
+        details={"limit": limit},
+    )
     return {
         "user_id": user_id,
         "count": len(db.list_sessions(user_id, limit=limit)),
