@@ -537,6 +537,12 @@ struct IntroView: View {
                         }
                         .buttonStyle(.bordered)
                         .tint(AppTheme.ink.opacity(0.72))
+
+                        Button("Copy Reviewer Bundle") {
+                            copyReviewerText(reviewerBundleSnapshot, success: "Copied reviewer bundle.")
+                        }
+                        .buttonStyle(.bordered)
+                        .tint(AppTheme.mint.opacity(0.45))
                     }
 
                     Text(reviewerActionStatus)
@@ -656,6 +662,20 @@ struct IntroView: View {
             "",
             "Sync Boundary:",
             reviewPack.syncBoundary.joined(separator: "\n"),
+        ].joined(separator: "\n")
+    }
+
+    private var reviewerBundleSnapshot: String {
+        [
+            "SteadyTap reviewer bundle",
+            serviceBriefSnapshot,
+            "",
+            reviewPackSnapshot,
+            "",
+            cloudSnapshot,
+            "",
+            "Quick Routes:",
+            reviewRouteSnapshot,
         ].joined(separator: "\n")
     }
 
