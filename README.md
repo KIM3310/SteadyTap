@@ -11,11 +11,17 @@ The product is designed to be reviewable in two modes:
 - Treat this repo as a native accessibility product; the public page is only the front door.
 - The strongest proof is the iOS flow plus the backend contract, not the landing page by itself.
 
-
 ## Role signals
 - **AI / product engineer:** the repo shows native interaction design, telemetry, and coaching loops in one accessibility-first workflow.
 - **Solution architect:** app behavior and backend contract stay aligned instead of being buried in separate prototypes.
 - **Field / solutions engineer:** the reviewer path is short: landing page -> README -> simulator/device proof.
+
+## Start here
+If you're opening the repo for the first time, treat the surfaces like this:
+
+- Primary app surface: the iOS App Playground at the repo root (`Package.swift`, `SteadyTapApp.swift`, `Core/`, `Views/`)
+- Optional backend surface: `backend/` for sync, coach-plan, and benchmark APIs
+- Review/deploy surface: `site/` plus `CLOUDFLARE_PAGES.md` for the static Pages wrapper
 
 ## What this repo includes
 
@@ -43,26 +49,42 @@ The product is designed to be reviewable in two modes:
 - remote coach-plan and cohort benchmark cards
 - readiness score, trend direction, and next-intensity recommendation
 
-## Repository layout
+## Repository map
+
+Most root files belong to the Swift app. The backend and static Pages surface are intentionally isolated in their own folders.
 
 ```text
 SteadyTap/
   Package.swift
+  SteadyTapApp.swift
+  RootView.swift
   Core/
   Views/
   backend/
+    README.md
     app/
     tests/
     requirements.txt
     requirements-dev.txt
+  site/
+  CLOUDFLARE_PAGES.md
   DECISION_LOG.md
 ```
+
+## Docs map
+
+- `README.md`: top-level product, run, and verification guide
+- `backend/README.md`: backend-specific setup, env, and API notes
+- `CLOUDFLARE_PAGES.md`: static Pages deployment notes for the review surface
+- `DECISION_LOG.md`: implementation and product tradeoff history
 
 ## Run the app
 
 1. Open the Swift package in Xcode or Swift Playgrounds with App Playground support.
 2. Update `teamIdentifier` in `Package.swift` if signing is needed.
 3. Run on iPhone or iPad simulator.
+
+If you only need the mobile flow, you can ignore `backend/` and `site/`.
 
 ## Run the backend
 
