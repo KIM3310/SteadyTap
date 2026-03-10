@@ -3,4 +3,5 @@
 .swiftpm/
 xcuserdata/
 DerivedData/
+.pytest_cache/
 .codex_runs/
