@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <meta name="description" content="Accessibility-first iOS App Playground with an integrated FastAPI service for calibration, coaching, and benchmarked progress tracking.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="SteadyTap">
+  <meta property="og:description" content="Accessibility-first iOS App Playground with an integrated FastAPI service for calibration, coaching, and benchmarked progress tracking.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SteadyTap">
+  <meta name="twitter:description" content="Accessibility-first iOS App Playground with an integrated FastAPI service for calibration, coaching, and benchmarked progress tracking."><title>SteadyTap</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root { --bg:#f6f1e8; --panel:#fffdfa; --ink:#16181d; --muted:#5e6672; --line:#d8d3c9; --accent:#a33d2b; --soft:#fdeeea; }
+    *{box-sizing:border-box} body{margin:0;font-family:"IBM Plex Sans",sans-serif;background:linear-gradient(180deg,#fbf7ef 0,#f1ebe0 100%);color:var(--ink)}
+    .shell{max-width:1100px;margin:0 auto;padding:32px 20px 56px}.panel{background:var(--panel);border:1px solid var(--line);border-radius:24px;padding:24px;box-shadow:0 18px 40px rgba(15,23,42,.05)}
+    .hero,.grid{display:grid;gap:16px}.hero{margin-bottom:18px}.eyebrow,.chip{display:inline-flex;padding:8px 12px;border-radius:999px;font-size:.82rem;font-weight:700}.eyebrow{background:#111318;color:#fff}.chip{background:var(--soft);color:var(--accent)}
+    h1,h2{font-family:"Space Grotesk",sans-serif;letter-spacing:-.04em;margin:0}.hero h1{font-size:clamp(2.4rem,4.8vw,4.4rem);line-height:.96}.lede{max-width:860px;margin:0;color:var(--muted);line-height:1.75}
+    .two{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:18px}.list{margin:0;padding-left:18px;color:var(--muted);line-height:1.8}.links a{color:var(--accent);text-decoration:none;font-weight:600}
+    @media (max-width:900px){.two{grid-template-columns:1fr}}
+  
+    .quick-actions{margin-top:18px}.quick-actions .action-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.quick-actions .action-btn{border:1px solid var(--line);background:#fff;padding:10px 14px;border-radius:999px;font:inherit;font-weight:600;color:var(--ink);cursor:pointer;transition:transform .12s ease,box-shadow .12s ease,border-color .12s ease}.quick-actions .action-btn:hover{transform:translateY(-1px);border-color:var(--accent);box-shadow:0 10px 24px rgba(15,23,42,.08)}.quick-actions .hint{margin:10px 0 0;color:var(--muted);font-size:.92rem;line-height:1.6}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="panel hero">
+      <div>
+        <span class="eyebrow">SteadyTap</span>
+        <span class="chip">iOS</span>
+        <span class="chip">accessibility-first</span>
+      </div>
+      <h1>Calibration, adaptive challenge, and coaching for steadier touch interaction.</h1>
+      <p class="lede">SteadyTap is a native accessibility workflow first. This page is the fast orientation layer: what the product does, what reviewers should inspect first, and which proof still belongs inside the iOS app and backend contract.</p>
+    </section>
+
+    <section class="grid two">
+      <article class="panel">
+        <h2>Product flow</h2>
+        <ul class="list">
+          <li>Calibration and drag profiling</li>
+          <li>Baseline and adaptive challenges</li>
+          <li>Before/after results and trend tracking</li>
+          <li>Optional cloud sync, coach-plan, and cohort benchmarks</li>
+        </ul>
+      </article>
+      <article class="panel">
+        <h2>Why the proof stays native</h2>
+        <ul class="list">
+          <li>The review-worthy interaction is the real tap flow on device or simulator.</li>
+          <li>The backend contract matters, but it supports the coaching loop instead of replacing it.</li>
+          <li>This page stays small on purpose so the repo reads like a product, not a browser clone.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="grid two">
+      <article class="panel links">
+        <h2>Documentation</h2>
+        <ul class="list">
+          <li><a href="https://github.com/KIM3310/SteadyTap/blob/main/README.md">README</a></li>
+          <li><a href="https://github.com/KIM3310/SteadyTap/blob/main/backend/README.md">Backend README</a></li>
+        </ul>
+      </article>
+      <article class="panel">
+        <h2>Review path</h2>
+        <ul class="list">
+          <li>Read the main README for product behavior and app flow.</li>
+          <li>Read the backend README for runtime brief, review pack, and schema routes.</li>
+          <li>Open the app in Xcode/Swift Playgrounds for the real interaction path.</li>
+        </ul>
+      </article>
+    </section>
+
+
+
+    <section class="panel quick-actions">
+      <h2>Reviewer handoff bar</h2>
+      <p class="hint">Shortcut keys: C review path · B capability brief · ? help</p>
+      <div class="action-row">
+        <button id="copyReviewPathBtn" class="action-btn" type="button">Copy Review Path</button>
+        <button id="copyReviewerBriefBtn" class="action-btn" type="button">Copy Capability Brief</button>
+      </div>
+      <p id="quickActionStatus" class="hint">Use this bar when you need a short handoff that keeps the focus on the native calibration flow. Shortcut keys: C review path · B capability brief · ? help</p>
+    </section>
+  </main>
+
+
+
+  <script>
+    async function copyQuickActionText(text) {
+      if (!text) return false;
+      try {
+        if (navigator.clipboard?.writeText) {
+          await navigator.clipboard.writeText(text);
+          return true;
+        }
+      } catch (_error) {
+        // Fallback below.
+      }
+      try {
+        const helper = document.createElement("textarea");
+        helper.value = text;
+        helper.style.position = "fixed";
+        helper.style.opacity = "0";
+        document.body.appendChild(helper);
+        helper.focus();
+        helper.select();
+        const ok = document.execCommand("copy");
+        document.body.removeChild(helper);
+        return Boolean(ok);
+      } catch (_error) {
+        return false;
+      }
+    }
+
+    const quickActionStatus = document.getElementById("quickActionStatus");
+    const reviewPathPayload = 'SteadyTap review path\n- Read the main README for the product flow.\n- Read the backend README for calibration/runtime contracts.\n- Open the app in Xcode or Swift Playgrounds for the real interaction path.';
+    const reviewerBriefPayload = 'SteadyTap reviewer brief\nHeadline: Calibration, adaptive challenge, and coaching for steadier touch interaction.\nNative proof: iOS app on device or simulator.\nService proof: backend runtime brief and review pack in the backend README.\nPublic surface: a reviewer landing page that points back to the native flow.';
+
+    async function runQuickCopy(text, successLabel, failureLabel) {
+      const ok = await copyQuickActionText(text);
+      if (quickActionStatus) {
+        quickActionStatus.textContent = ok ? successLabel : failureLabel;
+      }
+    }
+
+    document.getElementById("copyReviewPathBtn")?.addEventListener("click", () => runQuickCopy(reviewPathPayload, "Review path copied.", "Failed to copy review path."));
+    document.getElementById("copyReviewerBriefBtn")?.addEventListener("click", () => runQuickCopy(reviewerBriefPayload, "Capability brief copied.", "Failed to copy capability brief."));
+
+    window.addEventListener("keydown", (event) => {
+      if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey) return;
+      const target = event.target;
+      if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)) return;
+      const key = String(event.key || "").toLowerCase();
+      if (key === "?") {
+        event.preventDefault();
+        if (quickActionStatus) {
+          quickActionStatus.textContent = "Shortcut keys: C review path · B capability brief · ? help";
+        }
+        return;
+      }
+      if (key === "c") {
+        event.preventDefault();
+        void runQuickCopy(reviewPathPayload, "Review path copied.", "Failed to copy review path.");
+      }
+      if (key === "b") {
+        event.preventDefault();
+        void runQuickCopy(reviewerBriefPayload, "Capability brief copied.", "Failed to copy capability brief.");
+      }
+    });
+  </script>
+</body>
+</html>
