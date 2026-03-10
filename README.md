@@ -11,6 +11,12 @@ The product is designed to be reviewable in two modes:
 - Treat this repo as a native accessibility product; the public page is only the front door.
 - The strongest proof is the iOS flow plus the backend contract, not the landing page by itself.
 
+
+## Role signals
+- **AI / product engineer:** the repo shows native interaction design, telemetry, and coaching loops in one accessibility-first workflow.
+- **Solution architect:** app behavior and backend contract stay aligned instead of being buried in separate prototypes.
+- **Field / sales engineer:** the reviewer path is short: landing page -> README -> simulator/device proof.
+
 ## What this repo includes
 
 - Swift App Playground for calibration, baseline/adaptive challenges, and results review
