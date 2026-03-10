@@ -21,7 +21,7 @@ If you're opening the repo for the first time, treat the surfaces like this:
 
 - Primary app surface: the iOS App Playground at the repo root (`Package.swift`, `SteadyTapApp.swift`, `Core/`, `Views/`)
 - Optional backend surface: `backend/` for sync, coach-plan, and benchmark APIs
-- Review/deploy surface: `site/` plus `CLOUDFLARE_PAGES.md` for the static Pages wrapper
+- Review/deploy surface: `site/` plus `docs/deployment/CLOUDFLARE_PAGES.md` for the static Pages wrapper
 
 ## What this repo includes
 
@@ -67,16 +67,16 @@ SteadyTap/
     requirements.txt
     requirements-dev.txt
   site/
-  CLOUDFLARE_PAGES.md
-  DECISION_LOG.md
+  docs/deployment/CLOUDFLARE_PAGES.md
+  docs/product/DECISION_LOG.md
 ```
 
 ## Docs map
 
 - `README.md`: top-level product, run, and verification guide
 - `backend/README.md`: backend-specific setup, env, and API notes
-- `CLOUDFLARE_PAGES.md`: static Pages deployment notes for the review surface
-- `DECISION_LOG.md`: implementation and product tradeoff history
+- `docs/deployment/CLOUDFLARE_PAGES.md`: static Pages deployment notes for the review surface
+- `docs/product/DECISION_LOG.md`: implementation and product tradeoff history
 
 ## Run the app
 

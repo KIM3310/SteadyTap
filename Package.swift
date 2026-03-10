@@ -56,8 +56,8 @@ let package = Package(
             path: ".",
             exclude: [
                 "backend",
+                "docs",
                 "README.md",
-                "DECISION_LOG.md",
             ]
         )
     ],
