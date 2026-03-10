@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SteadyTap</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root { --bg:#f6f1e8; --panel:#fffdfa; --ink:#16181d; --muted:#5e6672; --line:#d8d3c9; --accent:#a33d2b; --soft:#fdeeea; }
+    *{box-sizing:border-box} body{margin:0;font-family:"IBM Plex Sans",sans-serif;background:linear-gradient(180deg,#fbf7ef 0,#f1ebe0 100%);color:var(--ink)}
+    .shell{max-width:1100px;margin:0 auto;padding:32px 20px 56px}.panel{background:var(--panel);border:1px solid var(--line);border-radius:24px;padding:24px;box-shadow:0 18px 40px rgba(15,23,42,.05)}
+    .hero,.grid{display:grid;gap:16px}.hero{margin-bottom:18px}.eyebrow,.chip{display:inline-flex;padding:8px 12px;border-radius:999px;font-size:.82rem;font-weight:700}.eyebrow{background:#111318;color:#fff}.chip{background:var(--soft);color:var(--accent)}
+    h1,h2{font-family:"Space Grotesk",sans-serif;letter-spacing:-.04em;margin:0}.hero h1{font-size:clamp(2.4rem,4.8vw,4.4rem);line-height:.96}.lede{max-width:860px;margin:0;color:var(--muted);line-height:1.75}
+    .two{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:18px}.list{margin:0;padding-left:18px;color:var(--muted);line-height:1.8}.links a{color:var(--accent);text-decoration:none;font-weight:600}
+    @media (max-width:900px){.two{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="panel hero">
+      <div>
+        <span class="eyebrow">SteadyTap</span>
+        <span class="chip">iOS</span>
+        <span class="chip">accessibility-first</span>
+      </div>
+      <h1>Calibration, adaptive challenge, and coaching for steadier touch interaction.</h1>
+      <p class="lede">SteadyTap combines a native iOS app flow with an explicit FastAPI backend contract. This site is a free public landing page for the product story and reviewer path, not a replacement for the native experience.</p>
+    </section>
+
+    <section class="grid two">
+      <article class="panel">
+        <h2>Product flow</h2>
+        <ul class="list">
+          <li>Calibration and drag profiling</li>
+          <li>Baseline and adaptive challenges</li>
+          <li>Before/after results and trend tracking</li>
+          <li>Optional cloud sync, coach-plan, and cohort benchmarks</li>
+        </ul>
+      </article>
+      <article class="panel">
+        <h2>Why this stays a landing page</h2>
+        <ul class="list">
+          <li>The strongest proof is the iOS app running on device/simulator.</li>
+          <li>The backend contract matters, but the core experience is still native and human-centered.</li>
+          <li>A static public page keeps the repo legible without flattening it into a fake web app.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="grid two">
+      <article class="panel links">
+        <h2>Documentation</h2>
+        <ul class="list">
+          <li><a href="https://github.com/KIM3310/SteadyTap/blob/main/README.md">README</a></li>
+          <li><a href="https://github.com/KIM3310/SteadyTap/blob/main/backend/README.md">Backend README</a></li>
+        </ul>
+      </article>
+      <article class="panel">
+        <h2>Review path</h2>
+        <ul class="list">
+          <li>Read the main README for product behavior and app flow.</li>
+          <li>Read the backend README for runtime brief, review pack, and schema routes.</li>
+          <li>Open the app in Xcode/Swift Playgrounds for the real interaction path.</li>
+        </ul>
+      </article>
+    </section>
+  </main>
+</body>
+</html>
