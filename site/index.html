@@ -35,7 +35,7 @@
         <span class="chip">accessibility-first</span>
       </div>
       <h1>Calibration, adaptive challenge, and coaching for steadier touch interaction.</h1>
-      <p class="lede">SteadyTap combines a native iOS app flow with an explicit FastAPI backend contract. This site is a free public landing page for the product story and reviewer path, not a replacement for the native experience.</p>
+      <p class="lede">SteadyTap is a native accessibility workflow first. This page is the fast orientation layer: what the product does, what reviewers should inspect first, and which proof still belongs inside the iOS app and backend contract.</p>
     </section>
 
     <section class="grid two">
@@ -49,11 +49,11 @@
         </ul>
       </article>
       <article class="panel">
-        <h2>Why this stays a landing page</h2>
+        <h2>Why the proof stays native</h2>
         <ul class="list">
-          <li>The strongest proof is the iOS app running on device/simulator.</li>
-          <li>The backend contract matters, but the core experience is still native and human-centered.</li>
-          <li>A static public page keeps the repo legible without flattening it into a fake web app.</li>
+          <li>The review-worthy interaction is the real tap flow on device or simulator.</li>
+          <li>The backend contract matters, but it supports the coaching loop instead of replacing it.</li>
+          <li>This page stays small on purpose so the repo reads like a product, not a browser clone.</li>
         </ul>
       </article>
     </section>
@@ -79,13 +79,13 @@
 
 
     <section class="panel quick-actions">
-      <h2>Reviewer quick actions</h2>
-      <p class="hint">Shortcut keys: C review path · B reviewer brief · ? help</p>
+      <h2>Reviewer handoff bar</h2>
+      <p class="hint">Shortcut keys: C review path · B capability brief · ? help</p>
       <div class="action-row">
         <button id="copyReviewPathBtn" class="action-btn" type="button">Copy Review Path</button>
         <button id="copyReviewerBriefBtn" class="action-btn" type="button">Copy Reviewer Brief</button>
       </div>
-      <p id="quickActionStatus" class="hint">Ready for a fast reviewer handoff. Shortcut keys: C review path · B reviewer brief · ? help</p>
+      <p id="quickActionStatus" class="hint">Use this bar when you need a short handoff that keeps the focus on the native calibration flow. Shortcut keys: C review path · B capability brief · ? help</p>
     </section>
   </main>
 
@@ -120,7 +120,7 @@
 
     const quickActionStatus = document.getElementById("quickActionStatus");
     const reviewPathPayload = 'SteadyTap review path\n- Read the main README for the product flow.\n- Read the backend README for calibration/runtime contracts.\n- Open the app in Xcode or Swift Playgrounds for the real interaction path.';
-    const reviewerBriefPayload = 'SteadyTap reviewer brief\nHeadline: Calibration, adaptive challenge, and coaching for steadier touch interaction.\nNative proof: iOS app on device or simulator.\nService proof: backend runtime brief and review pack in the backend README.\nPublic surface: intentionally a landing page, not a fake web clone.';
+    const reviewerBriefPayload = 'SteadyTap reviewer brief\nHeadline: Calibration, adaptive challenge, and coaching for steadier touch interaction.\nNative proof: iOS app on device or simulator.\nService proof: backend runtime brief and review pack in the backend README.\nPublic surface: a reviewer landing page that points back to the native flow.';
 
     async function runQuickCopy(text, successLabel, failureLabel) {
       const ok = await copyQuickActionText(text);
@@ -140,7 +140,7 @@
       if (key === "?") {
         event.preventDefault();
         if (quickActionStatus) {
-          quickActionStatus.textContent = "Shortcut keys: C review path · B reviewer brief · ? help";
+          quickActionStatus.textContent = "Shortcut keys: C review path · B capability brief · ? help";
         }
         return;
       }

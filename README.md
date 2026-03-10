@@ -7,6 +7,10 @@ The product is designed to be reviewable in two modes:
 1. fully local, offline-first app behavior
 2. app + backend mode with explicit API contracts and reproducible verification
 
+## Portfolio posture
+- Treat this repo as a native accessibility product; the public page is only the front door.
+- The strongest proof is the iOS flow plus the backend contract, not the landing page by itself.
+
 ## What this repo includes
 
 - Swift App Playground for calibration, baseline/adaptive challenges, and results review
