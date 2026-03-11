@@ -416,8 +416,8 @@ struct CoachPlan: Codable {
 
     static let placeholder = CoachPlan(
         generatedAt: .now,
-        focusArea: "Accidental touch reduction",
-        rationale: "Profile variance suggests adding stronger confirmation timing.",
+        focusArea: "Demo fallback · accidental touch reduction",
+        rationale: "Demo fallback: profile variance suggests adding stronger confirmation timing until the backend is reachable again.",
         recommendedPresetRawValue: ScoringPreset.missFocused.rawValue,
         recommendedIntensityRawValue: ChallengeIntensity.standard.rawValue,
         targetScoreDelta: 8,
@@ -474,7 +474,7 @@ struct BenchmarkSnapshot: Codable {
 
     static let placeholder = BenchmarkSnapshot(
         generatedAt: .now,
-        cohortLabel: "Motor accessibility learners",
+        cohortLabel: "Demo fallback cohort",
         percentile: 61,
         averageScoreDelta: 6.8
     )
@@ -502,7 +502,7 @@ struct ServiceBrief: Codable {
     static let placeholder = ServiceBrief(
         generatedAt: .now,
         readinessContract: "steadytap-service-brief-v1",
-        headline: "Local-first motor accessibility coaching with explicit review and upload boundaries.",
+        headline: "Demo fallback: local-first motor accessibility coaching with explicit review and upload boundaries.",
         reportContractSchema: "steadytap-coach-report-v1",
         authMode: "open-review",
         storageMode: "sqlite-local",
@@ -556,7 +556,7 @@ struct ServiceReviewPack: Codable {
     static let placeholder = ServiceReviewPack(
         generatedAt: .now,
         readinessContract: "steadytap-review-pack-v1",
-        headline: "Reviewer pack for mobile-to-cloud coaching sync and local-first fallback posture.",
+        headline: "Demo fallback: reviewer pack for mobile-to-cloud coaching sync and local-first fallback posture.",
         authMode: "open-review",
         uploadedSurfaceCount: 5,
         reviewRouteCount: 5,
