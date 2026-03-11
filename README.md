@@ -13,7 +13,7 @@ The product is designed to be reviewable in two modes:
 
 ## Role signals
 - **AI / product engineer:** the repo shows native interaction design, telemetry, and coaching loops in one accessibility-first workflow.
-- **Solution architect:** app behavior and backend contract stay aligned instead of being buried in separate prototypes.
+- **Solution / cloud architect:** app behavior and backend contract stay aligned instead of being buried in separate prototypes.
 - **Field / solutions engineer:** the reviewer path is short: landing page -> README -> simulator/device proof.
 
 ## Start here
