@@ -543,6 +543,12 @@ struct IntroView: View {
                         }
                         .buttonStyle(.bordered)
                         .tint(AppTheme.mint.opacity(0.45))
+
+                        Button("Copy Accessibility Brief") {
+                            copyReviewerText(accessibilityHandoffSnapshot, success: "Copied accessibility handoff brief.")
+                        }
+                        .buttonStyle(.bordered)
+                        .tint(AppTheme.amber.opacity(0.72))
                     }
 
                     Text(reviewerActionStatus)
@@ -675,6 +681,23 @@ struct IntroView: View {
             cloudSnapshot,
             "",
             "Quick Routes:",
+            reviewRouteSnapshot,
+        ].joined(separator: "\n")
+    }
+
+    private var accessibilityHandoffSnapshot: String {
+        [
+            "SteadyTap accessibility handoff",
+            "Weekly Goal: \(weeklySessionCount)/\(weeklyGoalTarget)",
+            "Remaining: \(weeklyGoalRemaining)",
+            "Avg Delta: \(signedScore(averageScoreDelta))",
+            "Readiness: \(readinessBand)",
+            "Trend: \(trendDirection)",
+            "Suggested Intensity: \(localIntensityRecommendation.shortTitle)",
+            "Auth: \(serviceBrief?.authMode ?? reviewPack?.authMode ?? "unknown")",
+            "Storage: \(serviceBrief?.storageMode ?? "local-first")",
+            "",
+            "Review Routes:",
             reviewRouteSnapshot,
         ].joined(separator: "\n")
     }
