@@ -758,7 +758,7 @@ struct IntroView: View {
 
                 if backendMode == .cloudPreferred {
                     LabeledContent("API Base URL") {
-                        TextField("https://api.example.com", text: $backendBaseURL)
+                        TextField("http://127.0.0.1:8080", text: $backendBaseURL)
                             .multilineTextAlignment(.trailing)
                             .foregroundStyle(AppTheme.textPrimary)
                             .steadyTapTextEntryBehavior()
