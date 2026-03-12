@@ -16,6 +16,7 @@ from .schemas import (
     CoachPlanRequest,
     CoachPlanResponse,
     HealthResponse,
+    ProgressReportResponse,
     RuntimeScorecardResponse,
     ServiceBriefResponse,
     ServiceMetaResponse,
@@ -24,7 +25,7 @@ from .schemas import (
     UploadSessionResponse,
 )
 from .runtime_store import build_runtime_summary, record_runtime_event
-from .service import build_benchmark, build_coach_plan
+from .service import build_benchmark, build_coach_plan, build_progress_report
 
 APP_TITLE = "SteadyTap Backend API"
 APP_VERSION = "1.0.0"
@@ -39,6 +40,7 @@ SERVICE_ROUTES = [
     "/v1/meta",
     "/v1/runtime-brief",
     "/v1/runtime-scorecard",
+    "/v1/progress-report",
     "/v1/review-pack",
     "/v1/schema/coach-report",
     "/v1/sessions",
@@ -113,7 +115,7 @@ def build_service_brief() -> dict[str, object]:
             "runtime_events": runtime_summary["event_count"],
             "service_routes": len(SERVICE_ROUTES),
             "coach_actions": 4,
-            "benchmark_surfaces": 2,
+            "benchmark_surfaces": 3,
         },
         "review_flow": [
             "Open /v1/health or /v1/meta to confirm storage posture and auth mode.",
@@ -141,11 +143,21 @@ def build_service_brief() -> dict[str, object]:
         "proof_assets": [
             {"label": "Health Surface", "href": "/v1/health"},
             {"label": "Runtime Scorecard", "href": "/v1/runtime-scorecard"},
+            {"label": "Progress Report", "href": "/v1/progress-report?user_id=demo-user"},
             {"label": "Runtime Brief", "href": "/v1/runtime-brief"},
             {"label": "Review Pack", "href": "/v1/review-pack"},
             {"label": "Coach Schema", "href": "/v1/schema/coach-report"},
         ],
         "routes": SERVICE_ROUTES,
+        "links": {
+            "health": "/v1/health",
+            "meta": "/v1/meta",
+            "runtime_scorecard": "/v1/runtime-scorecard",
+            "runtime_brief": "/v1/runtime-brief",
+            "progress_report": "/v1/progress-report",
+            "review_pack": "/v1/review-pack",
+            "coach_schema": "/v1/schema/coach-report",
+        },
     }
 
 
@@ -173,6 +185,7 @@ def build_review_pack() -> dict[str, object]:
                 "/v1/meta",
                 "/v1/runtime-scorecard",
                 "/v1/runtime-brief",
+                "/v1/progress-report",
                 "/v1/review-pack",
                 "/v1/schema/coach-report",
             ],
@@ -198,6 +211,7 @@ def build_review_pack() -> dict[str, object]:
         "proof_assets": [
             {"label": "Health Surface", "href": "/v1/health"},
             {"label": "Runtime Scorecard", "href": "/v1/runtime-scorecard"},
+            {"label": "Progress Report", "href": "/v1/progress-report?user_id=demo-user"},
             {"label": "Review Pack", "href": "/v1/review-pack"},
             {"label": "Coach Schema", "href": "/v1/schema/coach-report"},
             {"label": "Runtime Brief", "href": "/v1/runtime-brief"},
@@ -212,6 +226,7 @@ def build_review_pack() -> dict[str, object]:
             "meta": "/v1/meta",
             "runtime_scorecard": "/v1/runtime-scorecard",
             "runtime_brief": "/v1/runtime-brief",
+            "progress_report": "/v1/progress-report",
             "review_pack": "/v1/review-pack",
             "coach_schema": "/v1/schema/coach-report",
         },
@@ -247,6 +262,7 @@ def build_runtime_scorecard() -> dict[str, object]:
                 "/v1/meta",
                 "/v1/runtime-scorecard",
                 "/v1/runtime-brief",
+                "/v1/progress-report",
                 "/v1/review-pack",
             ],
         },
@@ -255,6 +271,7 @@ def build_runtime_scorecard() -> dict[str, object]:
             "meta": "/v1/meta",
             "runtime_scorecard": "/v1/runtime-scorecard",
             "runtime_brief": "/v1/runtime-brief",
+            "progress_report": "/v1/progress-report",
             "review_pack": "/v1/review-pack",
             "coach_schema": "/v1/schema/coach-report",
         },
@@ -274,6 +291,7 @@ def health() -> HealthResponse:
             "meta": "/v1/meta",
             "runtime_scorecard": "/v1/runtime-scorecard",
             "runtime_brief": "/v1/runtime-brief",
+            "progress_report": "/v1/progress-report",
             "review_pack": "/v1/review-pack",
             "coach_schema": "/v1/schema/coach-report",
         },
@@ -300,6 +318,7 @@ def meta() -> ServiceMetaResponse:
             "session-ingestion",
             "coach-plan-generation",
             "benchmark-snapshots",
+            "progress-report-surface",
             "user-session-history",
             "service-brief-surface",
             "runtime-scorecard-surface",
@@ -320,6 +339,21 @@ def runtime_brief() -> ServiceBriefResponse:
 def runtime_scorecard() -> RuntimeScorecardResponse:
     record_runtime_event(event_type="route_hit", route="/v1/runtime-scorecard")
     return RuntimeScorecardResponse(**build_runtime_scorecard())
+
+
+@app.get("/v1/progress-report", response_model=ProgressReportResponse)
+def progress_report(user_id: str = "demo-user") -> ProgressReportResponse:
+    record_runtime_event(event_type="route_hit", route="/v1/progress-report", user_id=user_id)
+    recent = db.list_sessions(user_id, limit=8)
+    aggregate = db.user_aggregate(user_id)
+    coach_plan = build_coach_plan(user_id, recent, aggregate)
+    benchmark = build_benchmark(user_id, recent, aggregate, db.global_average_delta())
+    return ProgressReportResponse(
+        status="ok",
+        service="steadytap-backend",
+        schema="steadytap-progress-report-v1",
+        **build_progress_report(user_id, recent, coach_plan, benchmark),
+    )
 
 
 @app.get("/v1/review-pack", response_model=ServiceReviewPackResponse)
