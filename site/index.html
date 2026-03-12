@@ -69,7 +69,7 @@
         </ul>
       </article>
       <article class="panel">
-        <h2>Try this first</h2>
+        <h2>Clinical review path</h2>
         <ul class="list">
           <li>Read the main README for product behavior and app flow.</li>
           <li>Read the backend README for runtime brief, review pack, and schema routes.</li>
@@ -96,13 +96,13 @@
 
 
     <section class="panel quick-actions">
-      <h2>Start here</h2>
-      <p class="hint">Copy the review path first, then the capability brief only if someone needs a faster summary.</p>
+      <h2>Care-team handoff bar</h2>
+      <p class="hint">Copy the clinical path first, then the capability brief only if someone needs a shorter summary.</p>
       <div class="action-row">
         <button id="copyReviewPathBtn" class="action-btn" type="button">Copy Review Path</button>
         <button id="copyReviewerBriefBtn" class="action-btn" type="button">Copy Capability Brief</button>
       </div>
-      <p id="quickActionStatus" class="hint">Default move: copy the review path. Shortcut keys: C review path · B capability brief · ? help</p>
+      <p id="quickActionStatus" class="hint">Default move: copy the clinical path. Shortcut keys: C review path · B capability brief · ? help</p>
     </section>
   </main>
 
@@ -209,7 +209,7 @@
       if (key === "?") {
         event.preventDefault();
         if (quickActionStatus) {
-          quickActionStatus.textContent = "Start with the review path. Then share the capability brief if a reviewer wants the shorter version.";
+          quickActionStatus.textContent = "Start with the clinical path. Then share the capability brief if a reviewer wants the shorter version.";
         }
         return;
       }
