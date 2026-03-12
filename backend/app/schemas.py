@@ -107,6 +107,7 @@ class ServiceBriefResponse(BaseModel):
     trust_boundary: list[str]
     proof_assets: list[dict[str, str]]
     routes: list[str]
+    links: dict[str, str]
 
 
 class ServiceReviewPackResponse(BaseModel):
@@ -131,6 +132,19 @@ class CoachReportSchemaResponse(BaseModel):
     schema_name: str = Field(alias="schema")
     required_sections: list[str]
     operator_rules: list[str]
+
+
+class ProgressReportResponse(BaseModel):
+    status: str
+    service: str
+    generated_at: datetime
+    schema_name: str = Field(alias="schema")
+    user_id: str
+    weekly_cadence: dict[str, Any]
+    benchmark: dict[str, Any]
+    coach_delta: dict[str, Any]
+    review_notes: list[str]
+    copy_text: str
 
 
 class RuntimeScorecardResponse(BaseModel):

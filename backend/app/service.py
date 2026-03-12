@@ -92,3 +92,71 @@ def build_benchmark(
         "percentile": percentile,
         "average_score_delta": round(global_average_delta or 6.0, 2),
     }
+
+
+def build_progress_report(
+    user_id: str,
+    recent_sessions: list[dict],
+    coach_plan: dict,
+    benchmark: dict,
+) -> dict:
+    recent_delta = (
+        sum(s["adaptive_score"] - s["baseline_score"] for s in recent_sessions) / len(recent_sessions)
+        if recent_sessions
+        else 0.0
+    )
+    weekly_target = (
+        int(recent_sessions[0].get("weekly_goal_target", 4))
+        if recent_sessions
+        else int(coach_plan.get("target_sessions_per_week", 4) or 4)
+    )
+    sessions_completed = len(recent_sessions)
+    adherence_pct = round((sessions_completed / max(weekly_target, 1)) * 100, 1)
+    streak_days = sessions_completed
+    target_delta = float(coach_plan.get("target_score_delta", 0.0) or 0.0)
+    delta_gap = round(recent_delta - target_delta, 2)
+
+    review_notes = [
+        "Weekly cadence should be interpreted alongside local session freshness.",
+        "Coach delta compares current average improvement against the active remote target.",
+        "Use this report as a reviewer/clinician handoff snapshot, not a replacement for raw session playback.",
+    ]
+
+    copy_text = "\n".join(
+        [
+            "SteadyTap progress report",
+            f"User: {user_id}",
+            f"Weekly cadence: {sessions_completed}/{weekly_target} sessions ({adherence_pct}%)",
+            f"Streak: {streak_days} day(s)",
+            f"Current average delta: {recent_delta:.2f}",
+            f"Coach target delta: {target_delta:.2f}",
+            f"Delta gap: {delta_gap:+.2f}",
+            f"Benchmark percentile: {benchmark.get('percentile', 0)}",
+            f"Coach focus: {coach_plan.get('focus_area', '-')}",
+        ]
+    )
+
+    return {
+        "generated_at": datetime.now(tz=timezone.utc),
+        "user_id": user_id,
+        "weekly_cadence": {
+            "sessions_completed": sessions_completed,
+            "target_sessions": weekly_target,
+            "adherence_pct": adherence_pct,
+            "streak_days": streak_days,
+        },
+        "benchmark": {
+            "percentile": int(benchmark.get("percentile", 0) or 0),
+            "cohort_label": benchmark.get("cohort_label", "Motor accessibility learners"),
+            "average_score_delta": float(benchmark.get("average_score_delta", 0.0) or 0.0),
+        },
+        "coach_delta": {
+            "current_average_delta": round(recent_delta, 2),
+            "target_score_delta": round(target_delta, 2),
+            "delta_gap": delta_gap,
+            "recommended_intensity": coach_plan.get("recommended_intensity", "standard"),
+            "focus_area": coach_plan.get("focus_area", ""),
+        },
+        "review_notes": review_notes,
+        "copy_text": copy_text,
+    }
