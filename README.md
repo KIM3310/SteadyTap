@@ -16,6 +16,12 @@ The product is designed to be reviewable in two modes:
 - **Solution / cloud architect:** app behavior and backend contract stay aligned instead of being buried in separate prototypes.
 - **Field / solutions engineer:** the reviewer path is short: landing page -> README -> simulator/device proof.
 
+
+## Portfolio context
+- **Portfolio family:** human-centered intelligent products
+- **This repo's role:** flagship accessibility / coaching product in the portfolio.
+- **Related repos:** `the-savior`, `ecotide`
+
 ## Start here
 If this is your first pass through the repo, read the surfaces in this order:
 
