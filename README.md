@@ -103,6 +103,7 @@ Backend API surface:
 - `GET /v1/meta`
 - `GET /v1/runtime-brief`
 - `GET /v1/review-pack`
+- `GET /v1/progress-report`
 - `GET /v1/schema/coach-report`
 - `POST /v1/sessions`
 - `POST /v1/coach/plan`
@@ -113,6 +114,7 @@ Service-grade surfaces:
 
 - backend service brief for sync boundary, auth mode, trust boundary, and review flow
 - backend review pack for mobile/cloud handoff, auth posture, and queue-safe sync checks
+- backend progress report for clinician/reviewer cadence, streak adherence, and coach-plan delta review
 - coach-report schema route for explicit remote coaching contract
 - app home dashboard cards that surface backend posture and review pack before cloud mode is enabled
 

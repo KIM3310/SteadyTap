@@ -13,6 +13,7 @@ Integrated FastAPI service for SteadyTap cloud mode.
 - `GET /v1/runtime-brief`: reviewer-facing service brief for sync boundary and operator flow
 - `GET /v1/runtime-scorecard`: persisted runtime telemetry for sync, coach, and benchmark surfaces
 - `GET /v1/review-pack`: reviewer-facing sync handoff and cloud posture pack
+- `GET /v1/progress-report`: clinician/reviewer progress snapshot with cadence, streak, benchmark, and coach-plan delta
 - `GET /v1/schema/coach-report`: remote coaching contract
 - Optional bearer-token auth via `STEADYTAP_API_KEY`
 - SQLite persistence for uploaded sessions
