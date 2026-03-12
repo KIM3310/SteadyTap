@@ -8,8 +8,8 @@ The product is designed to be reviewable in two modes:
 2. app + backend mode with explicit API contracts and reproducible verification
 
 ## Portfolio posture
-- Treat this repo as a native accessibility product; the public page is only the front door.
-- The strongest proof is the iOS flow plus the backend contract, not the landing page by itself.
+- Treat this repo like a care workflow that lives on device first and speaks to the backend second.
+- The landing page matters, but the convincing proof is still calibration, challenge, and trend review on the app itself.
 
 ## Role signals
 - **AI / product engineer:** the repo shows native interaction design, telemetry, and coaching loops in one accessibility-first workflow.
@@ -17,7 +17,7 @@ The product is designed to be reviewable in two modes:
 - **Field / solutions engineer:** the reviewer path is short: landing page -> README -> simulator/device proof.
 
 ## Start here
-If you're opening the repo for the first time, treat the surfaces like this:
+If this is your first pass through the repo, read the surfaces in this order:
 
 - Primary app surface: the iOS App Playground at the repo root (`Package.swift`, `SteadyTapApp.swift`, `Core/`, `Views/`)
 - Optional backend surface: `backend/` for sync, coach-plan, and benchmark APIs
