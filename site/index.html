@@ -35,7 +35,7 @@
         <span class="chip">accessibility-first</span>
       </div>
       <h1>Calibration, adaptive challenge, and coaching for steadier touch interaction.</h1>
-      <p class="lede">SteadyTap is a native accessibility workflow first. This page is the fast orientation layer: what the product does, what reviewers should inspect first, and which proof still belongs inside the iOS app and backend contract.</p>
+      <p class="lede">SteadyTap is for people who need steadier touch, not just prettier charts. This page gives reviewers the shortest path into the real iOS interaction, the coaching loop, and the backend proof that supports it.</p>
     </section>
 
     <section class="grid two">
@@ -67,7 +67,7 @@
         </ul>
       </article>
       <article class="panel">
-        <h2>Review path</h2>
+        <h2>Try this first</h2>
         <ul class="list">
           <li>Read the main README for product behavior and app flow.</li>
           <li>Read the backend README for runtime brief, review pack, and schema routes.</li>
@@ -79,13 +79,13 @@
 
 
     <section class="panel quick-actions">
-      <h2>Reviewer handoff bar</h2>
-      <p class="hint">Shortcut keys: C review path · B capability brief · ? help</p>
+      <h2>Start here</h2>
+      <p class="hint">Copy the review path first, then the capability brief only if someone needs a faster summary.</p>
       <div class="action-row">
         <button id="copyReviewPathBtn" class="action-btn" type="button">Copy Review Path</button>
         <button id="copyReviewerBriefBtn" class="action-btn" type="button">Copy Capability Brief</button>
       </div>
-      <p id="quickActionStatus" class="hint">Use this bar when you need a short handoff that keeps the focus on the native calibration flow. Shortcut keys: C review path · B capability brief · ? help</p>
+      <p id="quickActionStatus" class="hint">Default move: copy the review path. Shortcut keys: C review path · B capability brief · ? help</p>
     </section>
   </main>
 
@@ -140,7 +140,7 @@
       if (key === "?") {
         event.preventDefault();
         if (quickActionStatus) {
-          quickActionStatus.textContent = "Shortcut keys: C review path · B capability brief · ? help";
+          quickActionStatus.textContent = "Start with the review path. Then share the capability brief if a reviewer wants the shorter version.";
         }
         return;
       }
