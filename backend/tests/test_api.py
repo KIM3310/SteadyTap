@@ -34,6 +34,7 @@ def test_health_and_meta_report_runtime_state(tmp_path: Path):
     meta = client.get("/v1/meta")
     brief = client.get("/v1/runtime-brief")
     scorecard = client.get("/v1/runtime-scorecard")
+    progress_report = client.get("/v1/progress-report?user_id=kim")
     review_pack = client.get("/v1/review-pack")
     schema = client.get("/v1/schema/coach-report")
 
@@ -43,6 +44,7 @@ def test_health_and_meta_report_runtime_state(tmp_path: Path):
     assert health.json()["report_contract"]["schema"] == "steadytap-coach-report-v1"
     assert health.json()["links"]["runtime_brief"] == "/v1/runtime-brief"
     assert health.json()["links"]["runtime_scorecard"] == "/v1/runtime-scorecard"
+    assert health.json()["links"]["progress_report"] == "/v1/progress-report"
     assert health.json()["links"]["review_pack"] == "/v1/review-pack"
 
     assert meta.status_code == 200
@@ -53,6 +55,7 @@ def test_health_and_meta_report_runtime_state(tmp_path: Path):
     assert "/v1/meta" in body["routes"]
     assert "/v1/runtime-brief" in body["routes"]
     assert "/v1/runtime-scorecard" in body["routes"]
+    assert "/v1/progress-report" in body["routes"]
     assert "/v1/review-pack" in body["routes"]
     assert body["readiness_contract"] == "steadytap-service-brief-v1"
     assert body["report_contract"]["schema"] == "steadytap-coach-report-v1"
@@ -68,6 +71,7 @@ def test_health_and_meta_report_runtime_state(tmp_path: Path):
     assert len(brief_body["two_minute_review"]) == 5
     assert brief_body["proof_assets"][0]["href"] == "/v1/health"
     assert brief_body["proof_assets"][1]["href"] == "/v1/runtime-scorecard"
+    assert brief_body["links"]["progress_report"] == "/v1/progress-report"
 
     assert scorecard.status_code == 200
     scorecard_body = scorecard.json()
@@ -75,11 +79,19 @@ def test_health_and_meta_report_runtime_state(tmp_path: Path):
     assert scorecard_body["summary"]["runtime_event_count"] >= 4
     assert scorecard_body["links"]["runtime_scorecard"] == "/v1/runtime-scorecard"
 
+    assert progress_report.status_code == 200
+    progress_body = progress_report.json()
+    assert progress_body["schema"] == "steadytap-progress-report-v1"
+    assert progress_body["user_id"] == "kim"
+    assert progress_body["weekly_cadence"]["sessions_completed"] == 0
+    assert progress_body["weekly_cadence"]["streak_days"] == 0
+
     assert review_pack.status_code == 200
     review_pack_body = review_pack.json()
     assert review_pack_body["readiness_contract"] == "steadytap-review-pack-v1"
     assert review_pack_body["proof_bundle"]["auth_mode"] in {"open-review", "bearer-required"}
     assert "/v1/runtime-scorecard" in review_pack_body["proof_bundle"]["review_routes"]
+    assert "/v1/progress-report" in review_pack_body["proof_bundle"]["review_routes"]
     assert "/v1/review-pack" in review_pack_body["proof_bundle"]["review_routes"]
     assert isinstance(review_pack_body["review_sequence"], list)
     assert len(review_pack_body["two_minute_review"]) == 5
@@ -90,6 +102,42 @@ def test_health_and_meta_report_runtime_state(tmp_path: Path):
     schema_body = schema.json()
     assert schema_body["schema"] == "steadytap-coach-report-v1"
     assert "action_items" in schema_body["required_sections"]
+
+
+def test_progress_report_tracks_weekly_cadence_and_coach_delta(tmp_path: Path):
+    main = load_main_module(tmp_path)
+    client = TestClient(main.app)
+
+    payload = {
+        "id": "sess-001",
+        "user_id": "kim",
+        "timestamp": "2026-03-10T09:00:00Z",
+        "scoring_preset_raw_value": "balanced",
+        "challenge_intensity_raw_value": "standard",
+        "weekly_goal_target": 4,
+        "baseline_score": 72,
+        "adaptive_score": 81,
+        "miss_delta": 2,
+        "time_delta": -1.8,
+        "stability_index": 0.74,
+        "confidence_score": 0.8,
+        "button_scale": 1.0,
+        "hold_duration": 0.15,
+        "swipe_threshold": 24,
+    }
+    client.post("/v1/sessions", json=payload)
+    payload["id"] = "sess-002"
+    payload["timestamp"] = "2026-03-11T09:00:00Z"
+    payload["adaptive_score"] = 84
+    client.post("/v1/sessions", json=payload)
+
+    response = client.get("/v1/progress-report?user_id=kim")
+    assert response.status_code == 200
+    body = response.json()
+    assert body["weekly_cadence"]["sessions_completed"] == 2
+    assert body["weekly_cadence"]["target_sessions"] == 4
+    assert body["coach_delta"]["current_average_delta"] >= 9
+    assert "copy_text" in body
 
 
 def test_protected_routes_require_bearer_token_when_api_key_is_configured(tmp_path: Path):

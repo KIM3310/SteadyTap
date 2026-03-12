@@ -83,15 +83,16 @@ struct IntroView: View {
                 reviewPackCard.staged(index: 6, appear: appear)
                 coachCard.staged(index: 7, appear: appear)
                 momentumCard.staged(index: 8, appear: appear)
-                intelligenceCard.staged(index: 9, appear: appear)
-                benchmarkCard.staged(index: 10, appear: appear)
-                preferencesCard.staged(index: 11, appear: appear)
-                progressCard.staged(index: 12, appear: appear)
+                progressReportCard.staged(index: 9, appear: appear)
+                intelligenceCard.staged(index: 10, appear: appear)
+                benchmarkCard.staged(index: 11, appear: appear)
+                preferencesCard.staged(index: 12, appear: appear)
+                progressCard.staged(index: 13, appear: appear)
 
                 Button("Start Calibration", action: onStart)
                     .buttonStyle(PrimaryButtonStyle())
                     .accessibilityHint("Begins tap and drag calibration")
-                    .staged(index: 13, appear: appear)
+                    .staged(index: 14, appear: appear)
             }
             .padding(.top, 16)
             .padding(.bottom, 32)
@@ -452,6 +453,44 @@ struct IntroView: View {
         }
     }
 
+    private var progressReportCard: some View {
+        GlassCard {
+            VStack(alignment: .leading, spacing: 10) {
+                Text("Clinician Progress Report")
+                    .font(.title3.weight(.bold))
+                    .foregroundStyle(AppTheme.textPrimary)
+
+                HStack(spacing: 10) {
+                    MetricTile(title: "Weekly Cadence", value: "\(weeklySessionCount)/\(weeklyGoalTarget)")
+                    MetricTile(title: "Streak", value: "\(streakDays)d")
+                }
+
+                HStack(spacing: 10) {
+                    MetricTile(title: "Current Delta", value: signedScore(averageScoreDelta))
+                    MetricTile(title: "Coach Gap", value: signedScore(coachDeltaGap))
+                }
+
+                Text(progressNarrative)
+                    .font(.footnote)
+                    .foregroundStyle(AppTheme.textSecondary)
+
+                HStack(spacing: 10) {
+                    Button("Copy Progress Report") {
+                        copyReviewerText(progressReportSnapshot, success: "Copied clinician progress report.")
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(AppTheme.mint.opacity(0.84))
+
+                    Button("Copy Coach Delta") {
+                        copyReviewerText(coachDeltaSnapshot, success: "Copied coach delta summary.")
+                    }
+                    .buttonStyle(.bordered)
+                    .tint(AppTheme.amber.opacity(0.9))
+                }
+            }
+        }
+    }
+
     private var reviewPackCard: some View {
         GlassCard {
             VStack(alignment: .leading, spacing: 12) {
@@ -699,6 +738,46 @@ struct IntroView: View {
             "",
             "Review Routes:",
             reviewRouteSnapshot,
+        ].joined(separator: "\n")
+    }
+
+    private var coachDeltaGap: Double {
+        guard let coachPlan else {
+            return 0
+        }
+        return averageScoreDelta - coachPlan.targetScoreDelta
+    }
+
+    private var progressNarrative: String {
+        if let coachPlan {
+            return "Weekly cadence is \(weeklySessionCount)/\(weeklyGoalTarget), streak is \(streakDays) day(s), and the current average delta is \(signedScore(averageScoreDelta)). Coach target is \(signedScore(coachPlan.targetScoreDelta))."
+        }
+        return "Weekly cadence is \(weeklySessionCount)/\(weeklyGoalTarget), streak is \(streakDays) day(s), and the current average delta is \(signedScore(averageScoreDelta)). Generate a coach plan to compare against a remote target."
+    }
+
+    private var progressReportSnapshot: String {
+        [
+            "SteadyTap clinician progress report",
+            "Weekly cadence: \(weeklySessionCount)/\(weeklyGoalTarget)",
+            "Streak: \(streakDays) day(s)",
+            "Average delta: \(signedScore(averageScoreDelta))",
+            "Weekly goal status: \(weeklyGoalStatusText)",
+            "Readiness: \(readinessBand) (\(readinessScore))",
+            "Trend: \(trendDirection)",
+            "Projected weekly sessions: \(projectedWeeklySessions)",
+            "Coach target: \(coachPlan.map { signedScore($0.targetScoreDelta) } ?? "unavailable")",
+            "Coach gap: \(signedScore(coachDeltaGap))",
+        ].joined(separator: "\n")
+    }
+
+    private var coachDeltaSnapshot: String {
+        [
+            "SteadyTap coach delta snapshot",
+            "Current average delta: \(signedScore(averageScoreDelta))",
+            "Coach target delta: \(coachPlan.map { signedScore($0.targetScoreDelta) } ?? "unavailable")",
+            "Gap: \(signedScore(coachDeltaGap))",
+            "Recommended intensity: \(coachPlan?.recommendedIntensity.title ?? localIntensityRecommendation.title)",
+            "Sessions this week: \(weeklySessionCount)",
         ].joined(separator: "\n")
     }
 
