@@ -57,6 +57,8 @@ let package = Package(
             exclude: [
                 "backend",
                 "docs",
+                "site",
+                "Tests",
                 "README.md",
             ]
         )
