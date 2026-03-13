@@ -162,6 +162,8 @@ struct IntroView: View {
                     .font(.footnote)
                     .foregroundStyle(AppTheme.textSecondary)
 
+                quickStartRouteChipRow
+
                 HStack(spacing: 10) {
                     MetricTile(title: "Readiness", value: "\(readinessScore) · \(readinessBand)")
                     MetricTile(title: "Trend", value: trendDirection)
@@ -204,6 +206,26 @@ struct IntroView: View {
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
+
+    private var quickStartRouteChipRow: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 8) {
+                ForEach(quickStartContent.routeChips, id: \.self) { chip in
+                    Text(chip)
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(AppTheme.textPrimary)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(AppTheme.card.opacity(0.9))
+                        .overlay(
+                            Capsule()
+                                .stroke(AppTheme.textTertiary.opacity(0.35), lineWidth: 1)
+                        )
+                        .clipShape(Capsule())
+                }
+            }
         }
     }
 
