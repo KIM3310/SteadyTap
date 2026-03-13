@@ -71,41 +71,17 @@ struct IntroView: View {
         return "\(weeklyGoalRemaining) sessions left to hit this week's goal."
     }
 
-    private var launchCardTitle: String {
-        coachPlan == nil ? "Today's first helpful run" : "Coach-guided first run"
-    }
-
-    private var launchCardSummary: String {
-        if let coachPlan {
-            return "Use the remote coach setup for a \(coachPlan.focusArea.lowercased()) session, then start calibration while your readiness is \(readinessBand.lowercased())."
-        }
-        return "Start with the local \(localIntensityRecommendation.title.lowercased()) intensity suggestion, then calibrate once so your first benchmark feels trustworthy."
-    }
-
-    private var launchRecommendationLabel: String {
-        if let coachPlan {
-            let isActive = coachPlan.recommendedPreset == scoringPreset
-                && coachPlan.recommendedIntensity == challengeIntensity
-                && coachPlan.targetSessionsPerWeek == weeklyGoalTarget
-            return isActive ? "Coach Setup Active" : "Apply Coach Setup"
-        }
-        return localIntensityRecommendation == challengeIntensity ? "Local Suggestion Active" : "Apply Local Suggestion"
-    }
-
-    private var launchRecommendationDetail: String {
-        if let coachPlan {
-            return "\(coachPlan.recommendedPreset.shortTitle) · \(coachPlan.recommendedIntensity.shortTitle) · \(coachPlan.targetSessionsPerWeek)x / week"
-        }
-        return "\(localIntensityRecommendation.title) intensity · \(weeklyGoalStatusText)"
-    }
-
-    private var launchRecommendationDisabled: Bool {
-        if let coachPlan {
-            return coachPlan.recommendedPreset == scoringPreset
-                && coachPlan.recommendedIntensity == challengeIntensity
-                && coachPlan.targetSessionsPerWeek == weeklyGoalTarget
-        }
-        return localIntensityRecommendation == challengeIntensity
+    private var quickStartContent: IntroQuickStartContent {
+        IntroQuickStartContent(
+            coachPlan: coachPlan,
+            scoringPreset: scoringPreset,
+            challengeIntensity: challengeIntensity,
+            weeklyGoalTarget: weeklyGoalTarget,
+            localIntensityRecommendation: localIntensityRecommendation,
+            readinessBand: readinessBand,
+            weeklyGoalStatusText: weeklyGoalStatusText,
+            latestResultText: latestResultText
+        )
     }
 
     private func applyLaunchRecommendation() {
@@ -178,11 +154,11 @@ struct IntroView: View {
     private var quickStartCard: some View {
         GlassCard {
             VStack(alignment: .leading, spacing: 12) {
-                Text(launchCardTitle)
+                Text(quickStartContent.title)
                     .font(.title3.weight(.bold))
                     .foregroundStyle(AppTheme.textPrimary)
 
-                Text(launchCardSummary)
+                Text(quickStartContent.summary)
                     .font(.footnote)
                     .foregroundStyle(AppTheme.textSecondary)
 
@@ -192,22 +168,26 @@ struct IntroView: View {
                     MetricTile(title: "Last Delta", value: signedScore(averageScoreDelta))
                 }
 
-                Text(latestResultText)
-                    .font(.footnote)
-                    .foregroundStyle(AppTheme.textTertiary)
+                VStack(alignment: .leading, spacing: 8) {
+                    ForEach(quickStartContent.focusItems, id: \.self) { item in
+                        Text(item)
+                            .font(.caption.weight(.medium))
+                            .foregroundStyle(AppTheme.textSecondary)
+                    }
+                }
 
-                Text(launchRecommendationDetail)
+                Text(quickStartContent.recommendationDetail)
                     .font(.caption.weight(.medium))
                     .foregroundStyle(AppTheme.textSecondary)
 
                 HStack(spacing: 10) {
                     Button(action: applyLaunchRecommendation) {
-                        Label(launchRecommendationLabel, systemImage: coachPlan == nil ? "speedometer" : "wand.and.stars")
+                        Label(quickStartContent.recommendationLabel, systemImage: coachPlan == nil ? "speedometer" : "wand.and.stars")
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.bordered)
                     .tint(.white.opacity(0.92))
-                    .disabled(launchRecommendationDisabled)
+                    .disabled(quickStartContent.recommendationDisabled)
 
                     Button(action: onStart) {
                         Label("Start Calibration", systemImage: "play.fill")
@@ -229,14 +209,10 @@ struct IntroView: View {
                     .font(.title3.weight(.bold))
                     .foregroundStyle(AppTheme.textPrimary)
 
-                Text("1. Calibrate tap and drag stability")
-                    .foregroundStyle(AppTheme.textSecondary)
-                Text("2. Review generated adaptive profile quality")
-                    .foregroundStyle(AppTheme.textSecondary)
-                Text("3. Run baseline and adaptive challenge")
-                    .foregroundStyle(AppTheme.textSecondary)
-                Text("4. Compare outcomes and sync to service backend")
-                    .foregroundStyle(AppTheme.textSecondary)
+                ForEach(Array(quickStartContent.steps.enumerated()), id: \.offset) { index, step in
+                    Text("\(index + 1). \(step)")
+                        .foregroundStyle(AppTheme.textSecondary)
+                }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
