@@ -162,7 +162,14 @@ struct IntroView: View {
                     .font(.footnote)
                     .foregroundStyle(AppTheme.textSecondary)
 
-                quickStartRouteChipRow
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("First-run route")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(AppTheme.textTertiary)
+                        .textCase(.uppercase)
+
+                    quickStartRouteChipRow
+                }
 
                 HStack(spacing: 10) {
                     MetricTile(title: "Readiness", value: "\(readinessScore) · \(readinessBand)")
@@ -218,7 +225,7 @@ struct IntroView: View {
                         .foregroundStyle(AppTheme.textPrimary)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 8)
-                        .background(AppTheme.card.opacity(0.9))
+                        .background(AppTheme.deepBlue.opacity(0.76))
                         .overlay(
                             Capsule()
                                 .stroke(AppTheme.textTertiary.opacity(0.35), lineWidth: 1)
