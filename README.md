@@ -7,6 +7,9 @@ The product is designed to be reviewable in two modes:
 1. fully local, offline-first app behavior
 2. app + backend mode with explicit API contracts and reproducible verification
 
+## One concrete review story
+A reviewer can picture a user with an unsteady hand starting with calibration on device, finishing one baseline challenge, then deciding whether cloud coaching is worth turning on. That keeps the handoff readable: local confidence first, backend guidance second.
+
 ## Portfolio posture
 - Treat this repo like a care workflow that lives on device first and speaks to the backend second.
 - The landing page matters, but the convincing proof is still calibration, challenge, and trend review on the app itself.
