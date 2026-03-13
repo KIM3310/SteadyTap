@@ -27,6 +27,7 @@ struct QuickStartContentRegression {
         )
         precondition(coach.recommendationLabel == "Apply Coach Setup")
         precondition(coach.steps.count == 3)
+        precondition(coach.recommendationStatus.contains("Apply the coach setup first"))
 
         let local = IntroQuickStartContent(
             coachPlan: nil,
@@ -40,6 +41,7 @@ struct QuickStartContentRegression {
         )
         precondition(local.recommendationDisabled)
         precondition(local.recommendationDetail.contains("Weekly goal achieved"))
+        precondition(local.recommendationStatus.contains("already active"))
         print("SteadyTap quick-start regression OK")
     }
 }
