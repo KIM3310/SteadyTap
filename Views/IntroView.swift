@@ -180,6 +180,11 @@ struct IntroView: View {
                     .font(.caption.weight(.medium))
                     .foregroundStyle(AppTheme.textSecondary)
 
+                Label(quickStartContent.recommendationStatus, systemImage: quickStartContent.recommendationDisabled ? "checkmark.circle.fill" : "arrow.trianglehead.clockwise")
+                    .font(.caption)
+                    .foregroundStyle(quickStartContent.recommendationDisabled ? AppTheme.mint : AppTheme.amber)
+                    .fixedSize(horizontal: false, vertical: true)
+
                 HStack(spacing: 10) {
                     Button(action: applyLaunchRecommendation) {
                         Label(quickStartContent.recommendationLabel, systemImage: coachPlan == nil ? "speedometer" : "wand.and.stars")

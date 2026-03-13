@@ -5,6 +5,7 @@ struct IntroQuickStartContent {
     let summary: String
     let recommendationLabel: String
     let recommendationDetail: String
+    let recommendationStatus: String
     let recommendationDisabled: Bool
     let focusItems: [String]
 
@@ -26,6 +27,9 @@ struct IntroQuickStartContent {
                 && coachPlan.targetSessionsPerWeek == weeklyGoalTarget
             recommendationLabel = coachSetupActive ? "Coach Setup Active" : "Apply Coach Setup"
             recommendationDetail = "\(coachPlan.recommendedPreset.shortTitle) · \(coachPlan.recommendedIntensity.shortTitle) · \(coachPlan.targetSessionsPerWeek)x / week"
+            recommendationStatus = coachSetupActive
+                ? "Coach setup already matches your current controls. Start calibration to confirm the guided setup still feels comfortable."
+                : "Apply the coach setup first so your first calibration run matches the remote recommendation."
             recommendationDisabled = coachSetupActive
             focusItems = [
                 "Readiness · \(readinessBand)",
@@ -37,6 +41,9 @@ struct IntroQuickStartContent {
             summary = "Start with the local \(localIntensityRecommendation.title.lowercased()) intensity suggestion, then calibrate once so your first benchmark feels trustworthy."
             recommendationLabel = localIntensityRecommendation == challengeIntensity ? "Local Suggestion Active" : "Apply Local Suggestion"
             recommendationDetail = "\(localIntensityRecommendation.title) intensity · \(weeklyGoalStatusText)"
+            recommendationStatus = localIntensityRecommendation == challengeIntensity
+                ? "The local suggestion is already active. Keep this setup and start calibration while the recommendation is still fresh."
+                : "Apply the local suggestion before calibration so the first benchmark starts from the safest local intensity."
             recommendationDisabled = localIntensityRecommendation == challengeIntensity
             focusItems = [
                 "Readiness · \(readinessBand)",
