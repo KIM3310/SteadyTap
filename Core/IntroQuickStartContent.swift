@@ -8,6 +8,7 @@ struct IntroQuickStartContent {
     let recommendationStatus: String
     let recommendationDisabled: Bool
     let focusItems: [String]
+    let routeChips: [String]
 
     init(
         coachPlan: CoachPlan?,
@@ -36,6 +37,11 @@ struct IntroQuickStartContent {
                 "Coach focus · \(coachPlan.focusArea)",
                 "Latest proof · \(latestResultText)"
             ]
+            routeChips = [
+                coachSetupActive ? "Setup · Coach preset active" : "Setup · Apply coach preset",
+                "Run · Calibration before challenge",
+                "Review · Local proof before sync"
+            ]
         } else {
             title = "Today's first helpful run"
             summary = "Start with the local \(localIntensityRecommendation.title.lowercased()) intensity suggestion, then calibrate once so your first benchmark feels trustworthy."
@@ -49,6 +55,11 @@ struct IntroQuickStartContent {
                 "Readiness · \(readinessBand)",
                 "Weekly goal · \(weeklyGoalStatusText)",
                 "Latest proof · \(latestResultText)"
+            ]
+            routeChips = [
+                localIntensityRecommendation == challengeIntensity ? "Setup · Local suggestion active" : "Setup · Apply local suggestion",
+                "Run · Calibration before challenge",
+                "Review · Keep cloud optional"
             ]
         }
     }
