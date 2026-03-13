@@ -71,28 +71,69 @@ struct IntroView: View {
         return "\(weeklyGoalRemaining) sessions left to hit this week's goal."
     }
 
+    private var launchCardTitle: String {
+        coachPlan == nil ? "Today's first helpful run" : "Coach-guided first run"
+    }
+
+    private var launchCardSummary: String {
+        if let coachPlan {
+            return "Use the remote coach setup for a \(coachPlan.focusArea.lowercased()) session, then start calibration while your readiness is \(readinessBand.lowercased())."
+        }
+        return "Start with the local \(localIntensityRecommendation.title.lowercased()) intensity suggestion, then calibrate once so your first benchmark feels trustworthy."
+    }
+
+    private var launchRecommendationLabel: String {
+        if let coachPlan {
+            let isActive = coachPlan.recommendedPreset == scoringPreset
+                && coachPlan.recommendedIntensity == challengeIntensity
+                && coachPlan.targetSessionsPerWeek == weeklyGoalTarget
+            return isActive ? "Coach Setup Active" : "Apply Coach Setup"
+        }
+        return localIntensityRecommendation == challengeIntensity ? "Local Suggestion Active" : "Apply Local Suggestion"
+    }
+
+    private var launchRecommendationDetail: String {
+        if let coachPlan {
+            return "\(coachPlan.recommendedPreset.shortTitle) · \(coachPlan.recommendedIntensity.shortTitle) · \(coachPlan.targetSessionsPerWeek)x / week"
+        }
+        return "\(localIntensityRecommendation.title) intensity · \(weeklyGoalStatusText)"
+    }
+
+    private var launchRecommendationDisabled: Bool {
+        if let coachPlan {
+            return coachPlan.recommendedPreset == scoringPreset
+                && coachPlan.recommendedIntensity == challengeIntensity
+                && coachPlan.targetSessionsPerWeek == weeklyGoalTarget
+        }
+        return localIntensityRecommendation == challengeIntensity
+    }
+
+    private func applyLaunchRecommendation() {
+        if coachPlan != nil {
+            onApplyCoachPreset()
+        } else {
+            onApplyLocalIntensityRecommendation()
+        }
+    }
+
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
                 heroSection.staged(index: 0, appear: appear)
-                flowCard.staged(index: 1, appear: appear)
-                scoringCard.staged(index: 2, appear: appear)
-                challengeCard.staged(index: 3, appear: appear)
-                opsCard.staged(index: 4, appear: appear)
-                serviceBriefCard.staged(index: 5, appear: appear)
-                reviewPackCard.staged(index: 6, appear: appear)
-                coachCard.staged(index: 7, appear: appear)
-                momentumCard.staged(index: 8, appear: appear)
-                progressReportCard.staged(index: 9, appear: appear)
-                intelligenceCard.staged(index: 10, appear: appear)
-                benchmarkCard.staged(index: 11, appear: appear)
-                preferencesCard.staged(index: 12, appear: appear)
-                progressCard.staged(index: 13, appear: appear)
-
-                Button("Start Calibration", action: onStart)
-                    .buttonStyle(PrimaryButtonStyle())
-                    .accessibilityHint("Begins tap and drag calibration")
-                    .staged(index: 14, appear: appear)
+                quickStartCard.staged(index: 1, appear: appear)
+                flowCard.staged(index: 2, appear: appear)
+                scoringCard.staged(index: 3, appear: appear)
+                challengeCard.staged(index: 4, appear: appear)
+                opsCard.staged(index: 5, appear: appear)
+                serviceBriefCard.staged(index: 6, appear: appear)
+                reviewPackCard.staged(index: 7, appear: appear)
+                coachCard.staged(index: 8, appear: appear)
+                momentumCard.staged(index: 9, appear: appear)
+                progressReportCard.staged(index: 10, appear: appear)
+                intelligenceCard.staged(index: 11, appear: appear)
+                benchmarkCard.staged(index: 12, appear: appear)
+                preferencesCard.staged(index: 13, appear: appear)
+                progressCard.staged(index: 14, appear: appear)
             }
             .padding(.top, 16)
             .padding(.bottom, 32)
@@ -131,6 +172,54 @@ struct IntroView: View {
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
+    }
+
+
+    private var quickStartCard: some View {
+        GlassCard {
+            VStack(alignment: .leading, spacing: 12) {
+                Text(launchCardTitle)
+                    .font(.title3.weight(.bold))
+                    .foregroundStyle(AppTheme.textPrimary)
+
+                Text(launchCardSummary)
+                    .font(.footnote)
+                    .foregroundStyle(AppTheme.textSecondary)
+
+                HStack(spacing: 10) {
+                    MetricTile(title: "Readiness", value: "\(readinessScore) · \(readinessBand)")
+                    MetricTile(title: "Trend", value: trendDirection)
+                    MetricTile(title: "Last Delta", value: signedScore(averageScoreDelta))
+                }
+
+                Text(latestResultText)
+                    .font(.footnote)
+                    .foregroundStyle(AppTheme.textTertiary)
+
+                Text(launchRecommendationDetail)
+                    .font(.caption.weight(.medium))
+                    .foregroundStyle(AppTheme.textSecondary)
+
+                HStack(spacing: 10) {
+                    Button(action: applyLaunchRecommendation) {
+                        Label(launchRecommendationLabel, systemImage: coachPlan == nil ? "speedometer" : "wand.and.stars")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.bordered)
+                    .tint(.white.opacity(0.92))
+                    .disabled(launchRecommendationDisabled)
+
+                    Button(action: onStart) {
+                        Label("Start Calibration", systemImage: "play.fill")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(AppTheme.amber.opacity(0.92))
+                    .accessibilityHint("Begins tap and drag calibration")
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
     }
 
     private var flowCard: some View {
