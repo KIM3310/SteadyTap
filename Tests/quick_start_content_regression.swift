@@ -26,6 +26,8 @@ struct QuickStartContentRegression {
             latestResultText: "Last run today"
         )
         precondition(coach.recommendationLabel == "Apply Coach Setup")
+        precondition(coach.firstUsePromise.contains("calibration only"))
+        precondition(coach.reviewerSafetyNote.contains("cloud sync"))
         precondition(coach.steps.count == 3)
         precondition(coach.recommendationStatus.contains("Apply the coach setup first"))
         precondition(coach.routeChips.count == 3)
@@ -43,6 +45,8 @@ struct QuickStartContentRegression {
             latestResultText: "No previous local runs yet."
         )
         precondition(local.recommendationDisabled)
+        precondition(local.firstUsePromise.contains("calm calibration pass"))
+        precondition(local.reviewerSafetyNote.contains("local-first path"))
         precondition(local.recommendationDetail.contains("Weekly goal achieved"))
         precondition(local.recommendationStatus.contains("already active"))
         precondition(local.routeChips[0] == "Setup · Local suggestion active")
