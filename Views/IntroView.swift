@@ -178,6 +178,18 @@ struct IntroView: View {
                 }
 
                 VStack(alignment: .leading, spacing: 8) {
+                    Label(quickStartContent.firstUsePromise, systemImage: "leaf.circle")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(AppTheme.mint)
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    Label(quickStartContent.reviewerSafetyNote, systemImage: "checkmark.shield")
+                        .font(.caption)
+                        .foregroundStyle(AppTheme.textSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                VStack(alignment: .leading, spacing: 8) {
                     ForEach(quickStartContent.focusItems, id: \.self) { item in
                         Text(item)
                             .font(.caption.weight(.medium))
