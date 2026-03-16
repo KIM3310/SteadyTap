@@ -44,6 +44,7 @@ def test_health_and_meta_report_runtime_state(tmp_path: Path):
     assert health.json()["report_contract"]["schema"] == "steadytap-coach-report-v1"
     assert health.json()["links"]["runtime_brief"] == "/v1/runtime-brief"
     assert health.json()["links"]["runtime_scorecard"] == "/v1/runtime-scorecard"
+    assert health.json()["links"]["review_queue"] == "/v1/review-queue?user_id=demo-user"
     assert health.json()["links"]["progress_report"] == "/v1/progress-report"
     assert health.json()["links"]["review_pack"] == "/v1/review-pack"
 
@@ -55,11 +56,13 @@ def test_health_and_meta_report_runtime_state(tmp_path: Path):
     assert "/v1/meta" in body["routes"]
     assert "/v1/runtime-brief" in body["routes"]
     assert "/v1/runtime-scorecard" in body["routes"]
+    assert "/v1/review-queue" in body["routes"]
     assert "/v1/progress-report" in body["routes"]
     assert "/v1/review-pack" in body["routes"]
     assert body["readiness_contract"] == "steadytap-service-brief-v1"
     assert body["report_contract"]["schema"] == "steadytap-coach-report-v1"
     assert "runtime-scorecard-surface" in body["capabilities"]
+    assert "review-queue-surface" in body["capabilities"]
     assert "review-pack-surface" in body["capabilities"]
 
     assert brief.status_code == 200
@@ -68,16 +71,27 @@ def test_health_and_meta_report_runtime_state(tmp_path: Path):
     assert brief_body["report_contract"]["schema"] == "steadytap-coach-report-v1"
     assert brief_body["evidence_counts"]["service_routes"] >= 8
     assert brief_body["evidence_counts"]["runtime_events"] >= 3
-    assert len(brief_body["two_minute_review"]) == 5
+    assert len(brief_body["two_minute_review"]) == 6
     assert brief_body["proof_assets"][0]["href"] == "/v1/health"
     assert brief_body["proof_assets"][1]["href"] == "/v1/runtime-scorecard"
+    assert brief_body["proof_assets"][2]["href"] == "/v1/review-queue?user_id=demo-user"
+    assert brief_body["links"]["review_queue"] == "/v1/review-queue?user_id=demo-user"
     assert brief_body["links"]["progress_report"] == "/v1/progress-report"
 
     assert scorecard.status_code == 200
     scorecard_body = scorecard.json()
     assert scorecard_body["readiness_contract"] == "steadytap-runtime-scorecard-v1"
     assert scorecard_body["summary"]["runtime_event_count"] >= 4
+    assert scorecard_body["links"]["review_queue"] == "/v1/review-queue?user_id=demo-user"
     assert scorecard_body["links"]["runtime_scorecard"] == "/v1/runtime-scorecard"
+
+    review_queue = client.get("/v1/review-queue?user_id=kim")
+    assert review_queue.status_code == 200
+    review_queue_body = review_queue.json()
+    assert review_queue_body["contract_version"] == "steadytap-review-queue-v1"
+    assert review_queue_body["summary"]["queue_items"] >= 1
+    assert review_queue_body["summary"]["blocked"] is True
+    assert review_queue_body["links"]["review_queue"] == "/v1/review-queue?user_id=kim"
 
     assert progress_report.status_code == 200
     progress_body = progress_report.json()
@@ -91,12 +105,14 @@ def test_health_and_meta_report_runtime_state(tmp_path: Path):
     assert review_pack_body["readiness_contract"] == "steadytap-review-pack-v1"
     assert review_pack_body["proof_bundle"]["auth_mode"] in {"open-review", "bearer-required"}
     assert "/v1/runtime-scorecard" in review_pack_body["proof_bundle"]["review_routes"]
+    assert "/v1/review-queue" in review_pack_body["proof_bundle"]["review_routes"]
     assert "/v1/progress-report" in review_pack_body["proof_bundle"]["review_routes"]
     assert "/v1/review-pack" in review_pack_body["proof_bundle"]["review_routes"]
     assert isinstance(review_pack_body["review_sequence"], list)
-    assert len(review_pack_body["two_minute_review"]) == 5
+    assert len(review_pack_body["two_minute_review"]) == 6
     assert review_pack_body["proof_assets"][0]["href"] == "/v1/health"
     assert review_pack_body["proof_assets"][1]["href"] == "/v1/runtime-scorecard"
+    assert review_pack_body["proof_assets"][2]["href"] == "/v1/review-queue?user_id=demo-user"
 
     assert schema.status_code == 200
     schema_body = schema.json()
@@ -167,6 +183,13 @@ def test_progress_report_tracks_weekly_cadence_and_coach_delta(tmp_path: Path):
     assert body["weekly_cadence"]["target_sessions"] == 4
     assert body["coach_delta"]["current_average_delta"] >= 9
     assert "copy_text" in body
+
+    review_queue = client.get("/v1/review-queue?user_id=kim")
+    assert review_queue.status_code == 200
+    queue_body = review_queue.json()
+    assert queue_body["summary"]["blocked"] is False
+    assert queue_body["summary"]["session_count"] == 2
+    assert queue_body["items"][0]["queue_id"].startswith("kim-")
 
 
 def test_protected_routes_require_bearer_token_when_api_key_is_configured(tmp_path: Path):
