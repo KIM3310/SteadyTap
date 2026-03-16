@@ -56,6 +56,8 @@ class CoachPlanResponse(BaseModel):
     target_score_delta: float
     target_sessions_per_week: int
     confidence: float
+    evidence_basis: list[str] = Field(default_factory=list)
+    alignment_with_local: str = ""
     action_items: list[str]
 
 

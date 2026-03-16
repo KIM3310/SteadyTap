@@ -268,6 +268,25 @@ struct ResultsView: View {
                                 .font(.footnote)
                                 .foregroundStyle(AppTheme.textTertiary)
 
+                            if !coachPlan.alignmentWithLocal.isEmpty {
+                                Text(coachPlan.alignmentWithLocal)
+                                    .font(.footnote)
+                                    .foregroundStyle(AppTheme.textSecondary)
+                            }
+
+                            if !coachPlan.evidenceBasis.isEmpty {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text("Evidence basis")
+                                        .font(.caption.weight(.semibold))
+                                        .foregroundStyle(AppTheme.textTertiary)
+                                    ForEach(coachPlan.evidenceBasis, id: \.self) { item in
+                                        Text("• \(item)")
+                                            .font(.caption)
+                                            .foregroundStyle(AppTheme.textSecondary)
+                                    }
+                                }
+                            }
+
                             Button(action: onApplyCoachPreset) {
                                 Label("Apply Coach Setup", systemImage: "wand.and.stars.inverse")
                                     .font(.subheadline.weight(.semibold))

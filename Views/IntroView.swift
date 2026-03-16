@@ -414,6 +414,31 @@ struct IntroView: View {
                         .font(.footnote)
                         .foregroundStyle(AppTheme.textTertiary)
 
+                    if !coachPlan.alignmentWithLocal.isEmpty {
+                        Text(coachPlan.alignmentWithLocal)
+                            .font(.footnote)
+                            .foregroundStyle(AppTheme.textSecondary)
+                    }
+
+                    if !coachPlan.evidenceBasis.isEmpty {
+                        VStack(alignment: .leading, spacing: 5) {
+                            Text("Evidence Basis")
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(AppTheme.textTertiary)
+                            ForEach(coachPlan.evidenceBasis, id: \.self) { item in
+                                HStack(alignment: .top, spacing: 6) {
+                                    Circle()
+                                        .fill(AppTheme.amber.opacity(0.85))
+                                        .frame(width: 5, height: 5)
+                                        .padding(.top, 6)
+                                    Text(item)
+                                        .font(.caption)
+                                        .foregroundStyle(AppTheme.textSecondary)
+                                }
+                            }
+                        }
+                    }
+
                     if !coachPlan.actionItems.isEmpty {
                         VStack(alignment: .leading, spacing: 5) {
                             ForEach(coachPlan.actionItems, id: \.self) { item in

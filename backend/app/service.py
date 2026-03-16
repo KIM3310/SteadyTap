@@ -56,6 +56,17 @@ def build_coach_plan(
         ]
 
     confidence = clamp(0.58 + (min(aggregate.count, 20) / 100) + (abs(avg_delta_recent) / 40), 0.45, 0.95)
+    evidence_basis = [
+        f"Recent sessions considered: {len(recent_sessions)}",
+        f"Recent score delta baseline: {avg_delta_recent:.2f}",
+        f"Lifetime average delta: {aggregate.avg_delta:.2f}",
+        f"Completed session count: {aggregate.count}",
+    ]
+    alignment_with_local = (
+        "Remote recommendation aligns with your recent local trend and keeps the suggested preset within your observed confidence band."
+        if recent_sessions
+        else "Remote recommendation is using aggregate-only history because there are not enough recent local sessions yet."
+    )
 
     return {
         "generated_at": datetime.now(tz=timezone.utc),
@@ -66,6 +77,8 @@ def build_coach_plan(
         "target_score_delta": round(max(6.0, avg_delta_recent + 2.0), 2),
         "target_sessions_per_week": 4 if aggregate.count >= 3 else 5,
         "confidence": round(confidence, 3),
+        "evidence_basis": evidence_basis,
+        "alignment_with_local": alignment_with_local,
         "action_items": action_items,
     }
 

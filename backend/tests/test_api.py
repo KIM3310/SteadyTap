@@ -102,6 +102,35 @@ def test_health_and_meta_report_runtime_state(tmp_path: Path):
     schema_body = schema.json()
     assert schema_body["schema"] == "steadytap-coach-report-v1"
     assert "action_items" in schema_body["required_sections"]
+    assert "evidence_basis" in schema_body["required_sections"]
+    assert "alignment_with_local" in schema_body["required_sections"]
+
+    coach_plan = client.post(
+        "/v1/coach/plan",
+        json={
+            "user_id": "kim",
+            "recent_sessions": [
+                {
+                    "id": "sess-1",
+                    "timestamp": "2026-03-16T00:00:00Z",
+                    "scoring_preset_raw_value": "balanced",
+                    "challenge_intensity_raw_value": "standard",
+                    "weekly_goal_target": 4,
+                    "baseline_score": 72.0,
+                    "adaptive_score": 81.0,
+                    "baseline_accuracy": 0.82,
+                    "adaptive_accuracy": 0.9,
+                    "miss_delta": -2,
+                    "time_delta": -3.5,
+                }
+            ],
+        },
+    )
+    assert coach_plan.status_code == 200
+    coach_body = coach_plan.json()
+    assert isinstance(coach_body["evidence_basis"], list)
+    assert len(coach_body["evidence_basis"]) >= 3
+    assert coach_body["alignment_with_local"]
 
 
 def test_progress_report_tracks_weekly_cadence_and_coach_delta(tmp_path: Path):
