@@ -40,6 +40,7 @@ SERVICE_ROUTES = [
     "/v1/meta",
     "/v1/runtime-brief",
     "/v1/runtime-scorecard",
+    "/v1/review-queue",
     "/v1/progress-report",
     "/v1/review-pack",
     "/v1/schema/coach-report",
@@ -97,6 +98,71 @@ def build_coach_report_schema() -> dict[str, object]:
     }
 
 
+def build_review_queue(user_id: str = "demo-user") -> dict[str, object]:
+    recent = db.list_sessions(user_id, limit=8)
+    aggregate = db.user_aggregate(user_id)
+    if not recent:
+        items = [
+            {
+                "queue_id": f"{user_id}-needs-seed",
+                "priority": "high",
+                "reason": "No uploaded session summaries are available yet.",
+                "reviewer_claim": "Remote coaching should stay in review-only posture until at least one session summary lands.",
+                "recommended_action": "Upload representative sessions, then compare /v1/progress-report and /v1/review-pack.",
+            }
+        ]
+    else:
+        latest = recent[0]
+        avg_confidence = sum(float(item.get("confidence_score", 0.0) or 0.0) for item in recent) / len(recent)
+        avg_stability = sum(float(item.get("stability_index", 0.0) or 0.0) for item in recent) / len(recent)
+        current_delta = float(latest.get("adaptive_score", 0.0) or 0.0) - float(latest.get("baseline_score", 0.0) or 0.0)
+        items = [
+            {
+                "queue_id": f"{user_id}-freshness",
+                "priority": "high" if len(recent) < 3 else "medium",
+                "reason": "Recent cloud guidance depends on fresh local summaries.",
+                "reviewer_claim": f"{len(recent)} recent sessions are available for reviewer comparison.",
+                "recommended_action": "Keep the latest session plus /v1/progress-report visible during review.",
+            },
+            {
+                "queue_id": f"{user_id}-confidence",
+                "priority": "high" if avg_confidence < 0.72 else "medium",
+                "reason": "Low confidence trends can make remote coaching feel more certain than local evidence supports.",
+                "reviewer_claim": f"Average confidence is {avg_confidence:.2f} across the review window.",
+                "recommended_action": "Recalibrate locally before increasing remote coaching intensity." if avg_confidence < 0.72 else "Local confidence band is reviewable.",
+            },
+            {
+                "queue_id": f"{user_id}-stability",
+                "priority": "high" if avg_stability < 0.7 or current_delta < 6 else "medium",
+                "reason": "Stability and score delta should be read together before a clinician treats progress as durable.",
+                "reviewer_claim": f"Latest score delta is {current_delta:.2f} with average stability {avg_stability:.2f}.",
+                "recommended_action": "Use supportive coaching and compare against benchmark snapshots." if avg_stability < 0.7 or current_delta < 6 else "Current stability supports a normal review cadence.",
+            },
+        ]
+
+    return {
+        "status": "ok",
+        "service": "steadytap-backend",
+        "generated_at": datetime.now(tz=timezone.utc),
+        "contract_version": "steadytap-review-queue-v1",
+        "user_id": user_id,
+        "summary": {
+            "queue_items": len(items),
+            "session_count": aggregate.count,
+            "latest_session_at": recent[0]["ts"] if recent else None,
+            "blocked": len(recent) == 0,
+        },
+        "items": items,
+        "links": {
+            "runtime_scorecard": "/v1/runtime-scorecard",
+            "runtime_brief": "/v1/runtime-brief",
+            "review_queue": f"/v1/review-queue?user_id={user_id}",
+            "progress_report": f"/v1/progress-report?user_id={user_id}",
+            "review_pack": "/v1/review-pack",
+        },
+    }
+
+
 def build_service_brief() -> dict[str, object]:
     session_count = db.count_sessions()
     runtime_summary = build_runtime_summary()
@@ -118,10 +184,12 @@ def build_service_brief() -> dict[str, object]:
             "service_routes": len(SERVICE_ROUTES),
             "coach_actions": 4,
             "benchmark_surfaces": 3,
+            "review_queue_items": 3,
         },
         "review_flow": [
             "Open /v1/health or /v1/meta to confirm storage posture and auth mode.",
             "Read /v1/runtime-scorecard and /v1/runtime-brief before enabling cloud mode in the app.",
+            "Open /v1/review-queue for the clinician/reviewer handoff surface before trusting remote guidance.",
             "Use /v1/coach/plan and /v1/benchmarks with representative session history, then compare against local insights.",
             "Review queued uploads in the app before trusting remote guidance as the source of truth.",
         ],
@@ -129,6 +197,7 @@ def build_service_brief() -> dict[str, object]:
             "Open /v1/health or /v1/meta to confirm auth mode and storage posture.",
             "Read /v1/runtime-scorecard for event volume, busiest routes, and sync posture.",
             "Read /v1/runtime-brief for sync boundary and current watchouts.",
+            "Open /v1/review-queue to see which users still need reviewer attention before cloud mode is trusted.",
             "Compare /v1/coach/plan and /v1/benchmarks against recent local sessions before enabling cloud mode.",
             "Check the in-app sync queue and /v1/review-pack before treating remote guidance as authoritative.",
         ],
@@ -145,6 +214,7 @@ def build_service_brief() -> dict[str, object]:
         "proof_assets": [
             {"label": "Health Surface", "href": "/v1/health"},
             {"label": "Runtime Scorecard", "href": "/v1/runtime-scorecard"},
+            {"label": "Review Queue", "href": "/v1/review-queue?user_id=demo-user"},
             {"label": "Progress Report", "href": "/v1/progress-report?user_id=demo-user"},
             {"label": "Runtime Brief", "href": "/v1/runtime-brief"},
             {"label": "Review Pack", "href": "/v1/review-pack"},
@@ -156,6 +226,7 @@ def build_service_brief() -> dict[str, object]:
             "meta": "/v1/meta",
             "runtime_scorecard": "/v1/runtime-scorecard",
             "runtime_brief": "/v1/runtime-brief",
+            "review_queue": "/v1/review-queue?user_id=demo-user",
             "progress_report": "/v1/progress-report",
             "review_pack": "/v1/review-pack",
             "coach_schema": "/v1/schema/coach-report",
@@ -187,6 +258,7 @@ def build_review_pack() -> dict[str, object]:
                 "/v1/meta",
                 "/v1/runtime-scorecard",
                 "/v1/runtime-brief",
+                "/v1/review-queue",
                 "/v1/progress-report",
                 "/v1/review-pack",
                 "/v1/schema/coach-report",
@@ -200,6 +272,7 @@ def build_review_pack() -> dict[str, object]:
         "review_sequence": [
             "Open /v1/health or /v1/meta to confirm auth mode, storage posture, and route availability.",
             "Read /v1/runtime-scorecard, /v1/runtime-brief, and /v1/review-pack before enabling cloud mode for shared testing.",
+            "Open /v1/review-queue to identify reviewer follow-up before cloud guidance is treated as stable.",
             "Compare /v1/coach/plan and /v1/benchmarks against recent local sessions before adopting remote guidance.",
             "Keep queued uploads reviewable in the app so sync failures never become silent data loss.",
         ],
@@ -207,12 +280,14 @@ def build_review_pack() -> dict[str, object]:
             "Open /v1/health or /v1/meta to confirm auth and storage posture.",
             "Read /v1/runtime-scorecard for runtime event pressure and busiest sync surfaces.",
             "Read /v1/runtime-brief for sync boundary and watchouts.",
+            "Open /v1/review-queue before shared review sessions so stale users stay visible.",
             "Read /v1/review-pack before enabling shared cloud testing.",
             "Compare remote coach outputs against local sessions before adopting them in the app.",
         ],
         "proof_assets": [
             {"label": "Health Surface", "href": "/v1/health"},
             {"label": "Runtime Scorecard", "href": "/v1/runtime-scorecard"},
+            {"label": "Review Queue", "href": "/v1/review-queue?user_id=demo-user"},
             {"label": "Progress Report", "href": "/v1/progress-report?user_id=demo-user"},
             {"label": "Review Pack", "href": "/v1/review-pack"},
             {"label": "Coach Schema", "href": "/v1/schema/coach-report"},
@@ -228,6 +303,7 @@ def build_review_pack() -> dict[str, object]:
             "meta": "/v1/meta",
             "runtime_scorecard": "/v1/runtime-scorecard",
             "runtime_brief": "/v1/runtime-brief",
+            "review_queue": "/v1/review-queue?user_id=demo-user",
             "progress_report": "/v1/progress-report",
             "review_pack": "/v1/review-pack",
             "coach_schema": "/v1/schema/coach-report",
@@ -264,6 +340,7 @@ def build_runtime_scorecard() -> dict[str, object]:
                 "/v1/meta",
                 "/v1/runtime-scorecard",
                 "/v1/runtime-brief",
+                "/v1/review-queue",
                 "/v1/progress-report",
                 "/v1/review-pack",
             ],
@@ -273,6 +350,7 @@ def build_runtime_scorecard() -> dict[str, object]:
             "meta": "/v1/meta",
             "runtime_scorecard": "/v1/runtime-scorecard",
             "runtime_brief": "/v1/runtime-brief",
+            "review_queue": "/v1/review-queue?user_id=demo-user",
             "progress_report": "/v1/progress-report",
             "review_pack": "/v1/review-pack",
             "coach_schema": "/v1/schema/coach-report",
@@ -293,6 +371,7 @@ def health() -> HealthResponse:
             "meta": "/v1/meta",
             "runtime_scorecard": "/v1/runtime-scorecard",
             "runtime_brief": "/v1/runtime-brief",
+            "review_queue": "/v1/review-queue?user_id=demo-user",
             "progress_report": "/v1/progress-report",
             "review_pack": "/v1/review-pack",
             "coach_schema": "/v1/schema/coach-report",
@@ -321,6 +400,7 @@ def meta() -> ServiceMetaResponse:
             "coach-plan-generation",
             "benchmark-snapshots",
             "progress-report-surface",
+            "review-queue-surface",
             "user-session-history",
             "service-brief-surface",
             "runtime-scorecard-surface",
@@ -341,6 +421,12 @@ def runtime_brief() -> ServiceBriefResponse:
 def runtime_scorecard() -> RuntimeScorecardResponse:
     record_runtime_event(event_type="route_hit", route="/v1/runtime-scorecard")
     return RuntimeScorecardResponse(**build_runtime_scorecard())
+
+
+@app.get("/v1/review-queue")
+def review_queue(user_id: str = "demo-user") -> dict[str, object]:
+    record_runtime_event(event_type="route_hit", route="/v1/review-queue", user_id=user_id)
+    return build_review_queue(user_id=user_id)
 
 
 @app.get("/v1/progress-report", response_model=ProgressReportResponse)
