@@ -46,6 +46,14 @@ struct MockBackendClient: SteadyTapBackendClient {
             targetScoreDelta: max(6, avgDelta + 2.5),
             targetSessionsPerWeek: recent.count >= 3 ? 4 : 5,
             confidence: confidence,
+            evidenceBasis: [
+                "Recent sessions considered: \(recent.count)",
+                String(format: "Recent score delta baseline: %.2f", avgDelta),
+                "Recommended preset derived from the local trend band."
+            ],
+            alignmentWithLocal: recent.isEmpty
+                ? "Remote coaching is using placeholder trend data until local sessions accumulate."
+                : "Remote coaching aligns with your recent local score deltas and keeps the recommendation within the same challenge band.",
             actionItems: buildActionItems(
                 avgDelta: avgDelta,
                 recommendedPreset: preset,
@@ -235,6 +243,8 @@ private struct CoachPlanResponse: Decodable {
     let targetScoreDelta: Double
     let targetSessionsPerWeek: Int
     let confidence: Double
+    let evidenceBasis: [String]?
+    let alignmentWithLocal: String?
     let actionItems: [String]?
 
     enum CodingKeys: String, CodingKey {
@@ -246,6 +256,8 @@ private struct CoachPlanResponse: Decodable {
         case targetScoreDelta = "target_score_delta"
         case targetSessionsPerWeek = "target_sessions_per_week"
         case confidence
+        case evidenceBasis = "evidence_basis"
+        case alignmentWithLocal = "alignment_with_local"
         case actionItems = "action_items"
     }
 
@@ -259,6 +271,8 @@ private struct CoachPlanResponse: Decodable {
             targetScoreDelta: targetScoreDelta,
             targetSessionsPerWeek: targetSessionsPerWeek,
             confidence: confidence,
+            evidenceBasis: evidenceBasis ?? [],
+            alignmentWithLocal: alignmentWithLocal ?? "",
             actionItems: actionItems ?? []
         )
     }

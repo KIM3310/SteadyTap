@@ -400,6 +400,8 @@ struct CoachPlan: Codable {
     let targetScoreDelta: Double
     let targetSessionsPerWeek: Int
     let confidence: Double
+    let evidenceBasis: [String]
+    let alignmentWithLocal: String
     let actionItems: [String]
 
     var recommendedPreset: ScoringPreset {
@@ -423,6 +425,12 @@ struct CoachPlan: Codable {
         targetScoreDelta: 8,
         targetSessionsPerWeek: 4,
         confidence: 0.72,
+        evidenceBasis: [
+            "Recent sessions considered: 3",
+            "Recent score delta baseline: 6.00",
+            "Lifetime average delta: 5.50",
+        ],
+        alignmentWithLocal: "Remote coaching is aligned to your recent local pattern and current confidence level.",
         actionItems: [
             "Use Mistake-first preset for the next 3 sessions.",
             "Aim for less than 2 accidental touches per run.",
@@ -439,6 +447,8 @@ struct CoachPlan: Codable {
         targetScoreDelta: Double,
         targetSessionsPerWeek: Int,
         confidence: Double,
+        evidenceBasis: [String],
+        alignmentWithLocal: String,
         actionItems: [String]
     ) {
         self.generatedAt = generatedAt
@@ -449,6 +459,8 @@ struct CoachPlan: Codable {
         self.targetScoreDelta = targetScoreDelta
         self.targetSessionsPerWeek = targetSessionsPerWeek
         self.confidence = confidence
+        self.evidenceBasis = evidenceBasis
+        self.alignmentWithLocal = alignmentWithLocal
         self.actionItems = actionItems
     }
 
@@ -462,6 +474,8 @@ struct CoachPlan: Codable {
         targetScoreDelta = try container.decode(Double.self, forKey: .targetScoreDelta)
         targetSessionsPerWeek = try container.decode(Int.self, forKey: .targetSessionsPerWeek)
         confidence = try container.decode(Double.self, forKey: .confidence)
+        evidenceBasis = try container.decodeIfPresent([String].self, forKey: .evidenceBasis) ?? []
+        alignmentWithLocal = try container.decodeIfPresent(String.self, forKey: .alignmentWithLocal) ?? ""
         actionItems = try container.decodeIfPresent([String].self, forKey: .actionItems) ?? []
     }
 }
