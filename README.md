@@ -1,6 +1,6 @@
 # SteadyTap
 
-SteadyTap is an accessibility-first iOS App Playground with an integrated FastAPI service for cloud sync, coach-plan generation, and cohort benchmarks.
+SteadyTap is an accessibility-first iOS coaching app with an optional FastAPI backend for sync, coach-plan generation, and cohort benchmarks.
 
 The product is designed to be reviewable in two modes:
 
@@ -16,7 +16,7 @@ A reviewer can picture a user with an unsteady hand starting with calibration on
 
 ## Role signals
 - **AI / product engineer:** the repo shows native interaction design, telemetry, and coaching loops in one accessibility-first workflow.
-- **Solution / cloud architect:** app behavior and backend contract stay aligned instead of being buried in separate prototypes.
+- **Solutions architect:** app behavior and backend contract stay aligned instead of being buried in separate prototypes.
 - **Field / solutions engineer:** the reviewer path is short: landing page -> README -> simulator/device proof.
 
 
