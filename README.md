@@ -113,6 +113,7 @@ Backend API surface:
 - `GET /v1/runtime-brief`
 - `GET /v1/review-pack`
 - `GET /v1/progress-report`
+- `GET /v1/review-queue?user_id={user_id}`
 - `GET /v1/schema/coach-report`
 - `POST /v1/sessions`
 - `POST /v1/coach/plan`
@@ -124,6 +125,7 @@ Service-grade surfaces:
 - backend service brief for sync boundary, auth mode, trust boundary, and review flow
 - backend review pack for mobile/cloud handoff, auth posture, and queue-safe sync checks
 - backend progress report for clinician/reviewer cadence, streak adherence, and coach-plan delta review
+- backend review queue for clinician/reviewer handoff, stale-user visibility, and safe cloud enablement
 - coach-report schema route for explicit remote coaching contract
 - app home dashboard cards that surface backend posture and review pack before cloud mode is enabled
 
@@ -131,14 +133,16 @@ Service-grade surfaces:
 
 1. Open `/v1/health` or `/v1/meta` to confirm auth mode and storage posture.
 2. Read `/v1/runtime-brief` for sync boundary and current watchouts.
-3. Compare `/v1/coach/plan` and `/v1/benchmarks` against recent local sessions before enabling cloud mode.
-4. Check the in-app sync queue and `/v1/review-pack` before treating remote guidance as authoritative.
+3. Open `/v1/review-queue?user_id=demo-user` to identify stale users and reviewer follow-up before trusting remote guidance.
+4. Compare `/v1/coach/plan` and `/v1/benchmarks` against recent local sessions before enabling cloud mode.
+5. Check the in-app sync queue and `/v1/review-pack` before treating remote guidance as authoritative.
 
 ## Proof Assets
 
 - `/v1/health`
 - `/v1/runtime-brief`
 - `/v1/review-pack`
+- `/v1/review-queue?user_id=demo-user`
 - `/v1/schema/coach-report`
 
 ## Cloud mode in the app
