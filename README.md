@@ -22,7 +22,7 @@ A reviewer can picture a user with an unsteady hand starting with calibration on
 
 ## Portfolio context
 - **Portfolio family:** human-centered intelligent products
-- **This repo's role:** flagship accessibility / coaching product in the portfolio.
+- **This repo's role:** accessibility and coaching product branch in the portfolio.
 - **Related repos:** `the-savior`, `ecotide`
 
 ## Start here
