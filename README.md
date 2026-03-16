@@ -15,7 +15,7 @@ A reviewer can picture a user with an unsteady hand starting with calibration on
 - The landing page matters, but the convincing proof is still calibration, challenge, and trend review on the app itself.
 
 ## Role signals
-- **AI / product engineer:** the repo shows native interaction design, telemetry, and coaching loops in one accessibility-first workflow.
+- **AI engineer / product systems:** the repo shows native interaction design, telemetry, and coaching loops in one accessibility-first workflow.
 - **Solutions architect:** app behavior and backend contract stay aligned instead of being buried in separate prototypes.
 - **Field / solutions engineer:** the reviewer path is short: landing page -> README -> simulator/device proof.
 
