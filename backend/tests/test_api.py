@@ -26,6 +26,28 @@ def load_main_module(tmp_path: Path, api_key: str = ""):
     return importlib.reload(module)
 
 
+SAMPLE_SESSION_PAYLOAD = {
+    "id": "sess-001",
+    "user_id": "kim",
+    "timestamp": "2026-03-10T09:00:00Z",
+    "scoring_preset_raw_value": "balanced",
+    "challenge_intensity_raw_value": "standard",
+    "weekly_goal_target": 4,
+    "baseline_score": 72,
+    "adaptive_score": 81,
+    "miss_delta": 2,
+    "time_delta": -1.8,
+    "stability_index": 0.74,
+    "confidence_score": 0.8,
+    "button_scale": 1.0,
+    "hold_duration": 0.15,
+    "swipe_threshold": 24,
+}
+
+
+# ---------------------------------------------------------------------------
+# 1. Health and meta endpoints return expected contract fields
+# ---------------------------------------------------------------------------
 def test_health_and_meta_report_runtime_state(tmp_path: Path):
     main = load_main_module(tmp_path)
     client = TestClient(main.app)
@@ -149,27 +171,14 @@ def test_health_and_meta_report_runtime_state(tmp_path: Path):
     assert coach_body["alignment_with_local"]
 
 
+# ---------------------------------------------------------------------------
+# 2. Progress report tracks weekly cadence and coach delta after session uploads
+# ---------------------------------------------------------------------------
 def test_progress_report_tracks_weekly_cadence_and_coach_delta(tmp_path: Path):
     main = load_main_module(tmp_path)
     client = TestClient(main.app)
 
-    payload = {
-        "id": "sess-001",
-        "user_id": "kim",
-        "timestamp": "2026-03-10T09:00:00Z",
-        "scoring_preset_raw_value": "balanced",
-        "challenge_intensity_raw_value": "standard",
-        "weekly_goal_target": 4,
-        "baseline_score": 72,
-        "adaptive_score": 81,
-        "miss_delta": 2,
-        "time_delta": -1.8,
-        "stability_index": 0.74,
-        "confidence_score": 0.8,
-        "button_scale": 1.0,
-        "hold_duration": 0.15,
-        "swipe_threshold": 24,
-    }
+    payload = dict(SAMPLE_SESSION_PAYLOAD)
     client.post("/v1/sessions", json=payload)
     payload["id"] = "sess-002"
     payload["timestamp"] = "2026-03-11T09:00:00Z"
@@ -192,6 +201,9 @@ def test_progress_report_tracks_weekly_cadence_and_coach_delta(tmp_path: Path):
     assert queue_body["items"][0]["queue_id"].startswith("kim-")
 
 
+# ---------------------------------------------------------------------------
+# 3. Protected routes require bearer token when API key is configured
+# ---------------------------------------------------------------------------
 def test_protected_routes_require_bearer_token_when_api_key_is_configured(tmp_path: Path):
     main = load_main_module(tmp_path, api_key="top-secret")
     client = TestClient(main.app)
@@ -202,3 +214,236 @@ def test_protected_routes_require_bearer_token_when_api_key_is_configured(tmp_pa
     assert unauthorized.status_code == 401
     assert authorized.status_code == 200
     assert authorized.json()["auth"]["api_key_required"] is True
+
+
+# ---------------------------------------------------------------------------
+# 4. Coach plan calibration logic: low delta yields precision focus
+# ---------------------------------------------------------------------------
+def test_coach_plan_low_delta_yields_precision_focus(tmp_path: Path):
+    main = load_main_module(tmp_path)
+    client = TestClient(main.app)
+
+    response = client.post(
+        "/v1/coach/plan",
+        json={
+            "user_id": "test-user",
+            "recent_sessions": [
+                {
+                    "id": "s1",
+                    "timestamp": "2026-03-10T00:00:00Z",
+                    "scoring_preset_raw_value": "balanced",
+                    "baseline_score": 70.0,
+                    "adaptive_score": 73.0,
+                    "baseline_accuracy": 0.8,
+                    "adaptive_accuracy": 0.85,
+                    "miss_delta": -1,
+                    "time_delta": -0.5,
+                },
+            ],
+        },
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["focus_area"] == "Precision stabilization"
+    assert body["recommended_preset"] == "missFocused"
+    assert body["recommended_intensity"] == "supportive"
+    assert body["confidence"] > 0.4
+    assert body["confidence"] <= 0.95
+
+
+# ---------------------------------------------------------------------------
+# 5. Coach plan calibration logic: high delta yields speed focus
+# ---------------------------------------------------------------------------
+def test_coach_plan_high_delta_yields_speed_focus(tmp_path: Path):
+    main = load_main_module(tmp_path)
+    client = TestClient(main.app)
+
+    response = client.post(
+        "/v1/coach/plan",
+        json={
+            "user_id": "test-user",
+            "recent_sessions": [
+                {
+                    "id": "s1",
+                    "timestamp": "2026-03-10T00:00:00Z",
+                    "scoring_preset_raw_value": "balanced",
+                    "baseline_score": 60.0,
+                    "adaptive_score": 75.0,
+                    "baseline_accuracy": 0.7,
+                    "adaptive_accuracy": 0.92,
+                    "miss_delta": -3,
+                    "time_delta": -2.0,
+                },
+            ],
+        },
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["focus_area"] == "Adaptive speed confidence"
+    assert body["recommended_preset"] == "speedFocused"
+    assert body["recommended_intensity"] == "advanced"
+
+
+# ---------------------------------------------------------------------------
+# 6. Benchmark percentile reflects user delta vs global average
+# ---------------------------------------------------------------------------
+def test_benchmark_percentile_reflects_delta(tmp_path: Path):
+    main = load_main_module(tmp_path)
+    client = TestClient(main.app)
+
+    # Upload some sessions to create a global average
+    for i in range(3):
+        payload = dict(SAMPLE_SESSION_PAYLOAD)
+        payload["id"] = f"bench-sess-{i}"
+        payload["user_id"] = "global-user"
+        payload["baseline_score"] = 70
+        payload["adaptive_score"] = 76
+        client.post("/v1/sessions", json=payload)
+
+    # Request benchmark for a user with higher delta
+    response = client.post(
+        "/v1/benchmarks",
+        json={
+            "user_id": "test-user",
+            "recent_sessions": [
+                {
+                    "id": "b1",
+                    "timestamp": "2026-03-10T00:00:00Z",
+                    "scoring_preset_raw_value": "balanced",
+                    "baseline_score": 60.0,
+                    "adaptive_score": 80.0,
+                    "baseline_accuracy": 0.75,
+                    "adaptive_accuracy": 0.9,
+                    "miss_delta": -2,
+                    "time_delta": -1.0,
+                },
+            ],
+        },
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["percentile"] >= 20
+    assert body["percentile"] <= 99
+    assert body["cohort_label"] == "Motor accessibility learners"
+    assert body["average_score_delta"] >= 0
+
+
+# ---------------------------------------------------------------------------
+# 7. Coaching recommendations: moderate delta yields balanced plan
+# ---------------------------------------------------------------------------
+def test_coach_plan_moderate_delta_yields_balanced(tmp_path: Path):
+    main = load_main_module(tmp_path)
+    client = TestClient(main.app)
+
+    response = client.post(
+        "/v1/coach/plan",
+        json={
+            "user_id": "test-user",
+            "recent_sessions": [
+                {
+                    "id": "m1",
+                    "timestamp": "2026-03-10T00:00:00Z",
+                    "scoring_preset_raw_value": "balanced",
+                    "baseline_score": 70.0,
+                    "adaptive_score": 77.0,
+                    "baseline_accuracy": 0.8,
+                    "adaptive_accuracy": 0.88,
+                    "miss_delta": -1,
+                    "time_delta": -1.0,
+                },
+            ],
+        },
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["focus_area"] == "Balanced consistency"
+    assert body["recommended_preset"] == "balanced"
+    assert body["recommended_intensity"] == "standard"
+    assert len(body["action_items"]) >= 3
+
+
+# ---------------------------------------------------------------------------
+# 8. Sync queue behavior: session upload, lookup, and deduplication
+# ---------------------------------------------------------------------------
+def test_sync_queue_upload_lookup_and_dedup(tmp_path: Path):
+    main = load_main_module(tmp_path)
+    client = TestClient(main.app)
+
+    # Upload first session
+    payload = dict(SAMPLE_SESSION_PAYLOAD)
+    resp = client.post("/v1/sessions", json=payload)
+    assert resp.status_code == 200
+    assert resp.json()["accepted"] is True
+
+    # Lookup sessions for user
+    lookup = client.get("/v1/sessions/kim?limit=10")
+    assert lookup.status_code == 200
+    assert lookup.json()["count"] == 1
+    assert lookup.json()["user_id"] == "kim"
+    assert len(lookup.json()["items"]) == 1
+
+    # Upload duplicate (INSERT OR REPLACE) -- same id, should not increase count
+    resp2 = client.post("/v1/sessions", json=payload)
+    assert resp2.status_code == 200
+    lookup2 = client.get("/v1/sessions/kim?limit=10")
+    assert lookup2.json()["count"] == 1
+
+    # Upload second session with different id
+    payload2 = dict(payload)
+    payload2["id"] = "sess-002"
+    payload2["adaptive_score"] = 85
+    client.post("/v1/sessions", json=payload2)
+    lookup3 = client.get("/v1/sessions/kim?limit=10")
+    assert lookup3.json()["count"] == 2
+
+
+# ---------------------------------------------------------------------------
+# 9. Input validation rejects invalid payloads
+# ---------------------------------------------------------------------------
+def test_input_validation_rejects_invalid_payloads(tmp_path: Path):
+    main = load_main_module(tmp_path)
+    client = TestClient(main.app)
+
+    # Empty user_id in coach plan
+    resp = client.post(
+        "/v1/coach/plan",
+        json={"user_id": "", "recent_sessions": []},
+    )
+    assert resp.status_code == 422
+
+    # Missing required fields in session upload
+    resp2 = client.post(
+        "/v1/sessions",
+        json={"id": "x"},
+    )
+    assert resp2.status_code == 422
+
+    # Out-of-range stability_index
+    bad_payload = dict(SAMPLE_SESSION_PAYLOAD)
+    bad_payload["stability_index"] = 5.0
+    resp3 = client.post("/v1/sessions", json=bad_payload)
+    assert resp3.status_code == 422
+
+    # Out-of-range confidence_score
+    bad_payload2 = dict(SAMPLE_SESSION_PAYLOAD)
+    bad_payload2["confidence_score"] = -1.0
+    resp4 = client.post("/v1/sessions", json=bad_payload2)
+    assert resp4.status_code == 422
+
+
+# ---------------------------------------------------------------------------
+# 10. Structured error response format
+# ---------------------------------------------------------------------------
+def test_structured_error_response_format(tmp_path: Path):
+    main = load_main_module(tmp_path, api_key="secret-key")
+    client = TestClient(main.app)
+
+    resp = client.post(
+        "/v1/sessions",
+        json=SAMPLE_SESSION_PAYLOAD,
+    )
+    assert resp.status_code == 401
+    body = resp.json()
+    assert "error" in body
+    assert body["error"]["code"] == 401
+    assert "message" in body["error"]

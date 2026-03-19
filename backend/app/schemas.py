@@ -2,19 +2,20 @@ from __future__ import annotations
 
 from datetime import datetime
 from typing import Any, Optional, Union
+
 from pydantic import BaseModel, Field
 
 
 class SessionSummaryIn(BaseModel):
-    id: str
+    id: str = Field(min_length=1)
     timestamp: datetime
-    scoring_preset_raw_value: str
+    scoring_preset_raw_value: str = Field(min_length=1)
     challenge_intensity_raw_value: Optional[str] = None
-    weekly_goal_target: Optional[int] = None
-    baseline_score: float
-    adaptive_score: float
-    baseline_accuracy: float
-    adaptive_accuracy: float
+    weekly_goal_target: Optional[int] = Field(default=None, ge=1, le=14)
+    baseline_score: float = Field(ge=0, le=200)
+    adaptive_score: float = Field(ge=0, le=200)
+    baseline_accuracy: float = Field(ge=0, le=1)
+    adaptive_accuracy: float = Field(ge=0, le=1)
     miss_delta: int
     time_delta: float
 
@@ -30,21 +31,21 @@ class BenchmarkRequest(BaseModel):
 
 
 class SessionUploadPayload(BaseModel):
-    id: str
-    user_id: str
+    id: str = Field(min_length=1)
+    user_id: str = Field(min_length=1)
     timestamp: datetime
-    scoring_preset_raw_value: str
+    scoring_preset_raw_value: str = Field(min_length=1)
     challenge_intensity_raw_value: Optional[str] = None
-    weekly_goal_target: Optional[int] = None
-    baseline_score: float
-    adaptive_score: float
+    weekly_goal_target: Optional[int] = Field(default=None, ge=1, le=14)
+    baseline_score: float = Field(ge=0, le=200)
+    adaptive_score: float = Field(ge=0, le=200)
     miss_delta: int
     time_delta: float
-    stability_index: float
-    confidence_score: float
-    button_scale: float
-    hold_duration: float
-    swipe_threshold: float
+    stability_index: float = Field(ge=0, le=1)
+    confidence_score: float = Field(ge=0, le=1)
+    button_scale: float = Field(gt=0, le=5)
+    hold_duration: float = Field(ge=0, le=5)
+    swipe_threshold: float = Field(ge=0, le=200)
 
 
 class CoachPlanResponse(BaseModel):

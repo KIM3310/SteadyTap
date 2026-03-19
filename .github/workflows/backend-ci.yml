@@ -40,5 +40,8 @@ jobs:
       - name: Bytecode compile check
         run: python -m compileall -q .
 
+      - name: Lint check
+        run: python -m ruff check .
+
       - name: Backend tests
         run: python -m pytest -q

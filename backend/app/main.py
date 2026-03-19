@@ -5,16 +5,18 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
-from fastapi import Depends, FastAPI, Header, HTTPException
+from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 
 from .db import Database
+from .runtime_store import build_runtime_summary, record_runtime_event
 from .schemas import (
     BenchmarkRequest,
     BenchmarkResponse,
-    CoachReportSchemaResponse,
     CoachPlanRequest,
     CoachPlanResponse,
+    CoachReportSchemaResponse,
     HealthResponse,
     ProgressReportResponse,
     RuntimeScorecardResponse,
@@ -24,7 +26,6 @@ from .schemas import (
     SessionUploadPayload,
     UploadSessionResponse,
 )
-from .runtime_store import build_runtime_summary, record_runtime_event
 from .service import build_benchmark, build_coach_plan, build_progress_report
 
 APP_TITLE = "SteadyTap Backend API"
@@ -60,6 +61,32 @@ app.add_middleware(
 )
 
 
+@app.exception_handler(HTTPException)
+async def http_exception_handler(_request: Request, exc: HTTPException) -> JSONResponse:
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={
+            "error": {
+                "code": exc.status_code,
+                "message": exc.detail,
+            },
+        },
+    )
+
+
+@app.exception_handler(Exception)
+async def unhandled_exception_handler(_request: Request, exc: Exception) -> JSONResponse:
+    return JSONResponse(
+        status_code=500,
+        content={
+            "error": {
+                "code": 500,
+                "message": "Internal server error",
+            },
+        },
+    )
+
+
 db = Database(DB_PATH)
 
 
@@ -82,14 +109,14 @@ def build_coach_report_schema() -> dict[str, object]:
             "focus_area",
             "rationale",
             "recommended_preset",
-        "recommended_intensity",
-        "target_score_delta",
-        "target_sessions_per_week",
-        "confidence",
-        "evidence_basis",
-        "alignment_with_local",
-        "action_items",
-    ],
+            "recommended_intensity",
+            "target_score_delta",
+            "target_sessions_per_week",
+            "confidence",
+            "evidence_basis",
+            "alignment_with_local",
+            "action_items",
+        ],
         "operator_rules": [
             "Review local session history before trusting remote coach recommendations.",
             "Cloud mode uploads run summaries only; calibration raw samples remain on device.",
@@ -107,15 +134,23 @@ def build_review_queue(user_id: str = "demo-user") -> dict[str, object]:
                 "queue_id": f"{user_id}-needs-seed",
                 "priority": "high",
                 "reason": "No uploaded session summaries are available yet.",
-                "reviewer_claim": "Remote coaching should stay in review-only posture until at least one session summary lands.",
-                "recommended_action": "Upload representative sessions, then compare /v1/progress-report and /v1/review-pack.",
+                "reviewer_claim": (
+                    "Remote coaching should stay in review-only posture "
+                    "until at least one session summary lands."
+                ),
+                "recommended_action": (
+                    "Upload representative sessions, then compare "
+                    "/v1/progress-report and /v1/review-pack."
+                ),
             }
         ]
     else:
         latest = recent[0]
         avg_confidence = sum(float(item.get("confidence_score", 0.0) or 0.0) for item in recent) / len(recent)
         avg_stability = sum(float(item.get("stability_index", 0.0) or 0.0) for item in recent) / len(recent)
-        current_delta = float(latest.get("adaptive_score", 0.0) or 0.0) - float(latest.get("baseline_score", 0.0) or 0.0)
+        adaptive = float(latest.get("adaptive_score", 0.0) or 0.0)
+        baseline = float(latest.get("baseline_score", 0.0) or 0.0)
+        current_delta = adaptive - baseline
         items = [
             {
                 "queue_id": f"{user_id}-freshness",
@@ -127,16 +162,33 @@ def build_review_queue(user_id: str = "demo-user") -> dict[str, object]:
             {
                 "queue_id": f"{user_id}-confidence",
                 "priority": "high" if avg_confidence < 0.72 else "medium",
-                "reason": "Low confidence trends can make remote coaching feel more certain than local evidence supports.",
+                "reason": (
+                    "Low confidence trends can make remote coaching "
+                    "feel more certain than local evidence supports."
+                ),
                 "reviewer_claim": f"Average confidence is {avg_confidence:.2f} across the review window.",
-                "recommended_action": "Recalibrate locally before increasing remote coaching intensity." if avg_confidence < 0.72 else "Local confidence band is reviewable.",
+                "recommended_action": (
+                    "Recalibrate locally before increasing remote coaching intensity."
+                    if avg_confidence < 0.72
+                    else "Local confidence band is reviewable."
+                ),
             },
             {
                 "queue_id": f"{user_id}-stability",
                 "priority": "high" if avg_stability < 0.7 or current_delta < 6 else "medium",
-                "reason": "Stability and score delta should be read together before a clinician treats progress as durable.",
-                "reviewer_claim": f"Latest score delta is {current_delta:.2f} with average stability {avg_stability:.2f}.",
-                "recommended_action": "Use supportive coaching and compare against benchmark snapshots." if avg_stability < 0.7 or current_delta < 6 else "Current stability supports a normal review cadence.",
+                "reason": (
+                    "Stability and score delta should be read together "
+                    "before a clinician treats progress as durable."
+                ),
+                "reviewer_claim": (
+                    f"Latest score delta is {current_delta:.2f} "
+                    f"with average stability {avg_stability:.2f}."
+                ),
+                "recommended_action": (
+                    "Use supportive coaching and compare against benchmark snapshots."
+                    if avg_stability < 0.7 or current_delta < 6
+                    else "Current stability supports a normal review cadence."
+                ),
             },
         ]
 
@@ -190,7 +242,10 @@ def build_service_brief() -> dict[str, object]:
             "Open /v1/health or /v1/meta to confirm storage posture and auth mode.",
             "Read /v1/runtime-scorecard and /v1/runtime-brief before enabling cloud mode in the app.",
             "Open /v1/review-queue for the clinician/reviewer handoff surface before trusting remote guidance.",
-            "Use /v1/coach/plan and /v1/benchmarks with representative session history, then compare against local insights.",
+            (
+                "Use /v1/coach/plan and /v1/benchmarks with representative "
+                "session history, then compare against local insights."
+            ),
             "Review queued uploads in the app before trusting remote guidance as the source of truth.",
         ],
         "two_minute_review": [
@@ -271,7 +326,10 @@ def build_review_pack() -> dict[str, object]:
         ],
         "review_sequence": [
             "Open /v1/health or /v1/meta to confirm auth mode, storage posture, and route availability.",
-            "Read /v1/runtime-scorecard, /v1/runtime-brief, and /v1/review-pack before enabling cloud mode for shared testing.",
+            (
+                "Read /v1/runtime-scorecard, /v1/runtime-brief, and /v1/review-pack "
+                "before enabling cloud mode for shared testing."
+            ),
             "Open /v1/review-queue to identify reviewer follow-up before cloud guidance is treated as stable.",
             "Compare /v1/coach/plan and /v1/benchmarks against recent local sessions before adopting remote guidance.",
             "Keep queued uploads reviewable in the app so sync failures never become silent data loss.",
@@ -515,8 +573,9 @@ def sessions(user_id: str, limit: int = 20) -> dict:
         user_id=user_id,
         details={"limit": limit},
     )
+    items = db.list_sessions(user_id, limit=limit)
     return {
         "user_id": user_id,
-        "count": len(db.list_sessions(user_id, limit=limit)),
-        "items": db.list_sessions(user_id, limit=limit),
+        "count": len(items),
+        "items": items,
     }
