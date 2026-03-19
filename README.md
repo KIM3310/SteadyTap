@@ -7,6 +7,56 @@ The product is designed to be reviewable in two modes:
 1. fully local, offline-first app behavior
 2. app + backend mode with explicit API contracts and reproducible verification
 
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────┐
+│                   iOS App (Swift)                    │
+│                                                     │
+│  ┌──────────────┐  ┌───────────────┐  ┌──────────┐ │
+│  │ Calibration   │  │ Practice      │  │ Results  │ │
+│  │ Engine        │  │ (Baseline +   │  │ & Trends │ │
+│  │ (tap/drag)    │  │  Adaptive)    │  │          │ │
+│  └──────┬───────┘  └───────┬───────┘  └─────┬────┘ │
+│         │                  │                │      │
+│  ┌──────▼──────────────────▼────────────────▼────┐ │
+│  │            AppViewModel (orchestrator)         │ │
+│  │  - session history    - sync queue             │ │
+│  │  - weekly goals       - streak tracking        │ │
+│  └──────────────────────┬────────────────────────┘ │
+│                         │                          │
+│  ┌──────────────────────▼────────────────────────┐ │
+│  │         BackendClient (protocol)              │ │
+│  │  MockBackendClient  │  CloudBackendClient     │ │
+│  └─────────────────────┼────────────────────────┘ │
+│                        │ HTTP (when Cloud mode)    │
+└────────────────────────┼───────────────────────────┘
+                         │
+                         ▼
+┌─────────────────────────────────────────────────────┐
+│              FastAPI Backend (Python)                │
+│                                                     │
+│  ┌─────────────┐  ┌──────────────┐  ┌────────────┐ │
+│  │ /v1/sessions│  │ /v1/coach/   │  │ /v1/       │ │
+│  │ (upload &   │  │   plan       │  │ benchmarks │ │
+│  │  history)   │  │              │  │            │ │
+│  └──────┬──────┘  └──────┬───────┘  └─────┬──────┘ │
+│         │                │               │        │
+│  ┌──────▼────────────────▼───────────────▼──────┐ │
+│  │           service.py (business logic)         │ │
+│  │  - coach plan generation                      │ │
+│  │  - benchmark percentile calculation           │ │
+│  │  - progress report assembly                   │ │
+│  └──────────────────────┬───────────────────────┘ │
+│                         │                          │
+│  ┌──────────────────────▼────────────────────────┐ │
+│  │         SQLite (sessions, aggregates)          │ │
+│  └───────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────┘
+```
+
+**Data flow:** The iOS app runs calibration and challenges locally. Session summaries are optionally uploaded via the sync queue to the FastAPI backend, which stores them in SQLite and uses them to generate coach plans, benchmarks, and progress reports. The app falls back to mock/local behavior when the backend is unreachable.
+
 ## One concrete review story
 A reviewer can picture a user with an unsteady hand starting with calibration on device, finishing one baseline challenge, then deciding whether cloud coaching is worth turning on. That keeps the handoff readable: local confidence first, backend guidance second.
 
@@ -39,6 +89,51 @@ If this is your first pass through the repo, read the surfaces in this order:
 - integrated FastAPI backend under `backend/`
 - stable HTTP contract for session upload, coach plans, and benchmark snapshots
 
+## Setup Instructions
+
+### iOS App
+
+1. Open the Swift package in Xcode or Swift Playgrounds with App Playground support.
+2. Update `teamIdentifier` in `Package.swift` if signing is needed.
+3. Run on iPhone or iPad simulator.
+
+If you only need the mobile flow, you can ignore `backend/` and `site/`.
+
+### Backend
+
+**Prerequisites:** Python 3.11+
+
+```bash
+cd backend
+python3.11 -m venv .venv
+source .venv/bin/activate
+python -m pip install -U pip
+python -m pip install -e ".[dev]"
+```
+
+**Run the server:**
+
+```bash
+uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload
+```
+
+**Optional environment variables:**
+
+| Variable | Purpose | Default |
+|---|---|---|
+| `STEADYTAP_API_KEY` | Bearer token for protected endpoints | (empty = open) |
+| `STEADYTAP_DB_PATH` | SQLite database file path | `./data/steadytap.sqlite` |
+| `STEADYTAP_RUNTIME_STORE_PATH` | Runtime event log path | `./data/runtime-events.jsonl` |
+
+**Run tests and lint:**
+
+```bash
+cd backend
+source .venv/bin/activate
+python -m pytest -v
+python -m ruff check .
+```
+
 ## User flow
 
 1. Tap calibration
@@ -57,6 +152,30 @@ If this is your first pass through the repo, read the surfaces in this order:
 - optional cloud sync queue with retry controls
 - remote coach-plan and cohort benchmark cards
 - readiness score, trend direction, and next-intensity recommendation
+
+## Backend API Surface
+
+- `GET /v1/health`
+- `GET /v1/meta`
+- `GET /v1/runtime-brief`
+- `GET /v1/runtime-scorecard`
+- `GET /v1/review-pack`
+- `GET /v1/progress-report?user_id={user_id}`
+- `GET /v1/review-queue?user_id={user_id}`
+- `GET /v1/schema/coach-report`
+- `POST /v1/sessions` (protected)
+- `POST /v1/coach/plan` (protected)
+- `POST /v1/benchmarks` (protected)
+- `GET /v1/sessions/{user_id}` (protected)
+
+Service-grade surfaces:
+
+- backend service brief for sync boundary, auth mode, trust boundary, and review flow
+- backend review pack for mobile/cloud handoff, auth posture, and queue-safe sync checks
+- backend progress report for clinician/reviewer cadence, streak adherence, and coach-plan delta review
+- backend review queue for clinician/reviewer handoff, stale-user visibility, and safe cloud enablement
+- coach-report schema route for explicit remote coaching contract
+- app home dashboard cards that surface backend posture and review pack before cloud mode is enabled
 
 ## Repository map
 
@@ -87,48 +206,6 @@ SteadyTap/
 - `docs/deployment/CLOUDFLARE_PAGES.md`: static Pages deployment notes for the review surface
 - `docs/product/DECISION_LOG.md`: implementation and product tradeoff history
 
-## Run the app
-
-1. Open the Swift package in Xcode or Swift Playgrounds with App Playground support.
-2. Update `teamIdentifier` in `Package.swift` if signing is needed.
-3. Run on iPhone or iPad simulator.
-
-If you only need the mobile flow, you can ignore `backend/` and `site/`.
-
-## Run the backend
-
-```bash
-cd backend
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install -U pip
-python -m pip install -e ".[dev]"
-uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload
-```
-
-Backend API surface:
-
-- `GET /v1/health`
-- `GET /v1/meta`
-- `GET /v1/runtime-brief`
-- `GET /v1/review-pack`
-- `GET /v1/progress-report`
-- `GET /v1/review-queue?user_id={user_id}`
-- `GET /v1/schema/coach-report`
-- `POST /v1/sessions`
-- `POST /v1/coach/plan`
-- `POST /v1/benchmarks`
-- `GET /v1/sessions/{user_id}`
-
-Service-grade surfaces:
-
-- backend service brief for sync boundary, auth mode, trust boundary, and review flow
-- backend review pack for mobile/cloud handoff, auth posture, and queue-safe sync checks
-- backend progress report for clinician/reviewer cadence, streak adherence, and coach-plan delta review
-- backend review queue for clinician/reviewer handoff, stale-user visibility, and safe cloud enablement
-- coach-report schema route for explicit remote coaching contract
-- app home dashboard cards that surface backend posture and review pack before cloud mode is enabled
-
 ## Review Flow
 
 1. Open `/v1/health` or `/v1/meta` to confirm auth mode and storage posture.
@@ -158,6 +235,39 @@ Recommended simulator URL:
 
 If `STEADYTAP_API_KEY` is set on the backend, paste the same bearer token into the app settings.
 
+## Test Evidence
+
+Backend test suite: **10 tests, all passing**
+
+```
+tests/test_api.py::test_health_and_meta_report_runtime_state PASSED
+tests/test_api.py::test_progress_report_tracks_weekly_cadence_and_coach_delta PASSED
+tests/test_api.py::test_protected_routes_require_bearer_token_when_api_key_is_configured PASSED
+tests/test_api.py::test_coach_plan_low_delta_yields_precision_focus PASSED
+tests/test_api.py::test_coach_plan_high_delta_yields_speed_focus PASSED
+tests/test_api.py::test_benchmark_percentile_reflects_delta PASSED
+tests/test_api.py::test_coach_plan_moderate_delta_yields_balanced PASSED
+tests/test_api.py::test_sync_queue_upload_lookup_and_dedup PASSED
+tests/test_api.py::test_input_validation_rejects_invalid_payloads PASSED
+tests/test_api.py::test_structured_error_response_format PASSED
+```
+
+Coverage areas:
+- All API endpoints (health, meta, brief, scorecard, review-queue, progress-report, review-pack, coach-schema, sessions, coach/plan, benchmarks)
+- Calibration/coaching logic (low/moderate/high delta thresholds)
+- Benchmark percentile calculation
+- Sync queue behavior (upload, lookup, deduplication)
+- Input validation (Pydantic field constraints)
+- Structured error responses
+- Auth/bearer token enforcement
+
+Lint: `ruff check .` passes with zero errors.
+
+## CI/CD
+
+- `.github/workflows/backend-ci.yml`: Python 3.11 -- install, compile check, ruff lint, pytest
+- `.github/workflows/app-ci.yml`: macOS -- Swift build
+
 ## Why this structure is intentional
 
 - the app remains reviewable by itself
@@ -177,21 +287,3 @@ If `STEADYTAP_API_KEY` is set on the backend, paste the same bearer token into t
 - `backend/app/main.py`: FastAPI service entrypoint
 - `backend/app/service.py`: coach-plan and benchmark logic
 - `backend/tests/test_api.py`: backend contract coverage
-
-## Verification
-
-App:
-
-- open in Xcode
-- confirm offline flow works without backend
-- switch to `Cloud API` mode and confirm coach-plan / benchmark cards load
-
-Backend:
-
-```bash
-cd backend
-python -m pip install -U pip
-python -m pip install -e ".[dev]"
-python -m compileall -q .
-python -m pytest
-```

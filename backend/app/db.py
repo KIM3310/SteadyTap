@@ -90,7 +90,9 @@ class Database:
                 conn.execute(
                     """
                     INSERT OR REPLACE INTO sessions (
-                        id, user_id, ts, scoring_preset, challenge_intensity, weekly_goal_target, baseline_score, adaptive_score,
+                        id, user_id, ts, scoring_preset,
+                        challenge_intensity, weekly_goal_target,
+                        baseline_score, adaptive_score,
                         miss_delta, time_delta, stability_index, confidence_score,
                         button_scale, hold_duration, swipe_threshold, created_at
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -125,7 +127,9 @@ class Database:
         with self._connect() as conn:
             rows = conn.execute(
                 """
-                SELECT id, user_id, ts, scoring_preset, challenge_intensity, weekly_goal_target, baseline_score, adaptive_score,
+                SELECT id, user_id, ts, scoring_preset,
+                       challenge_intensity, weekly_goal_target,
+                       baseline_score, adaptive_score,
                        miss_delta, time_delta, stability_index, confidence_score,
                        button_scale, hold_duration, swipe_threshold
                 FROM sessions

@@ -8,7 +8,6 @@ from pathlib import Path
 from threading import Lock
 from typing import Any
 
-
 STORE_PATH = Path(os.getenv("STEADYTAP_RUNTIME_STORE_PATH", "./data/runtime-events.jsonl"))
 _LOCK = Lock()
 _EVENT_COUNTS: Counter[str] = Counter()

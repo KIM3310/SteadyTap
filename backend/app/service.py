@@ -17,7 +17,9 @@ def build_coach_plan(
     del user_id
 
     if recent_sessions:
-        avg_delta_recent = sum(s["adaptive_score"] - s["baseline_score"] for s in recent_sessions) / len(recent_sessions)
+        avg_delta_recent = (
+            sum(s["adaptive_score"] - s["baseline_score"] for s in recent_sessions) / len(recent_sessions)
+        )
     else:
         avg_delta_recent = aggregate.avg_delta
 
@@ -63,9 +65,15 @@ def build_coach_plan(
         f"Completed session count: {aggregate.count}",
     ]
     alignment_with_local = (
-        "Remote recommendation aligns with your recent local trend and keeps the suggested preset within your observed confidence band."
+        (
+            "Remote recommendation aligns with your recent local trend "
+            "and keeps the suggested preset within your observed confidence band."
+        )
         if recent_sessions
-        else "Remote recommendation is using aggregate-only history because there are not enough recent local sessions yet."
+        else (
+            "Remote recommendation is using aggregate-only history "
+            "because there are not enough recent local sessions yet."
+        )
     )
 
     return {
@@ -92,7 +100,9 @@ def build_benchmark(
     del user_id
 
     if recent_sessions:
-        avg_delta_recent = sum(s["adaptive_score"] - s["baseline_score"] for s in recent_sessions) / len(recent_sessions)
+        avg_delta_recent = (
+            sum(s["adaptive_score"] - s["baseline_score"] for s in recent_sessions) / len(recent_sessions)
+        )
     else:
         avg_delta_recent = aggregate.avg_delta
 
