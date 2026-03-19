@@ -61,7 +61,15 @@ let package = Package(
                 "Tests",
                 "README.md",
             ]
-        )
+        ),
+        .testTarget(
+            name: "SteadyTapTests",
+            path: "Tests",
+            exclude: [
+                "quick_start_content_regression.swift",
+            ],
+            swiftSettings: [.swiftLanguageMode(.v5)]
+        ),
     ],
     swiftLanguageModes: [.v6]
 )
