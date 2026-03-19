@@ -56,7 +56,7 @@ struct IntroQuickStartContent {
                 : "Apply the local suggestion before calibration so the first benchmark starts from the safest local intensity."
             recommendationDisabled = localIntensityRecommendation == challengeIntensity
             firstUsePromise = "Start with one calm calibration pass. You can verify comfort before the timed challenges begin."
-            reviewerSafetyNote = "The local-first path still produces a reviewer-safe benchmark even if you keep cloud coaching optional."
+            reviewerSafetyNote = "The local-first path still produces a valid benchmark even if you keep cloud coaching optional."
             focusItems = [
                 "Readiness · \(readinessBand)",
                 "Weekly goal · \(weeklyGoalStatusText)",
@@ -81,7 +81,7 @@ struct IntroQuickStartContent {
         return [
             "Apply the recommended setup first so the first run starts from a grounded preset.",
             "Start calibration and confirm the adaptive profile feels credible.",
-            "Finish baseline + adaptive runs, then review the results and sync posture."
+            "Finish baseline + adaptive runs, then review the results and sync status."
         ]
     }
 }

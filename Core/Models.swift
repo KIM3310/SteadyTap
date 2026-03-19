@@ -527,7 +527,7 @@ struct ServiceBrief: Codable {
             "Refresh the remote coach after queue health is stable."
         ],
         twoMinuteReview: [
-            "Open health or meta to confirm auth and storage posture.",
+            "Open health or meta to confirm auth and storage status.",
             "Read runtime brief for sync boundary and watchouts.",
             "Compare coach outputs against recent local sessions.",
             "Check the sync queue before trusting cloud guidance."
@@ -570,7 +570,7 @@ struct ServiceReviewPack: Codable {
     static let placeholder = ServiceReviewPack(
         generatedAt: .now,
         readinessContract: "steadytap-review-pack-v1",
-        headline: "Demo fallback: reviewer pack for mobile-to-cloud coaching sync and local-first fallback posture.",
+        headline: "Demo fallback: mobile-to-cloud coaching sync and local-first fallback.",
         authMode: "open-review",
         uploadedSurfaceCount: 5,
         reviewRouteCount: 5,
@@ -580,7 +580,7 @@ struct ServiceReviewPack: Codable {
             "Keep sync queue visible so cloud failures never hide local progress."
         ],
         twoMinuteReview: [
-            "Open health or meta to confirm auth and storage posture.",
+            "Open health or meta to confirm auth and storage status.",
             "Read runtime brief for sync boundary and watchouts.",
             "Read review pack before enabling shared cloud testing.",
             "Compare remote coach outputs against local history."
