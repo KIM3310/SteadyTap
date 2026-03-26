@@ -58,7 +58,9 @@ let package = Package(
                 "backend",
                 "docs",
                 "site",
+                "scripts",
                 "Tests",
+                "Verification",
                 "README.md",
             ]
         ),
