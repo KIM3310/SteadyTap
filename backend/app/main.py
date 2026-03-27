@@ -51,12 +51,28 @@ SERVICE_ROUTES = [
     "/v1/sessions/{user_id}",
 ]
 
+
+def _read_cors_origins() -> list[str]:
+    raw = (os.getenv("STEADYTAP_CORS_ORIGINS") or "").strip()
+    if raw:
+        origins = [item.strip() for item in raw.split(",") if item.strip()]
+        if origins:
+            return origins
+    return [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "https://steadytap.pages.dev",
+    ]
+
+
 app = FastAPI(title=APP_TITLE, version=APP_VERSION)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
+    allow_origins=_read_cors_origins(),
+    allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )
 
