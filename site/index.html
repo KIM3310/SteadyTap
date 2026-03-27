@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <meta name="description" content="Accessibility-first iOS App Playground with an integrated FastAPI service for calibration, coaching, and benchmarked progress tracking.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="SteadyTap">
+  <meta property="og:description" content="Accessibility-first iOS App Playground with an integrated FastAPI service for calibration, coaching, and benchmarked progress tracking.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SteadyTap">
+  <meta name="twitter:description" content="Accessibility-first iOS App Playground with an integrated FastAPI service for calibration, coaching, and benchmarked progress tracking."><title>SteadyTap</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root { --bg:#f6f1e8; --panel:#fffdfa; --ink:#16181d; --muted:#5e6672; --line:#d8d3c9; --accent:#a33d2b; --soft:#fdeeea; }
+    *{box-sizing:border-box} body{margin:0;font-family:"IBM Plex Sans",sans-serif;background:linear-gradient(180deg,#fbf7ef 0,#f1ebe0 100%);color:var(--ink)}
+    .shell{max-width:1100px;margin:0 auto;padding:32px 20px 56px}.panel{background:var(--panel);border:1px solid var(--line);border-radius:24px;padding:24px;box-shadow:0 18px 40px rgba(15,23,42,.05)}
+    .hero,.grid{display:grid;gap:16px}.hero{margin-bottom:18px}.eyebrow,.chip{display:inline-flex;padding:8px 12px;border-radius:999px;font-size:.82rem;font-weight:700}.eyebrow{background:#111318;color:#fff}.chip{background:var(--soft);color:var(--accent)}
+    h1,h2{font-family:"Space Grotesk",sans-serif;letter-spacing:-.04em;margin:0}.hero h1{font-size:clamp(2.4rem,4.8vw,4.4rem);line-height:.96}.lede{max-width:860px;margin:0;color:var(--muted);line-height:1.75}
+    .two{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:18px}.list{margin:0;padding-left:18px;color:var(--muted);line-height:1.8}.links a{color:var(--accent);text-decoration:none;font-weight:600}
+    .lens-panel{margin-top:18px}.lens-tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}.lens-tab{border:1px solid var(--line);background:#fff;padding:10px 14px;border-radius:999px;font:inherit;font-weight:600;color:var(--muted);cursor:pointer}.lens-tab.active{color:var(--ink);border-color:var(--accent);background:var(--soft)}.lens-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.lens-card{border:1px solid var(--line);border-radius:18px;background:#fff;padding:16px}.lens-card strong{display:block;margin-bottom:8px}
+    @media (max-width:900px){.two{grid-template-columns:1fr}}
+    @media (max-width:900px){.lens-grid{grid-template-columns:1fr}}
+  
+    .quick-actions{margin-top:18px}.quick-actions .action-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.quick-actions .action-btn{border:1px solid var(--line);background:#fff;padding:10px 14px;border-radius:999px;font:inherit;font-weight:600;color:var(--ink);cursor:pointer;transition:transform .12s ease,box-shadow .12s ease,border-color .12s ease}.quick-actions .action-btn:hover{transform:translateY(-1px);border-color:var(--accent);box-shadow:0 10px 24px rgba(15,23,42,.08)}.quick-actions .hint{margin:10px 0 0;color:var(--muted);font-size:.92rem;line-height:1.6}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <section class="panel hero">
+      <div>
+        <span class="eyebrow">SteadyTap</span>
+        <span class="chip">iOS</span>
+        <span class="chip">accessibility-first</span>
+      </div>
+      <h1>Calibration, adaptive challenge, and coaching for steadier touch interaction.</h1>
+      <p class="lede">SteadyTap is for people who need steadier touch, not just prettier charts. This page gives reviewers the shortest path into the real iOS interaction, the coaching loop, and the backend proof that supports it.</p>
+    </section>
+
+    <section class="grid two">
+      <article class="panel">
+        <h2>Product flow</h2>
+        <ul class="list">
+          <li>Calibration and drag profiling</li>
+          <li>Baseline and adaptive challenges</li>
+          <li>Before/after results and trend tracking</li>
+          <li>Optional cloud sync, coach-plan, and cohort benchmarks</li>
+        </ul>
+      </article>
+      <article class="panel">
+        <h2>Why the proof stays native</h2>
+        <ul class="list">
+          <li>The review-worthy interaction is the real tap flow on device or simulator.</li>
+          <li>The backend contract matters, but it supports the coaching loop instead of replacing it.</li>
+          <li>This page stays small on purpose so the repo reads like a product, not a browser clone.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="panel">
+      <h2>What to show after one calibration session</h2>
+      <div class="lens-grid" style="margin-top: 12px;">
+        <article class="lens-card">
+          <strong>01 · Baseline first</strong>
+          <p>Start with calibration and drag profiling so the care team sees the original touch posture before any coaching claim.</p>
+        </article>
+        <article class="lens-card">
+          <strong>02 · Adaptive response</strong>
+          <p>Use one adaptive challenge result to show the intervention loop, not just a score report.</p>
+        </article>
+        <article class="lens-card">
+          <strong>03 · Coach handoff</strong>
+          <p>Finish with trend proof and coach-plan context once the native interaction story is already clear.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="grid two">
+      <article class="panel links">
+        <h2>Documentation</h2>
+        <ul class="list">
+          <li><a href="https://github.com/KIM3310/SteadyTap/blob/main/README.md">README</a></li>
+          <li><a href="https://github.com/KIM3310/SteadyTap/blob/main/backend/README.md">Backend README</a></li>
+        </ul>
+      </article>
+      <article class="panel">
+        <h2>Clinical review path</h2>
+        <ul class="list">
+          <li>Read the main README for product behavior and app flow.</li>
+          <li>Read the backend README for runtime brief, review pack, and schema routes.</li>
+          <li>Open the app in Xcode/Swift Playgrounds for the real interaction path.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section class="panel lens-panel">
+      <div class="lens-tabs" role="tablist" aria-label="steadytap lens">
+        <button id="lensClinicianBtn" class="lens-tab active" type="button">Clinician</button>
+        <button id="lensAccessibilityBtn" class="lens-tab" type="button">Accessibility</button>
+        <button id="lensBackendBtn" class="lens-tab" type="button">Backend</button>
+      </div>
+      <h2 id="lensHeadline">Clinician-first proof path</h2>
+      <p id="lensSummary" class="hint">Lead with the calibration flow, then show adaptive challenge, then finish with trend proof and coach-plan support.</p>
+      <div id="lensGrid" class="lens-grid">
+        <article class="lens-card"><strong>01 · Calibration</strong><p>Prove the app understands baseline touch before talking about any coaching layer.</p></article>
+        <article class="lens-card"><strong>02 · Challenge</strong><p>Show the adaptive loop so the product feels like intervention, not measurement only.</p></article>
+        <article class="lens-card"><strong>03 · Trend</strong><p>End with before/after results and progress tracking as the durable proof.</p></article>
+      </div>
+    </section>
+
+
+
+    <section class="panel quick-actions">
+      <h2>Care-team handoff bar</h2>
+      <p class="hint">Copy the clinical path first, then the capability brief only if someone needs a shorter summary.</p>
+      <div class="action-row">
+        <button id="copyReviewPathBtn" class="action-btn" type="button">Copy Review Path</button>
+        <button id="copyReviewerBriefBtn" class="action-btn" type="button">Copy Capability Brief</button>
+      </div>
+      <p id="quickActionStatus" class="hint">Default move: copy the clinical path. Shortcut keys: C review path · B capability brief · ? help</p>
+    </section>
+  </main>
+
+
+
+  <script>
+    async function copyQuickActionText(text) {
+      if (!text) return false;
+      try {
+        if (navigator.clipboard?.writeText) {
+          await navigator.clipboard.writeText(text);
+          return true;
+        }
+      } catch (_error) {
+        // Fallback below.
+      }
+      try {
+        const helper = document.createElement("textarea");
+        helper.value = text;
+        helper.style.position = "fixed";
+        helper.style.opacity = "0";
+        document.body.appendChild(helper);
+        helper.focus();
+        helper.select();
+        const ok = document.execCommand("copy");
+        document.body.removeChild(helper);
+        return Boolean(ok);
+      } catch (_error) {
+        return false;
+      }
+    }
+
+    const quickActionStatus = document.getElementById("quickActionStatus");
+    const lensHeadline = document.getElementById("lensHeadline");
+    const lensSummary = document.getElementById("lensSummary");
+    const lensGrid = document.getElementById("lensGrid");
+    const lensClinicianBtn = document.getElementById("lensClinicianBtn");
+    const lensAccessibilityBtn = document.getElementById("lensAccessibilityBtn");
+    const lensBackendBtn = document.getElementById("lensBackendBtn");
+    let currentLens = "clinician";
+    const lensConfig = {
+      clinician: {
+        headline: "Clinician-first proof path",
+        summary: "Lead with the calibration flow, then show adaptive challenge, then finish with trend proof and coach-plan support.",
+        cards: [
+          ["01 · Calibration", "Prove the app understands baseline touch before talking about any coaching layer."],
+          ["02 · Challenge", "Show the adaptive loop so the product feels like intervention, not measurement only."],
+          ["03 · Trend", "End with before/after results and progress tracking as the durable proof."],
+        ],
+      },
+      accessibility: {
+        headline: "Accessibility lens",
+        summary: "Use this when the audience cares about why steadier touch matters as an assistive interaction, not just a game mechanic.",
+        cards: [
+          ["01 · Real interaction", "Keep the real tap path on device or simulator at the center of the story."],
+          ["02 · Coaching support", "Frame the backend as support for coaching, not a replacement for the native experience."],
+          ["03 · Review handoff", "Use the capability brief only after the accessibility story is already grounded."],
+        ],
+      },
+      backend: {
+        headline: "Backend support lens",
+        summary: "Use this when the reviewer wants to know how the native app and the FastAPI contract reinforce each other.",
+        cards: [
+          ["01 · Runtime contract", "Start from the backend README and review pack routes before claims of measured progress."],
+          ["02 · Cohort proof", "Use coach-plan and cohort benchmark talk only after the native loop is clear."],
+          ["03 · Copyable handoff", "Send the review path when you need to move the conversation from app to service."],
+        ],
+      },
+    };
+
+    function renderLensPanel() {
+      const config = lensConfig[currentLens];
+      if (!config) return;
+      lensHeadline.textContent = config.headline;
+      lensSummary.textContent = config.summary;
+      lensGrid.innerHTML = config.cards.map(([title, body]) => `<article class="lens-card"><strong>${title}</strong><p>${body}</p></article>`).join("");
+      [lensClinicianBtn, lensAccessibilityBtn, lensBackendBtn].forEach((btn) => btn?.classList.remove("active"));
+      if (currentLens === "clinician") lensClinicianBtn?.classList.add("active");
+      if (currentLens === "accessibility") lensAccessibilityBtn?.classList.add("active");
+      if (currentLens === "backend") lensBackendBtn?.classList.add("active");
+    }
+    const reviewPathPayload = 'SteadyTap review path\n- Read the main README for the product flow.\n- Read the backend README for calibration/runtime contracts.\n- Open the app in Xcode or Swift Playgrounds for the real interaction path.';
+    const reviewerBriefPayload = 'SteadyTap reviewer brief\nHeadline: Calibration, adaptive challenge, and coaching for steadier touch interaction.\nNative proof: iOS app on device or simulator.\nService proof: backend runtime brief and review pack in the backend README.\nPublic surface: a reviewer landing page that points back to the native flow.';
+
+    async function runQuickCopy(text, successLabel, failureLabel) {
+      const ok = await copyQuickActionText(text);
+      if (quickActionStatus) {
+        quickActionStatus.textContent = ok ? successLabel : failureLabel;
+      }
+    }
+
+    document.getElementById("copyReviewPathBtn")?.addEventListener("click", () => runQuickCopy(reviewPathPayload, "Review path copied.", "Failed to copy review path."));
+    document.getElementById("copyReviewerBriefBtn")?.addEventListener("click", () => runQuickCopy(reviewerBriefPayload, "Capability brief copied.", "Failed to copy capability brief."));
+    lensClinicianBtn?.addEventListener("click", () => { currentLens = "clinician"; renderLensPanel(); });
+    lensAccessibilityBtn?.addEventListener("click", () => { currentLens = "accessibility"; renderLensPanel(); });
+    lensBackendBtn?.addEventListener("click", () => { currentLens = "backend"; renderLensPanel(); });
+    renderLensPanel();
+
+    window.addEventListener("keydown", (event) => {
+      if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey) return;
+      const target = event.target;
+      if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)) return;
+      const key = String(event.key || "").toLowerCase();
+      if (key === "?") {
+        event.preventDefault();
+        if (quickActionStatus) {
+          quickActionStatus.textContent = "Start with the clinical path. Then share the capability brief if a reviewer wants the shorter version.";
+        }
+        return;
+      }
+      if (key === "c") {
+        event.preventDefault();
+        void runQuickCopy(reviewPathPayload, "Review path copied.", "Failed to copy review path.");
+      }
+      if (key === "b") {
+        event.preventDefault();
+        void runQuickCopy(reviewerBriefPayload, "Capability brief copied.", "Failed to copy capability brief.");
+      }
+    });
+  </script>
+</body>
+</html>
