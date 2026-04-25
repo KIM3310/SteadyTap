@@ -1,3 +1,4 @@
+#if canImport(XCTest)
 import XCTest
 import CoreGraphics
 
@@ -228,3 +229,4 @@ final class ModelsTests: XCTestCase {
         XCTAssertEqual(low.confidenceBand, .low)
     }
 }
+#endif

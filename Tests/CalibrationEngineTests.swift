@@ -1,3 +1,4 @@
+#if canImport(XCTest)
 import XCTest
 import CoreGraphics
 
@@ -250,3 +251,4 @@ final class CalibrationEngineTests: XCTestCase {
         }
     }
 }
+#endif

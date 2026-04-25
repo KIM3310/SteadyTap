@@ -1,3 +1,4 @@
+#if canImport(XCTest)
 import XCTest
 
 final class PersistenceStoreTests: XCTestCase {
@@ -160,3 +161,4 @@ final class PersistenceStoreTests: XCTestCase {
         }
     }
 }
+#endif
