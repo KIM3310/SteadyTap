@@ -4,7 +4,7 @@ enum PersistenceStore {
     private static let historyKey = "steadytap.history.v1"
     private static let preferencesKey = "steadytap.preferences.v1"
     private static let syncJobsKey = "steadytap.syncjobs.v1"
-    private static let coachPlanKey = "steadytap.coachplan.v1"
+    private static let coachPlanStorageName = "steadytap.coachplan.v1"
     private static let benchmarkKey = "steadytap.benchmark.v1"
     private static let maxHistoryCount = 12
     private static let maxSyncJobCount = 80
@@ -96,7 +96,7 @@ enum PersistenceStore {
     }
 
     static func loadCoachPlan() -> CoachPlan? {
-        guard let data = UserDefaults.standard.data(forKey: coachPlanKey) else {
+        guard let data = UserDefaults.standard.data(forKey: coachPlanStorageName) else {
             return nil
         }
 
@@ -105,13 +105,13 @@ enum PersistenceStore {
 
     static func saveCoachPlan(_ coachPlan: CoachPlan?) {
         guard let coachPlan else {
-            UserDefaults.standard.removeObject(forKey: coachPlanKey)
+            UserDefaults.standard.removeObject(forKey: coachPlanStorageName)
             return
         }
 
         do {
             let data = try encoder.encode(coachPlan)
-            UserDefaults.standard.set(data, forKey: coachPlanKey)
+            UserDefaults.standard.set(data, forKey: coachPlanStorageName)
         } catch {
             return
         }
