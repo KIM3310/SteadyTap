@@ -61,7 +61,11 @@ let package = Package(
                 "scripts",
                 "Tests",
                 "Verification",
+                "CONTRIBUTING.md",
+                "LICENSE",
+                "Makefile",
                 "README.md",
+                "SECURITY.md",
             ]
         ),
         .testTarget(
