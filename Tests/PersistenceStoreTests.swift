@@ -92,9 +92,11 @@ final class PersistenceStoreTests: XCTestCase {
         )
         PersistenceStore.saveCoachPlan(plan)
         let loaded = PersistenceStore.loadCoachPlan()
-        XCTAssertNotNil(loaded)
-        XCTAssertEqual(loaded?.focusArea, "Precision")
-        XCTAssertEqual(loaded?.confidence, 0.75, accuracy: 0.001)
+        guard let loaded else {
+            return XCTFail("Coach plan should load after save")
+        }
+        XCTAssertEqual(loaded.focusArea, "Precision")
+        XCTAssertEqual(loaded.confidence, 0.75, accuracy: 0.001)
     }
 
     func testSaveNilCoachPlanClears() {
