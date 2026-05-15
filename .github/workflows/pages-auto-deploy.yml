@@ -27,9 +27,9 @@ jobs:
         if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
         run: |
           set -euo pipefail
-          if ! npx wrangler@4.71.0 pages project create steadytap --production-branch=main >/tmp/cf_pages_create.log 2>&1; then
+          if ! npx wrangler@4.71.0 pages project create kim3310-steadytap --production-branch=main >/tmp/cf_pages_create.log 2>&1; then
             grep -qi "already exists" /tmp/cf_pages_create.log || (cat /tmp/cf_pages_create.log && exit 1)
           fi
       - name: Deploy static site
         if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
-        run: npx wrangler@4.71.0 pages deploy site --project-name=steadytap --branch=main --commit-dirty=true
+        run: npx wrangler@4.71.0 pages deploy site --project-name=kim3310-steadytap --branch=main --commit-dirty=true
