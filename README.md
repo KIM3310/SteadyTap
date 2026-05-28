@@ -26,6 +26,10 @@ An accessibility coaching app that proves native UX judgment through calm routin
 - **Verification:** Run `swift build`, `./scripts/verify_cli.sh`, or `make verify` after backend dev dependencies are installed.
 - **Commercial read:** Treat the repo as an accessibility-product wedge with a clear freemium/coaching-program upgrade path.
 
+## Commercialization Playbook
+
+- [Monetization and GTM playbook](docs/monetization-playbook.md) maps the repository to buyer segments, offer ladder, pricing hypotheses, proof gates, and risk boundaries.
+
 ## Architecture
 
 ```
