@@ -7,6 +7,18 @@ Works in two modes:
 1. Fully local, offline-first app
 2. App + backend with API contracts for cloud sync and coaching
 
+## Product and Review Surface
+
+An accessibility coaching app that proves native UX judgment through calm routines, optional sync, and human-centered boundaries.
+
+| Lens | Definition |
+|---|---|
+| Buyer or user | Accessibility-focused users, care teams, educators, and mobile product reviewers. |
+| Commercial route | Freemium iOS app with paid coaching plans, team/caregiver sync, or accessibility program pilots. |
+| Review signal | SwiftUI surface, optional FastAPI backend, coaching plans, accessibility framing, and mobile-first interaction design. |
+| Safety boundary | Personal routines and accessibility data require consent, minimal collection, and clear local/offline behavior. |
+| Fast proof | Build the iOS app or run backend checks, then inspect routine flows and sync boundaries. |
+
 ## Architecture
 
 ```
