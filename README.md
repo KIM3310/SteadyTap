@@ -19,6 +19,13 @@ An accessibility coaching app that proves native UX judgment through calm routin
 | Safety boundary | Personal routines and accessibility data require consent, minimal collection, and clear local/offline behavior. |
 | Fast proof | Build the iOS app or run backend checks, then inspect routine flows and sync boundaries. |
 
+## Reviewer Fast Path
+
+- **First minute:** Inspect the local/offline coaching flow, then check where optional sync begins.
+- **Local demo:** Open the Swift package in Xcode for the app path; use the FastAPI backend only when reviewing cloud sync and cohort benchmarks.
+- **Verification:** Run `swift build`, `./scripts/verify_cli.sh`, or `make verify` after backend dev dependencies are installed.
+- **Commercial read:** Treat the repo as an accessibility-product wedge with a clear freemium/coaching-program upgrade path.
+
 ## Architecture
 
 ```
