@@ -1,38 +1,34 @@
-# Reviewer Evidence Map - SteadyTap
+# Review Guide - SteadyTap
 
-Updated: 2026-05-29
+Updated: 2026-05-30
 
-This document is the short path for a technical reviewer, engineering leader, product evaluator, or buyer who wants to understand what this repository proves without wandering through every file.
+Use this page as the short path through the repository. It keeps the review grounded in the code, docs, commands, and boundaries that are already present.
 
-## One-Line Proof
+## Summary
 
-**B2C/B2B2C accessibility coaching.** Offline-first iOS coaching with optional sync and caregiver/team reporting.
-
-## Audience and Commercial Angle
-
-| Lens | Answer |
+| Field | Notes |
 |---|---|
-| Primary reviewer | Accessibility-focused users, care teams, educators, and mobile product teams. |
-| Technical signal | Can the project be explained, verified, bounded, and extended like a real product surface? |
-| Buyer signal | Is there a narrow operational pain, a runnable proof path, and a risk-aware pilot shape? |
-| Stack signal | Python, Swift, Terraform, Docker |
+| Lane | B2C/B2B2C accessibility coaching |
+| Core idea | Offline-first iOS coaching with optional sync and caregiver/team reporting. |
+| Primary reader | Accessibility-focused users, care teams, educators, and mobile product teams. |
+| Stack | Python, Swift, Terraform, Docker |
 
-## Seven-Minute Review Route
+## Open First
 
-1. Read the README `Product and Review Surface` and `Reviewer Fast Path` sections.
-2. Open `docs/monetization-playbook.md` to understand the buyer, offer ladder, and GTM hypothesis.
-3. Run or inspect the strongest local quality gate below.
-4. Inspect CI workflow definitions and test fixtures before deeper implementation review.
-5. Check the risk boundaries so claims stay credible and not overextended.
+1. Start with the README fast path and architecture section.
+2. Open `docs/monetization-playbook.md` only when reviewing the product or service angle.
+3. Check the commands below before making claims about quality.
+4. Skim the CI workflows and fixture data before deeper implementation review.
+5. Read the boundaries section before presenting the project externally.
 
-## Verification Commands
+## Checks
 
 | Purpose | Command |
 |---|---|
 | Full local gate | `make verify` |
 | Build check | `swift build` |
 
-## CI and Automation Surface
+## CI
 
 - .github/workflows/app-ci.yml
 - .github/workflows/architecture-blueprint.yml
@@ -44,7 +40,7 @@ This document is the short path for a technical reviewer, engineering leader, pr
 - .github/workflows/repository-surface.yml
 - .github/workflows/secret-scan.yml
 
-## Evidence Inventory
+## Evidence
 
 - pytest/ruff-style local verification path
 - Swift Package/Xcode review path
@@ -54,26 +50,22 @@ This document is the short path for a technical reviewer, engineering leader, pr
 - Backend checks pass
 - Local/offline mode is clear
 
-## Commercialization Snapshot
+## Commercial Notes
 
-| Offer | Pricing hypothesis |
+| Possible offer | Working price assumption |
 |---|---|
 | Freemium iOS app | Free + $4-$9/month individual |
 | Paid coaching plan templates | $99-$499/month small cohort |
 | Caregiver or education cohort dashboard pilot | $3k-$10k accessibility program pilot |
 
-## Risk Boundaries
+## Boundaries
 
 - Sensitive routine data needs consent
 - Avoid medical/therapeutic claims
 - Sync must be opt-in
 
-## Metrics That Matter
+## Useful Metrics
 
 - Weekly active routines
 - Routine completion
 - Opt-in sync conversion
-
-## Review Verdict
-
-This repository should be evaluated as part of the broader KIM3310 portfolio: it is strongest when the reviewer sees the link between a concrete implementation, a documented verification path, and an externally credible operating story.
