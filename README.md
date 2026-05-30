@@ -1,5 +1,10 @@
 # SteadyTap
 
+> **Curated supporting repo**
+> This repository is kept as optional proof, but it no longer leads the portfolio.
+> Current front door: **aix-pilot, enterprise-llm-adoption-kit, and doeon-kim-portfolio**.
+> Reason: Good mobile/accessibility craft, but it dilutes the main enterprise AI and operations story.
+
 An accessibility-focused iOS coaching app with an optional FastAPI backend for sync, coach-plan generation, and cohort benchmarks.
 
 Works in two modes:
@@ -36,6 +41,7 @@ An accessibility coaching app that proves native UX judgment through calm routin
 - [Quality notes](docs/quality-gate.md) lists the local checks, CI surface, and release expectations for this repository.
 - [Revenue growth model](docs/revenue-growth-model.md) maps the project to an ethical revenue path, activation loop, pricing logic, and growth experiments.
 - [Enterprise readiness notes](docs/enterprise-readiness.md) outlines security, data, operations, integration, and handoff expectations.
+- [Portfolio fit](docs/portfolio-fit.md) explains why this repository is archived/supporting and where the current portfolio front door lives.
 
 ## Architecture
 
