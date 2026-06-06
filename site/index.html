@@ -21,6 +21,7 @@
     .hero,.grid{display:grid;gap:16px}.hero{margin-bottom:18px}.eyebrow,.chip{display:inline-flex;padding:8px 12px;border-radius:999px;font-size:.82rem;font-weight:700}.eyebrow{background:#111318;color:#fff}.chip{background:var(--soft);color:var(--accent)}
     h1,h2{font-family:"Space Grotesk",sans-serif;letter-spacing:-.04em;margin:0}.hero h1{font-size:clamp(2.4rem,4.8vw,4.4rem);line-height:.96}.lede{max-width:860px;margin:0;color:var(--muted);line-height:1.75}
     .two{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:18px}.list{margin:0;padding-left:18px;color:var(--muted);line-height:1.8}.links a{color:var(--accent);text-decoration:none;font-weight:600}
+    .hero-actions{display:flex;gap:10px;flex-wrap:wrap}.action-btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--ink);font:inherit;font-weight:700;text-decoration:none;cursor:pointer}.action-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
     .lens-panel{margin-top:18px}.lens-tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}.lens-tab{border:1px solid var(--line);background:#fff;padding:10px 14px;border-radius:999px;font:inherit;font-weight:600;color:var(--muted);cursor:pointer}.lens-tab.active{color:var(--ink);border-color:var(--accent);background:var(--soft)}.lens-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.lens-card{border:1px solid var(--line);border-radius:18px;background:#fff;padding:16px}.lens-card strong{display:block;margin-bottom:8px}
     .action-btn:hover, button:hover { background: rgba(163, 61, 43, 0.08); transform: translateY(-1px); }
     @media (max-width:900px){.two{grid-template-columns:1fr}}
@@ -39,6 +40,10 @@
       </div>
       <h1>Calibration, adaptive challenge, and coaching for steadier touch interaction.</h1>
       <p class="lede">SteadyTap is for people who need steadier touch, not just prettier charts. This page gives reviewers the shortest path into the real iOS interaction, the coaching loop, and the backend proof that supports it.</p>
+      <div class="hero-actions">
+        <a class="action-btn primary" href="https://github.com/KIM3310/SteadyTap/blob/main/README.md">Open native review path</a>
+        <a class="action-btn" href="#care-team-handoff">Try handoff bar</a>
+      </div>
     </section>
 
     <section class="grid two">
@@ -114,7 +119,7 @@
 
 
 
-    <section class="panel quick-actions">
+    <section class="panel quick-actions" id="care-team-handoff">
       <h2>Care-team handoff bar</h2>
       <p class="hint">Copy the clinical path first, then the capability brief only if someone needs a shorter summary.</p>
       <div class="action-row">
