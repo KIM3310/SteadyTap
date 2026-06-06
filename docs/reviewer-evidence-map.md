@@ -32,9 +32,9 @@ This repository is now curated as supporting material. Review it only after the 
 
 | Possible offer | Working scope assumption | Scope |
 |---|---|---|
-| Freemium iOS app | Free + $4-$9/month individual | Scoped after review. |
-| Paid coaching plan templates | $99-$499/month small cohort | Scoped after review. |
-| Caregiver or education cohort dashboard pilot | $3k-$10k accessibility program pilot | Scoped after review. |
+| Freemium iOS app | Scope after buyer intake | Scoped after review. |
+| Paid coaching plan templates | Scope after buyer intake | Scoped after review. |
+| Caregiver or education cohort dashboard pilot | Scope after buyer intake | Scoped after review. |
 
 ## Boundaries
 

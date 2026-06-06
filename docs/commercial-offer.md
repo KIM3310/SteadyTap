@@ -12,7 +12,7 @@ This is the buyer-ready version of the repository. It turns the technical proof 
 | Buyer | Accessibility-focused users, care teams, educators, and mobile product teams. |
 | Pain wedge | Offline-first iOS coaching with optional sync and caregiver/team reporting. |
 | Front-door offer | Freemium iOS app |
-| Entry scope | Free + $4-$9/month individual |
+| Entry scope | Scope after buyer intake |
 | Proof before pitch | Swift build passes |
 | Next buyer action | Review one proof artifact, then choose diagnostic, workshop, pilot, support, or revival path. |
 
@@ -20,9 +20,9 @@ This is the buyer-ready version of the repository. It turns the technical proof 
 
 | Offer | Scope assumption | Buyer-facing scope |
 |---|---|---|
-| Freemium iOS app | Free + $4-$9/month individual | Package 3 guided routines |
-| Paid coaching plan templates | $99-$499/month small cohort | Create cohort-report mock |
-| Caregiver or education cohort dashboard pilot | $3k-$10k accessibility program pilot | Pilot with one educator/caregiver group |
+| Freemium iOS app | Scope after buyer intake | Package 3 guided routines |
+| Paid coaching plan templates | Scope after buyer intake | Create cohort-report mock |
+| Caregiver or education cohort dashboard pilot | Scope after buyer intake | Pilot with one educator/caregiver group |
 
 ## Close Path
 

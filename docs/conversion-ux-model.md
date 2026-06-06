@@ -49,9 +49,9 @@ This note specializes the repository for service launch. It combines product str
 
 ## Conversion Path
 
-- Optional entry: Freemium iOS app (Free + $4-$9/month individual) when this archived proof exactly matches the buyer problem.
-- Revival step: Paid coaching plan templates ($99-$499/month small cohort) only after the active successor and support boundary are clear.
-- Longer-term path: Caregiver or education cohort dashboard pilot ($3k-$10k accessibility program pilot) if the repository is refreshed and assigned an owner.
+- Optional entry: Freemium iOS app (scope after buyer intake) when this archived proof exactly matches the buyer problem.
+- Revival step: Paid coaching plan templates (scope after buyer intake) only after the active successor and support boundary are clear.
+- Longer-term path: Caregiver or education cohort dashboard pilot (scope after buyer intake) if the repository is refreshed and assigned an owner.
 
 ## Scope Frame
 
