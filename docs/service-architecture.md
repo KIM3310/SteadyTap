@@ -1,6 +1,6 @@
 # Service Architecture - SteadyTap
 
-This document defines the deployment and resource plan for turning this repository into a buyer-reviewable service. It intentionally avoids public public financial assumptions, public financial guesses, or contract assumptions.
+This document defines the deployment and resource plan for turning this repository into a buyer-reviewable service. It intentionally avoids public financial assumptions, public financial guesses, or contract assumptions.
 
 ## Commercial Role
 
@@ -44,6 +44,15 @@ Visitor or operator
 - Apple signing credentials
 - backend API URL
 - Sentry DSN
+
+## Revenue Channel Architecture
+
+- **Primary channel:** B2C app and game distribution
+- **Monetization route:** Accessibility coaching app with subscription, organization pilot, or app-store path.
+- **Acquisition motion:** Playable demo, store listing, creator clips, lightweight community loop, and portfolio proof.
+- **Activation path:** Polish onboarding, progress feedback, accessibility settings, and crash reporting before paid release.
+- **Margin control:** Use static or serverless hosting first; add paid backend resources only for accounts, payments, multiplayer, or durable state.
+- **Public boundary:** Keep revenue, pricing, and contract assumptions in private planning; this repository publishes service structure, resource needs, and technical proof only.
 
 ## Cost and Risk Controls
 

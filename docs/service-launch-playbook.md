@@ -14,6 +14,15 @@ This file is a commercial planning artifact, but it does not publish public fina
 2. **Scoped diagnostic** - review the buyer workflow, data boundary, integration needs, and acceptance criteria.
 3. **Implementation or operating support** - connect only the resources approved in [service architecture](service-architecture.md).
 
+## Revenue Channel
+
+- **Channel:** B2C app and game distribution
+- **First commercial action:** Accessibility coaching app with subscription, organization pilot, or app-store path.
+- **Conversion path:** Playable demo, store listing, creator clips, lightweight community loop, and portfolio proof.
+- **Activation path:** Polish onboarding, progress feedback, accessibility settings, and crash reporting before paid release.
+- **Retention path:** Feature updates, community feedback, and paid upgrades after retention is proven.
+- **Public boundary:** Do not publish projections, price promises, or buyer-specific contract assumptions in this repository.
+
 ## Acquisition Channels
 
 - Portfolio and GitHub proof links
