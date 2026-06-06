@@ -30,7 +30,7 @@ This repository is now curated as supporting material. Review it only after the 
 
 ## Commercial Notes
 
-| Possible offer | Working price assumption | Scope |
+| Possible offer | Working scope assumption | Scope |
 |---|---|---|
 | Freemium iOS app | Free + $4-$9/month individual | Scoped after review. |
 | Paid coaching plan templates | $99-$499/month small cohort | Scoped after review. |

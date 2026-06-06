@@ -12,13 +12,13 @@ This is the buyer-ready version of the repository. It turns the technical proof 
 | Buyer | Accessibility-focused users, care teams, educators, and mobile product teams. |
 | Pain wedge | Offline-first iOS coaching with optional sync and caregiver/team reporting. |
 | Front-door offer | Freemium iOS app |
-| Entry price assumption | Free + $4-$9/month individual |
+| Entry scope | Free + $4-$9/month individual |
 | Proof before pitch | Swift build passes |
 | Next buyer action | Review one proof artifact, then choose diagnostic, workshop, pilot, support, or revival path. |
 
 ## Packaged Offer Ladder
 
-| Offer | Price assumption | Buyer-facing scope |
+| Offer | Scope assumption | Buyer-facing scope |
 |---|---|---|
 | Freemium iOS app | Free + $4-$9/month individual | Package 3 guided routines |
 | Paid coaching plan templates | $99-$499/month small cohort | Create cohort-report mock |
@@ -35,7 +35,7 @@ This is the buyer-ready version of the repository. It turns the technical proof 
 - Cognitive fluency: one buyer, one painful workflow, one proof artifact, one next step.
 - Attention design: keep the primary CTA visible and remove side quests before the proof moment.
 - Risk reversal: make the first paid step small, time-boxed, and tied to acceptance criteria.
-- Proof before persuasion: show tests, demo output, scorecards, exports, or review packs before pricing.
+- Proof before persuasion: show tests, demo output, scorecards, exports, or review packs before scope discussion.
 - Autonomy: make opt-in, data boundaries, cancellation, and unsupported claims visible.
 - Status clarity: supporting or archived projects must not compete with the current flagship story.
 
@@ -61,9 +61,9 @@ This is the buyer-ready version of the repository. It turns the technical proof 
 
 ## Guardrails
 
-- Do not invent customers, revenue, endorsements, logos, or certifications.
+- Do not invent customers, financial outcomes, endorsements, logos, or certifications.
 - Do not claim production readiness without scoped validation, data access, monitoring, and support ownership.
-- Do not use pressure tactics, fake scarcity, hidden continuity, or confusing pricing.
+- Do not use pressure tactics, fake scarcity, hidden continuity, or confusing scope.
 - Sensitive routine data needs consent
 - Avoid medical/therapeutic claims
 - Sync must be opt-in
