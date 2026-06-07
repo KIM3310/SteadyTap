@@ -33,7 +33,7 @@ This repository is now curated as supporting material. Review it only after the 
 | Possible offer | Working scope assumption | Scope |
 |---|---|---|
 | Freemium iOS app | Scope after reviewer intake | Scoped after review. |
-| Paid coaching plan templates | Scope after reviewer intake | Scoped after review. |
+| Coaching plan templates | Scope after reviewer intake | Scoped after review. |
 | Caregiver or education cohort dashboard pilot | Scope after reviewer intake | Scoped after review. |
 
 ## Boundaries
