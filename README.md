@@ -18,8 +18,8 @@ An accessibility coaching app that proves native UX judgment through calm routin
 
 | Lens | Definition |
 |---|---|
-| Buyer or user | Accessibility-focused users, care teams, educators, and mobile product reviewers. |
-| Commercial route | Freemium iOS app with paid coaching plans, team/caregiver sync, or accessibility program pilots. |
+| Audience | Accessibility-focused users, care teams, educators, and mobile product reviewers. |
+| Review path | Validate the demo, README, architecture notes, and quality gate before deeper workflow review. |
 | Review signal | SwiftUI surface, optional FastAPI backend, coaching plans, accessibility framing, and mobile-first interaction design. |
 | Safety boundary | Personal routines and accessibility data require consent, minimal collection, and clear local/offline behavior. |
 | Fast proof | Build the iOS app or run backend checks, then inspect routine flows and sync boundaries. |
@@ -29,20 +29,16 @@ An accessibility coaching app that proves native UX judgment through calm routin
 - **First minute:** Inspect the local/offline coaching flow, then check where optional sync begins.
 - **Local demo:** Open the Swift package in Xcode for the app path; use the FastAPI backend only when reviewing cloud sync and cohort benchmarks.
 - **Verification:** Run `swift build`, `./scripts/verify_cli.sh`, or `make verify` after backend dev dependencies are installed.
-- **Commercial read:** Treat the repo as an accessibility-product wedge with a clear freemium/coaching-program upgrade path.
 
 ## Service Launch Playbook
 
-- [Service launch playbook](docs/service-launch-playbook.md) maps the repository to buyer segments, offer ladder, proof gates, proof gates, and risk boundaries.
+- [Service launch playbook](docs/service-launch-playbook.md) maps the repository to review audiences, offer ladder, proof gates, proof gates, and risk boundaries.
 
 ## Review Notes
 
 - [Review guide](docs/reviewer-evidence-map.md) summarizes the project angle, first files to inspect, verification commands, and known boundaries.
 - [Quality notes](docs/quality-gate.md) lists the local checks, CI surface, and release expectations for this repository.
-- [Service growth model](docs/service-growth-model.md) maps the project to an ethical service path, activation loop, scope logic, and growth experiments.
 - [Enterprise readiness notes](docs/enterprise-readiness.md) outlines security, data, operations, integration, and handoff expectations.
-- [Conversion UX model](docs/conversion-ux-model.md) maps the buyer path, behavioral design, UI/UX direction, scope frame, and ethical conversion guardrails.
-- [Commercial offer](docs/commercial-offer.md) packages the repository into a buyer-ready offer ladder, proof gate, outreach angle, and close path.
 - [Portfolio fit](docs/portfolio-fit.md) explains why this repository is archived/supporting and where the current portfolio front door lives.
 
 ## Architecture
@@ -268,7 +264,7 @@ This repository includes a neutral cloud and AI engineering blueprint that maps 
 
 ## Enterprise Productization
 
-- [Product operating model](docs/product-operating-model.md) defines the buyer, paid wedge, trust boundary, operating checks, and service path for this repository.
+- [Product operating model](docs/product-operating-model.md) defines the reviewer, trust boundary, trust boundary, operating checks, and service path for this repository.
 
 ## Service Architecture
 
