@@ -20,7 +20,7 @@ An accessibility coaching app that proves native UX judgment through calm routin
 |---|---|
 | Audience | Accessibility-focused users, care teams, educators, and mobile product reviewers. |
 | Review path | Validate the demo, README, architecture notes, and quality gate before deeper workflow review. |
-| Review signal | SwiftUI surface, optional FastAPI backend, coaching plans, accessibility framing, and mobile-first interaction design. |
+| Architecture signal | SwiftUI surface, optional FastAPI backend, coaching plans, accessibility framing, and mobile-first interaction design. |
 | Safety boundary | Personal routines and accessibility data require consent, minimal collection, and clear local/offline behavior. |
 | Fast proof | Build the iOS app or run backend checks, then inspect routine flows and sync boundaries. |
 
@@ -265,6 +265,10 @@ This repository includes a neutral cloud and AI engineering blueprint that maps 
 ## Enterprise Productization
 
 - [Product operating model](docs/product-operating-model.md) defines the reviewer, trust boundary, trust boundary, operating checks, and service path for this repository.
+
+## System Architecture
+
+- [System architecture](docs/system-architecture.md) maps the runtime boundary, data/control flow, cloud or local deployment surface, and operating assumptions for this repository.
 
 ## Service Architecture
 
