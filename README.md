@@ -12,31 +12,31 @@ Works in two modes:
 1. Fully local, offline-first app
 2. App + backend with API contracts for cloud sync and coaching
 
-## Product and Review Surface
+## Product and System Surface
 
 An accessibility coaching app that proves native UX judgment through calm routines, optional sync, and human-centered boundaries.
 
 | Lens | Definition |
 |---|---|
-| Audience | Accessibility-focused users, care teams, educators, and mobile product reviewers. |
-| Review path | Validate the demo, README, architecture notes, and quality gate before deeper workflow review. |
-| Architecture signal | SwiftUI surface, optional FastAPI backend, coaching plans, accessibility framing, and mobile-first interaction design. |
+| Audience | Accessibility-focused users, care teams, educators, and mobile product technical readers. |
+| Architecture path | Validate the demo, README, architecture notes, and quality gate before deeper workflow architecture. |
+| System signal | SwiftUI surface, optional FastAPI backend, coaching plans, accessibility framing, and mobile-first interaction design. |
 | Safety boundary | Personal routines and accessibility data require consent, minimal collection, and clear local/offline behavior. |
-| Fast proof | Build the iOS app or run backend checks, then inspect routine flows and sync boundaries. |
+| Fast path | Build the iOS app or run backend checks, then inspect routine flows and sync boundaries. |
 
-## Reviewer Fast Path
+## System Fast Path
 
 - **First minute:** Inspect the local/offline coaching flow, then check where optional sync begins.
-- **Local demo:** Open the Swift package in Xcode for the app path; use the FastAPI backend only when reviewing cloud sync and cohort benchmarks.
+- **Local demo:** Open the Swift package in Xcode for the app path; use the FastAPI backend only when architectureing cloud sync and cohort benchmarks.
 - **Verification:** Run `swift build`, `./scripts/verify_cli.sh`, or `make verify` after backend dev dependencies are installed.
 
 ## Service Launch Playbook
 
-- [Service launch playbook](docs/service-launch-playbook.md) maps the repository to review audiences, proof gates, operating boundaries, and risk controls.
+- [Service launch playbook](docs/service-launch-playbook.md) maps the repository to architecture audiences, operating gates, operating boundaries, and risk controls.
 
-## Review Notes
+## Architecture Notes
 
-- [Review guide](docs/reviewer-evidence-map.md) summarizes the project angle, first files to inspect, verification commands, and known boundaries.
+- [Architecture guide](docs/architecture-evidence-map.md) summarizes the project angle, first files to inspect, runtime commands, and known boundaries.
 - [Quality notes](docs/quality-gate.md) lists the local checks, CI surface, and release expectations for this repository.
 - [Enterprise readiness notes](docs/enterprise-readiness.md) outlines security, data, operations, integration, and handoff expectations.
 - [Portfolio fit](docs/portfolio-fit.md) explains why this repository is archived/supporting and where the current portfolio front door lives.
@@ -155,7 +155,7 @@ python -m ruff check .
 
 1. Tap calibration
 2. Drag calibration
-3. Calibration review
+3. Calibration architecture
 4. Baseline challenge
 5. Adaptive challenge
 6. Before/after report
@@ -176,9 +176,9 @@ python -m ruff check .
 - `GET /v1/meta`
 - `GET /v1/runtime-brief`
 - `GET /v1/runtime-scorecard`
-- `GET /v1/review-pack`
+- `GET /v1/architecture-pack`
 - `GET /v1/progress-report?user_id={user_id}`
-- `GET /v1/review-queue?user_id={user_id}`
+- `GET /v1/architecture-queue?user_id={user_id}`
 - `GET /v1/schema/coach-report`
 - `POST /v1/sessions` (protected)
 - `POST /v1/coach/plan` (protected)
@@ -264,7 +264,7 @@ This repository includes a neutral cloud and AI engineering blueprint that maps 
 
 ## Enterprise Productization
 
-- [Product operating model](docs/product-operating-model.md) defines the reviewer, trust boundary, trust boundary, operating checks, and service path for this repository.
+- [Product operating model](docs/product-operating-model.md) defines the technical reader, trust boundary, trust boundary, operating checks, and service path for this repository.
 
 ## System Architecture
 

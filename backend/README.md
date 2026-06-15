@@ -12,7 +12,7 @@ Integrated FastAPI service for SteadyTap cloud mode.
 - `GET /v1/meta`: runtime metadata and route inventory
 - `GET /v1/runtime-brief`: service summary for sync boundary and operator flow
 - `GET /v1/runtime-scorecard`: runtime telemetry for sync, coach, and benchmark endpoints
-- `GET /v1/review-pack`: sync handoff and cloud status pack
+- `GET /v1/architecture-pack`: sync handoff and cloud status pack
 - `GET /v1/progress-report`: progress snapshot with cadence, streak, benchmark, and coach-plan delta
 - `GET /v1/schema/coach-report`: remote coaching contract
 - Optional bearer-token auth via `STEADYTAP_API_KEY`
@@ -57,5 +57,5 @@ python scripts/exercise_runtime.py
 
 ## Repository Hygiene
 - Keep runtime artifacts out of commits (`.codex_runs/`, cache folders, temporary venvs).
-- Prefer running verification commands above before opening a PR.
+- Prefer running runtime commands above before opening a PR.
 - Use `infra/terraform/README.md` for the Cloud Run deployment skeleton.

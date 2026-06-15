@@ -5,7 +5,7 @@ This log captures concise, auditable reasoning outcomes rather than hidden inter
 ## Decision 1: Stay offline-first, but keep local continuity
 
 Reason:
-- Challenge review environments can be network-constrained.
+- Challenge architecture environments can be network-constrained.
 
 Choice:
 - Keep all calibration and scoring logic on-device.
@@ -91,13 +91,13 @@ Choice:
 Tradeoff:
 - Generic SwiftPM CLI cannot fully validate this manifest mode.
 
-## Decision 9: Add calibration review gate before challenge
+## Decision 9: Add calibration architecture gate before challenge
 
 Reason:
 - Users and judges need confidence in generated adaptation parameters.
 
 Choice:
-- Insert a dedicated review screen showing stability/confidence and allow recalibration.
+- Insert a dedicated architecture screen showing stability/confidence and allow recalibration.
 
 Tradeoff:
 - One extra interaction step, but stronger trust and explainability.

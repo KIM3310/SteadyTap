@@ -51,7 +51,7 @@ struct IntroView: View {
     let onStart: () -> Void
 
     @State private var appear = false
-    @State private var reviewerActionStatus = "Reviewer shortcuts keep the cloud sync proof path one tap away."
+    @State private var architectureActionStatus = "Architecture shortcuts keep the cloud sync walkthrough path one tap away."
 
     private var latestResultText: String {
         guard let latest = history.first else {
@@ -183,7 +183,7 @@ struct IntroView: View {
                         .foregroundStyle(AppTheme.mint)
                         .fixedSize(horizontal: false, vertical: true)
 
-                    Label(quickStartContent.reviewerSafetyNote, systemImage: "checkmark.shield")
+                    Label(quickStartContent.architectureSafetyNote, systemImage: "checkmark.shield")
                         .font(.caption)
                         .foregroundStyle(AppTheme.textSecondary)
                         .fixedSize(horizontal: false, vertical: true)
@@ -540,7 +540,7 @@ struct IntroView: View {
                     }
 
                     Button("Copy Service Brief") {
-                        copyReviewerText(serviceBriefSnapshot, success: "Copied service brief snapshot.")
+                        copyArchitectureText(serviceBriefSnapshot, success: "Copied service brief snapshot.")
                     }
                     .buttonStyle(.bordered)
                     .tint(AppTheme.mint.opacity(0.8))
@@ -612,13 +612,13 @@ struct IntroView: View {
 
                 HStack(spacing: 10) {
                     Button("Copy Progress Report") {
-                        copyReviewerText(progressReportSnapshot, success: "Copied clinician progress report.")
+                        copyArchitectureText(progressReportSnapshot, success: "Copied clinician progress report.")
                     }
                     .buttonStyle(.borderedProminent)
                     .tint(AppTheme.mint.opacity(0.84))
 
                     Button("Copy Coach Delta") {
-                        copyReviewerText(coachDeltaSnapshot, success: "Copied coach delta summary.")
+                        copyArchitectureText(coachDeltaSnapshot, success: "Copied coach delta summary.")
                     }
                     .buttonStyle(.bordered)
                     .tint(AppTheme.amber.opacity(0.9))
@@ -630,7 +630,7 @@ struct IntroView: View {
     private var reviewPackCard: some View {
         GlassCard {
             VStack(alignment: .leading, spacing: 12) {
-                Text("Review Pack")
+                Text("Architecture Pack")
                     .font(.title3.weight(.bold))
                     .foregroundStyle(AppTheme.textPrimary)
 
@@ -695,42 +695,42 @@ struct IntroView: View {
                     }
 
                     HStack(spacing: 10) {
-                        Button("Copy Review Pack") {
-                            copyReviewerText(reviewPackSnapshot, success: "Copied review pack snapshot.")
+                        Button("Copy Architecture Pack") {
+                            copyArchitectureText(reviewPackSnapshot, success: "Copied architecture pack snapshot.")
                         }
                         .buttonStyle(.borderedProminent)
                         .tint(AppTheme.mint.opacity(0.84))
 
                         Button("Copy Review Routes") {
-                            copyReviewerText(reviewRouteSnapshot, success: "Copied review route checklist.")
+                            copyArchitectureText(reviewRouteSnapshot, success: "Copied architecture route checklist.")
                         }
                         .buttonStyle(.bordered)
                         .tint(AppTheme.amber.opacity(0.9))
 
                         Button("Copy Cloud Snapshot") {
-                            copyReviewerText(cloudSnapshot, success: "Copied cloud sync snapshot.")
+                            copyArchitectureText(cloudSnapshot, success: "Copied cloud sync snapshot.")
                         }
                         .buttonStyle(.bordered)
                         .tint(AppTheme.ink.opacity(0.72))
 
-                        Button("Copy Reviewer Bundle") {
-                            copyReviewerText(reviewerBundleSnapshot, success: "Copied reviewer bundle.")
+                        Button("Copy Architecture Bundle") {
+                            copyArchitectureText(architectureBundleSnapshot, success: "Copied architecture bundle.")
                         }
                         .buttonStyle(.bordered)
                         .tint(AppTheme.mint.opacity(0.45))
 
                         Button("Copy Accessibility Brief") {
-                            copyReviewerText(accessibilityHandoffSnapshot, success: "Copied accessibility handoff brief.")
+                            copyArchitectureText(accessibilityHandoffSnapshot, success: "Copied accessibility handoff brief.")
                         }
                         .buttonStyle(.bordered)
                         .tint(AppTheme.amber.opacity(0.72))
                     }
 
-                    Text(reviewerActionStatus)
+                    Text(architectureActionStatus)
                         .font(.caption)
                         .foregroundStyle(AppTheme.textSecondary)
                 } else {
-                    Text("Generating review pack from the active backend path.")
+                    Text("Generating architecture pack from the active backend path.")
                         .font(.footnote)
                         .foregroundStyle(AppTheme.textSecondary)
                 }
@@ -770,7 +770,7 @@ struct IntroView: View {
             return [
                 "Health -> /v1/health",
                 "Runtime Brief -> /v1/runtime-brief",
-                "Review Pack -> /v1/review-pack",
+                "Architecture Pack -> /v1/architecture-pack",
                 proofRoutes,
             ]
             .filter { !$0.isEmpty }
@@ -780,7 +780,7 @@ struct IntroView: View {
         return [
             "Health -> /v1/health",
             "Runtime Brief -> /v1/runtime-brief",
-            "Review Pack -> /v1/review-pack",
+            "Architecture Pack -> /v1/architecture-pack",
         ].joined(separator: "\n")
     }
 
@@ -806,7 +806,7 @@ struct IntroView: View {
 
     private var reviewPackSnapshot: String {
         guard let reviewPack else {
-            return "Review pack unavailable."
+            return "Architecture pack unavailable."
         }
 
         return [
@@ -846,9 +846,9 @@ struct IntroView: View {
         ].joined(separator: "\n")
     }
 
-    private var reviewerBundleSnapshot: String {
+    private var architectureBundleSnapshot: String {
         [
-            "SteadyTap reviewer bundle",
+            "SteadyTap architecture bundle",
             serviceBriefSnapshot,
             "",
             reviewPackSnapshot,
@@ -917,16 +917,16 @@ struct IntroView: View {
         ].joined(separator: "\n")
     }
 
-    private func copyReviewerText(_ text: String, success: String) {
+    private func copyArchitectureText(_ text: String, success: String) {
         #if canImport(UIKit)
         UIPasteboard.general.string = text
-        reviewerActionStatus = success
+        architectureActionStatus = success
         #elseif canImport(AppKit)
         NSPasteboard.general.clearContents()
         NSPasteboard.general.setString(text, forType: .string)
-        reviewerActionStatus = success
+        architectureActionStatus = success
         #else
-        reviewerActionStatus = "Clipboard copy is unavailable on this platform."
+        architectureActionStatus = "Clipboard copy is unavailable on this platform."
         #endif
     }
 

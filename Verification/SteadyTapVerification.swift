@@ -192,7 +192,7 @@ struct SteadyTapVerification {
         )
         try expect(coach.recommendationLabel == "Apply Coach Setup", "coach recommendation label")
         try expect(coach.firstUsePromise.contains("calibration only"), "coach quick-start promise")
-        try expect(coach.reviewerSafetyNote.contains("cloud sync"), "coach safety note")
+        try expect(coach.architectureSafetyNote.contains("cloud sync"), "coach safety note")
         try expect(coach.routeChips[0] == "Setup · Apply coach preset", "coach route chip")
 
         let local = IntroQuickStartContent(

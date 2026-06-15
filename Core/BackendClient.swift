@@ -155,7 +155,7 @@ struct CloudBackendClient: SteadyTapBackendClient {
     }
 
     func fetchReviewPack() async throws -> ServiceReviewPack {
-        let request = try makeRequest(path: "/v1/review-pack")
+        let request = try makeRequest(path: "/v1/architecture-pack")
         let response: ServiceReviewPackResponse = try await send(request)
         return response.toDomain()
     }

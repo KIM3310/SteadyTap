@@ -543,7 +543,7 @@ struct ServiceBrief: Codable {
         proofAssets: [
             ProofAsset(label: "Health Surface", href: "/v1/health"),
             ProofAsset(label: "Runtime Brief", href: "/v1/runtime-brief"),
-            ProofAsset(label: "Review Pack", href: "/v1/review-pack"),
+            ProofAsset(label: "Architecture Pack", href: "/v1/architecture-pack"),
             ProofAsset(label: "Coach Schema", href: "/v1/schema/coach-report"),
         ]
     )
@@ -569,20 +569,20 @@ struct ServiceReviewPack: Codable {
 
     static let placeholder = ServiceReviewPack(
         generatedAt: .now,
-        readinessContract: "steadytap-review-pack-v1",
+        readinessContract: "steadytap-architecture-pack-v1",
         headline: "Demo fallback: mobile-to-cloud coaching sync and local-first fallback.",
         authMode: "open-review",
         uploadedSurfaceCount: 5,
         reviewRouteCount: 5,
         reviewSequence: [
-            "Review health, runtime brief, and review pack before enabling cloud mode.",
+            "Review health, runtime brief, and architecture pack before enabling cloud mode.",
             "Compare remote coach guidance against recent local sessions.",
             "Keep sync queue visible so cloud failures never hide local progress."
         ],
         twoMinuteReview: [
             "Open health or meta to confirm auth and storage status.",
             "Read runtime brief for sync boundary and watchouts.",
-            "Read review pack before enabling shared cloud testing.",
+            "Read architecture pack before enabling shared cloud testing.",
             "Compare remote coach outputs against local history."
         ],
         syncBoundary: [
@@ -595,7 +595,7 @@ struct ServiceReviewPack: Codable {
         ],
         proofAssets: [
             ProofAsset(label: "Health Surface", href: "/v1/health"),
-            ProofAsset(label: "Review Pack", href: "/v1/review-pack"),
+            ProofAsset(label: "Architecture Pack", href: "/v1/architecture-pack"),
             ProofAsset(label: "Coach Schema", href: "/v1/schema/coach-report"),
             ProofAsset(label: "Runtime Brief", href: "/v1/runtime-brief"),
         ]

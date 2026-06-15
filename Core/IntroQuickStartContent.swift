@@ -8,7 +8,7 @@ struct IntroQuickStartContent {
     let recommendationStatus: String
     let recommendationDisabled: Bool
     let firstUsePromise: String
-    let reviewerSafetyNote: String
+    let architectureSafetyNote: String
     let focusItems: [String]
     let routeChips: [String]
 
@@ -35,7 +35,7 @@ struct IntroQuickStartContent {
                 : "Apply the coach setup first so your first calibration run matches the remote recommendation."
             recommendationDisabled = coachSetupActive
             firstUsePromise = "Start with calibration only. The adaptive challenge comes after you confirm the profile looks credible."
-            reviewerSafetyNote = "Local calibration and result review stay useful even if cloud sync waits until later."
+            architectureSafetyNote = "Local calibration and result review stay useful even if cloud sync waits until later."
             focusItems = [
                 "Readiness · \(readinessBand)",
                 "Coach focus · \(coachPlan.focusArea)",
@@ -56,7 +56,7 @@ struct IntroQuickStartContent {
                 : "Apply the local suggestion before calibration so the first benchmark starts from the safest local intensity."
             recommendationDisabled = localIntensityRecommendation == challengeIntensity
             firstUsePromise = "Start with one calm calibration pass. You can verify comfort before the timed challenges begin."
-            reviewerSafetyNote = "The local-first path still produces a valid benchmark even if you keep cloud coaching optional."
+            architectureSafetyNote = "The local-first path still produces a valid benchmark even if you keep cloud coaching optional."
             focusItems = [
                 "Readiness · \(readinessBand)",
                 "Weekly goal · \(weeklyGoalStatusText)",

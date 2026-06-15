@@ -33,7 +33,7 @@ APP_VERSION = "1.0.0"
 API_KEY = os.getenv("STEADYTAP_API_KEY", "").strip()
 DB_PATH = os.getenv("STEADYTAP_DB_PATH", "./data/steadytap.sqlite")
 READINESS_CONTRACT = "steadytap-service-brief-v1"
-REVIEW_PACK_CONTRACT = "steadytap-review-pack-v1"
+REVIEW_PACK_CONTRACT = "steadytap-architecture-pack-v1"
 RUNTIME_SCORECARD_CONTRACT = "steadytap-runtime-scorecard-v1"
 COACH_REPORT_SCHEMA = "steadytap-coach-report-v1"
 SERVICE_ROUTES = [
@@ -43,7 +43,7 @@ SERVICE_ROUTES = [
     "/v1/runtime-scorecard",
     "/v1/review-queue",
     "/v1/progress-report",
-    "/v1/review-pack",
+    "/v1/architecture-pack",
     "/v1/schema/coach-report",
     "/v1/sessions",
     "/v1/coach/plan",
@@ -150,13 +150,13 @@ def build_review_queue(user_id: str = "demo-user") -> dict[str, object]:
                 "queue_id": f"{user_id}-needs-seed",
                 "priority": "high",
                 "reason": "No uploaded session summaries are available yet.",
-                "reviewer_claim": (
+                "architecture_claim": (
                     "Remote coaching should stay in review-only posture "
                     "until at least one session summary lands."
                 ),
                 "recommended_action": (
                     "Upload representative sessions, then compare "
-                    "/v1/progress-report and /v1/review-pack."
+                    "/v1/progress-report and /v1/architecture-pack."
                 ),
             }
         ]
@@ -172,7 +172,7 @@ def build_review_queue(user_id: str = "demo-user") -> dict[str, object]:
                 "queue_id": f"{user_id}-freshness",
                 "priority": "high" if len(recent) < 3 else "medium",
                 "reason": "Recent cloud guidance depends on fresh local summaries.",
-                "reviewer_claim": f"{len(recent)} recent sessions are available for reviewer comparison.",
+                "architecture_claim": f"{len(recent)} recent sessions are available for architecture comparison.",
                 "recommended_action": "Keep the latest session plus /v1/progress-report visible during review.",
             },
             {
@@ -182,7 +182,7 @@ def build_review_queue(user_id: str = "demo-user") -> dict[str, object]:
                     "Low confidence trends can make remote coaching "
                     "feel more certain than local evidence supports."
                 ),
-                "reviewer_claim": f"Average confidence is {avg_confidence:.2f} across the review window.",
+                "architecture_claim": f"Average confidence is {avg_confidence:.2f} across the analysis window.",
                 "recommended_action": (
                     "Recalibrate locally before increasing remote coaching intensity."
                     if avg_confidence < 0.72
@@ -196,7 +196,7 @@ def build_review_queue(user_id: str = "demo-user") -> dict[str, object]:
                     "Stability and score delta should be read together "
                     "before a clinician treats progress as durable."
                 ),
-                "reviewer_claim": (
+                "architecture_claim": (
                     f"Latest score delta is {current_delta:.2f} "
                     f"with average stability {avg_stability:.2f}."
                 ),
@@ -226,7 +226,7 @@ def build_review_queue(user_id: str = "demo-user") -> dict[str, object]:
             "runtime_brief": "/v1/runtime-brief",
             "review_queue": f"/v1/review-queue?user_id={user_id}",
             "progress_report": f"/v1/progress-report?user_id={user_id}",
-            "review_pack": "/v1/review-pack",
+            "architecture_pack": "/v1/architecture-pack",
         },
     }
 
@@ -257,20 +257,20 @@ def build_service_brief() -> dict[str, object]:
         "review_flow": [
             "Open /v1/health or /v1/meta to confirm storage posture and auth mode.",
             "Read /v1/runtime-scorecard and /v1/runtime-brief before enabling cloud mode in the app.",
-            "Open /v1/review-queue for the clinician/reviewer handoff surface before trusting remote guidance.",
+            "Open /v1/review-queue for the clinician/architecture handoff surface before trusting remote guidance.",
             (
                 "Use /v1/coach/plan and /v1/benchmarks with representative "
                 "session history, then compare against local insights."
             ),
-            "Review queued uploads in the app before trusting remote guidance as the source of truth.",
+            "Attention queued uploads in the app before trusting remote guidance as the source of truth.",
         ],
         "two_minute_review": [
             "Open /v1/health or /v1/meta to confirm auth mode and storage posture.",
             "Read /v1/runtime-scorecard for event volume, busiest routes, and sync posture.",
             "Read /v1/runtime-brief for sync boundary and current watchouts.",
-            "Open /v1/review-queue to see which users still need reviewer attention before cloud mode is trusted.",
+            "Open /v1/review-queue to see which users still need architecture attention before cloud mode is trusted.",
             "Compare /v1/coach/plan and /v1/benchmarks against recent local sessions before enabling cloud mode.",
-            "Check the in-app sync queue and /v1/review-pack before treating remote guidance as authoritative.",
+            "Check the in-app sync queue and /v1/architecture-pack before treating remote guidance as authoritative.",
         ],
         "watchouts": [
             "The backend stores run summaries, not raw calibration traces or full touch telemetry.",
@@ -288,7 +288,7 @@ def build_service_brief() -> dict[str, object]:
             {"label": "Review Queue", "href": "/v1/review-queue?user_id=demo-user"},
             {"label": "Progress Report", "href": "/v1/progress-report?user_id=demo-user"},
             {"label": "Runtime Brief", "href": "/v1/runtime-brief"},
-            {"label": "Review Pack", "href": "/v1/review-pack"},
+            {"label": "Architecture Pack", "href": "/v1/architecture-pack"},
             {"label": "Coach Schema", "href": "/v1/schema/coach-report"},
         ],
         "routes": SERVICE_ROUTES,
@@ -299,13 +299,13 @@ def build_service_brief() -> dict[str, object]:
             "runtime_brief": "/v1/runtime-brief",
             "review_queue": "/v1/review-queue?user_id=demo-user",
             "progress_report": "/v1/progress-report",
-            "review_pack": "/v1/review-pack",
+            "architecture_pack": "/v1/architecture-pack",
             "coach_schema": "/v1/schema/coach-report",
         },
     }
 
 
-def build_review_pack() -> dict[str, object]:
+def build_architecture_pack() -> dict[str, object]:
     session_count = db.count_sessions()
     auth_mode = "bearer-required" if API_KEY else "open-review"
     runtime_summary = build_runtime_summary()
@@ -315,7 +315,7 @@ def build_review_pack() -> dict[str, object]:
         "generated_at": datetime.now(tz=timezone.utc),
         "readiness_contract": REVIEW_PACK_CONTRACT,
         "headline": (
-            "Reviewer pack for SteadyTap cloud coaching: mobile-first sync boundary, auth posture, "
+            "Architecture brief for SteadyTap cloud coaching: mobile-first sync boundary, auth posture, "
             "and remote guidance handoff in one contract."
         ),
         "proof_bundle": {
@@ -331,7 +331,7 @@ def build_review_pack() -> dict[str, object]:
                 "/v1/runtime-brief",
                 "/v1/review-queue",
                 "/v1/progress-report",
-                "/v1/review-pack",
+                "/v1/architecture-pack",
                 "/v1/schema/coach-report",
             ],
         },
@@ -343,10 +343,10 @@ def build_review_pack() -> dict[str, object]:
         "review_sequence": [
             "Open /v1/health or /v1/meta to confirm auth mode, storage posture, and route availability.",
             (
-                "Read /v1/runtime-scorecard, /v1/runtime-brief, and /v1/review-pack "
+                "Read /v1/runtime-scorecard, /v1/runtime-brief, and /v1/architecture-pack "
                 "before enabling cloud mode for shared testing."
             ),
-            "Open /v1/review-queue to identify reviewer follow-up before cloud guidance is treated as stable.",
+            "Open /v1/review-queue to identify architecture follow-up before cloud guidance is treated as stable.",
             "Compare /v1/coach/plan and /v1/benchmarks against recent local sessions before adopting remote guidance.",
             "Keep queued uploads reviewable in the app so sync failures never become silent data loss.",
         ],
@@ -355,7 +355,7 @@ def build_review_pack() -> dict[str, object]:
             "Read /v1/runtime-scorecard for runtime event pressure and busiest sync surfaces.",
             "Read /v1/runtime-brief for sync boundary and watchouts.",
             "Open /v1/review-queue before shared review sessions so stale users stay visible.",
-            "Read /v1/review-pack before enabling shared cloud testing.",
+            "Read /v1/architecture-pack before enabling shared cloud testing.",
             "Compare remote coach outputs against local sessions before adopting them in the app.",
         ],
         "proof_assets": [
@@ -363,7 +363,7 @@ def build_review_pack() -> dict[str, object]:
             {"label": "Runtime Scorecard", "href": "/v1/runtime-scorecard"},
             {"label": "Review Queue", "href": "/v1/review-queue?user_id=demo-user"},
             {"label": "Progress Report", "href": "/v1/progress-report?user_id=demo-user"},
-            {"label": "Review Pack", "href": "/v1/review-pack"},
+            {"label": "Architecture Pack", "href": "/v1/architecture-pack"},
             {"label": "Coach Schema", "href": "/v1/schema/coach-report"},
             {"label": "Runtime Brief", "href": "/v1/runtime-brief"},
         ],
@@ -379,7 +379,7 @@ def build_review_pack() -> dict[str, object]:
             "runtime_brief": "/v1/runtime-brief",
             "review_queue": "/v1/review-queue?user_id=demo-user",
             "progress_report": "/v1/progress-report",
-            "review_pack": "/v1/review-pack",
+            "architecture_pack": "/v1/architecture-pack",
             "coach_schema": "/v1/schema/coach-report",
         },
     }
@@ -416,7 +416,7 @@ def build_runtime_scorecard() -> dict[str, object]:
                 "/v1/runtime-brief",
                 "/v1/review-queue",
                 "/v1/progress-report",
-                "/v1/review-pack",
+                "/v1/architecture-pack",
             ],
         },
         "links": {
@@ -426,7 +426,7 @@ def build_runtime_scorecard() -> dict[str, object]:
             "runtime_brief": "/v1/runtime-brief",
             "review_queue": "/v1/review-queue?user_id=demo-user",
             "progress_report": "/v1/progress-report",
-            "review_pack": "/v1/review-pack",
+            "architecture_pack": "/v1/architecture-pack",
             "coach_schema": "/v1/schema/coach-report",
         },
     }
@@ -447,7 +447,7 @@ def health() -> HealthResponse:
             "runtime_brief": "/v1/runtime-brief",
             "review_queue": "/v1/review-queue?user_id=demo-user",
             "progress_report": "/v1/progress-report",
-            "review_pack": "/v1/review-pack",
+            "architecture_pack": "/v1/architecture-pack",
             "coach_schema": "/v1/schema/coach-report",
         },
     )
@@ -479,7 +479,7 @@ def meta() -> ServiceMetaResponse:
             "service-brief-surface",
             "runtime-scorecard-surface",
             "coach-report-schema",
-            "review-pack-surface",
+            "architecture-pack-surface",
         ],
         routes=SERVICE_ROUTES,
     )
@@ -518,10 +518,10 @@ def progress_report(user_id: str = "demo-user") -> ProgressReportResponse:
     )
 
 
-@app.get("/v1/review-pack", response_model=ServiceReviewPackResponse)
-def review_pack() -> ServiceReviewPackResponse:
-    record_runtime_event(event_type="route_hit", route="/v1/review-pack")
-    return ServiceReviewPackResponse(**build_review_pack())
+@app.get("/v1/architecture-pack", response_model=ServiceReviewPackResponse)
+def architecture_pack() -> ServiceReviewPackResponse:
+    record_runtime_event(event_type="route_hit", route="/v1/architecture-pack")
+    return ServiceReviewPackResponse(**build_architecture_pack())
 
 
 @app.get("/v1/schema/coach-report", response_model=CoachReportSchemaResponse)
