@@ -104,8 +104,8 @@ class ServiceBriefResponse(BaseModel):
     auth_mode: str
     storage_mode: str
     evidence_counts: dict[str, int]
-    review_flow: list[str]
-    two_minute_review: list[str]
+    architecture_flow: list[str]
+    two_minute_architecture: list[str]
     watchouts: list[str]
     trust_boundary: list[str]
     proof_assets: list[dict[str, str]]
@@ -113,7 +113,7 @@ class ServiceBriefResponse(BaseModel):
     links: dict[str, str]
 
 
-class ServiceReviewPackResponse(BaseModel):
+class ServiceArchitecturePackResponse(BaseModel):
     status: str
     service: str
     generated_at: datetime
@@ -121,8 +121,8 @@ class ServiceReviewPackResponse(BaseModel):
     headline: str
     proof_bundle: dict[str, Any]
     sync_boundary: list[str]
-    review_sequence: list[str]
-    two_minute_review: list[str]
+    architecture_sequence: list[str]
+    two_minute_architecture: list[str]
     proof_assets: list[dict[str, str]]
     watchouts: list[str]
     links: dict[str, str]

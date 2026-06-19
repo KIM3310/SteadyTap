@@ -93,7 +93,7 @@ def test_health_and_meta_report_runtime_state(tmp_path: Path):
     assert brief_body["report_contract"]["schema"] == "steadytap-coach-report-v1"
     assert brief_body["evidence_counts"]["service_routes"] >= 8
     assert brief_body["evidence_counts"]["runtime_events"] >= 3
-    assert len(brief_body["two_minute_review"]) == 6
+    assert len(brief_body["two_minute_architecture"]) == 6
     assert brief_body["proof_assets"][0]["href"] == "/v1/health"
     assert brief_body["proof_assets"][1]["href"] == "/v1/runtime-scorecard"
     assert brief_body["proof_assets"][2]["href"] == "/v1/review-queue?user_id=demo-user"
@@ -126,12 +126,12 @@ def test_health_and_meta_report_runtime_state(tmp_path: Path):
     architecture_pack_body = architecture_pack.json()
     assert architecture_pack_body["readiness_contract"] == "steadytap-architecture-pack-v1"
     assert architecture_pack_body["proof_bundle"]["auth_mode"] in {"open-review", "bearer-required"}
-    assert "/v1/runtime-scorecard" in architecture_pack_body["proof_bundle"]["review_routes"]
-    assert "/v1/review-queue" in architecture_pack_body["proof_bundle"]["review_routes"]
-    assert "/v1/progress-report" in architecture_pack_body["proof_bundle"]["review_routes"]
-    assert "/v1/architecture-pack" in architecture_pack_body["proof_bundle"]["review_routes"]
-    assert isinstance(architecture_pack_body["review_sequence"], list)
-    assert len(architecture_pack_body["two_minute_review"]) == 6
+    assert "/v1/runtime-scorecard" in architecture_pack_body["proof_bundle"]["architecture_routes"]
+    assert "/v1/review-queue" in architecture_pack_body["proof_bundle"]["architecture_routes"]
+    assert "/v1/progress-report" in architecture_pack_body["proof_bundle"]["architecture_routes"]
+    assert "/v1/architecture-pack" in architecture_pack_body["proof_bundle"]["architecture_routes"]
+    assert isinstance(architecture_pack_body["architecture_sequence"], list)
+    assert len(architecture_pack_body["two_minute_architecture"]) == 6
     assert architecture_pack_body["proof_assets"][0]["href"] == "/v1/health"
     assert architecture_pack_body["proof_assets"][1]["href"] == "/v1/runtime-scorecard"
     assert architecture_pack_body["proof_assets"][2]["href"] == "/v1/review-queue?user_id=demo-user"

@@ -119,7 +119,7 @@ struct RootView: View {
             pendingSyncCount: model.pendingSyncCount,
             syncState: model.syncState,
             serviceBrief: model.serviceBrief,
-            reviewPack: model.reviewPack,
+            architecturePack: model.architecturePack,
             coachPlan: model.coachPlan,
             benchmark: model.benchmark,
             trendPoints: model.momentumTrendPoints,

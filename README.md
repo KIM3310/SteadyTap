@@ -3,7 +3,7 @@
 > **Curated supporting repo**
 > This repository is kept as optional proof, but it no longer leads the portfolio.
 > Current front door: **aix-pilot, enterprise-llm-adoption-kit, and doeon-kim-portfolio**.
-> Reason: Good mobile/accessibility craft, but it dilutes the main enterprise AI and operations story.
+> Reason: Good mobile/accessibility craft, but it dilutes the main enterprise AI and operations architecture story.
 
 An accessibility-focused iOS coaching app with an optional FastAPI backend for sync, coach-plan generation, and cohort benchmarks.
 
@@ -18,7 +18,7 @@ An accessibility coaching app that proves native UX judgment through calm routin
 
 | Lens | Definition |
 |---|---|
-| Audience | Accessibility-focused users, care teams, educators, and mobile product technical readers. |
+| Audience | Accessibility-focused users, care teams, educators, and mobile product architecture inspection paths. |
 | Architecture path | Validate the demo, README, architecture notes, and quality gate before deeper workflow architecture. |
 | System signal | SwiftUI surface, optional FastAPI backend, coaching plans, accessibility framing, and mobile-first interaction design. |
 | Safety boundary | Personal routines and accessibility data require consent, minimal collection, and clear local/offline behavior. |
@@ -39,7 +39,7 @@ An accessibility coaching app that proves native UX judgment through calm routin
 - [Architecture guide](docs/architecture-evidence-map.md) summarizes the project angle, first files to inspect, runtime commands, and known boundaries.
 - [Quality notes](docs/quality-gate.md) lists the local checks, CI surface, and release expectations for this repository.
 - [Enterprise readiness notes](docs/enterprise-readiness.md) outlines security, data, operations, integration, and handoff expectations.
-- [Portfolio fit](docs/portfolio-fit.md) explains why this repository is archived/supporting and where the current portfolio front door lives.
+- [Repository positioning](docs/repository-positioning.md) explains why this repository is archived/supporting and where the current technical entry points live.
 
 ## Architecture
 
@@ -264,7 +264,7 @@ This repository includes a neutral cloud and AI engineering blueprint that maps 
 
 ## Enterprise Productization
 
-- [Product operating model](docs/product-operating-model.md) defines the technical reader, trust boundary, trust boundary, operating checks, and service path for this repository.
+- [Product operating model](docs/product-operating-model.md) defines the architecture inspection, trust boundary, trust boundary, operating checks, and service path for this repository.
 
 ## System Architecture
 

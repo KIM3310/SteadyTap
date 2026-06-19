@@ -21,7 +21,7 @@ protocol SteadyTapBackendClient: Sendable {
     func fetchCoachPlan(userID: String, history: [SessionSummary]) async throws -> CoachPlan
     func fetchBenchmark(userID: String, history: [SessionSummary]) async throws -> BenchmarkSnapshot
     func fetchServiceBrief() async throws -> ServiceBrief
-    func fetchReviewPack() async throws -> ServiceReviewPack
+    func fetchArchitecturePack() async throws -> ServiceArchitecturePack
     func uploadSession(_ payload: SessionUploadPayload) async throws
 }
 
@@ -82,7 +82,7 @@ struct MockBackendClient: SteadyTapBackendClient {
         return .placeholder
     }
 
-    func fetchReviewPack() async throws -> ServiceReviewPack {
+    func fetchArchitecturePack() async throws -> ServiceArchitecturePack {
         try await Task.sleep(nanoseconds: 160_000_000)
         return .placeholder
     }
@@ -154,9 +154,9 @@ struct CloudBackendClient: SteadyTapBackendClient {
         return response.toDomain()
     }
 
-    func fetchReviewPack() async throws -> ServiceReviewPack {
+    func fetchArchitecturePack() async throws -> ServiceArchitecturePack {
         let request = try makeRequest(path: "/v1/architecture-pack")
-        let response: ServiceReviewPackResponse = try await send(request)
+        let response: ServiceArchitecturePackResponse = try await send(request)
         return response.toDomain()
     }
 
@@ -313,8 +313,8 @@ private struct ServiceBriefResponse: Decodable {
     let reportContract: ReportContractResponse
     let authMode: String
     let storageMode: String
-    let reviewFlow: [String]
-    let twoMinuteReview: [String]
+    let architectureFlow: [String]
+    let twoMinuteArchitecture: [String]
     let watchouts: [String]
     let trustBoundary: [String]
     let proofAssets: [ProofAsset]
@@ -327,8 +327,8 @@ private struct ServiceBriefResponse: Decodable {
         case reportContract = "report_contract"
         case authMode = "auth_mode"
         case storageMode = "storage_mode"
-        case reviewFlow = "review_flow"
-        case twoMinuteReview = "two_minute_review"
+        case architectureFlow = "architecture_flow"
+        case twoMinuteArchitecture = "two_minute_architecture"
         case watchouts
         case trustBoundary = "trust_boundary"
         case proofAssets = "proof_assets"
@@ -344,8 +344,8 @@ private struct ServiceBriefResponse: Decodable {
             authMode: authMode,
             storageMode: storageMode,
             sessionCount: evidenceCounts.sessionCount,
-            reviewFlow: reviewFlow,
-            twoMinuteReview: twoMinuteReview,
+            architectureFlow: architectureFlow,
+            twoMinuteArchitecture: twoMinuteArchitecture,
             watchouts: watchouts,
             trustBoundary: trustBoundary,
             proofAssets: proofAssets.map { .init(label: $0.label, href: $0.href) }
@@ -353,7 +353,7 @@ private struct ServiceBriefResponse: Decodable {
     }
 }
 
-private struct ServiceReviewPackResponse: Decodable {
+private struct ServiceArchitecturePackResponse: Decodable {
     struct ProofAsset: Decodable {
         let label: String
         let href: String
@@ -362,9 +362,9 @@ private struct ServiceReviewPackResponse: Decodable {
     let generatedAt: Date
     let readinessContract: String
     let headline: String
-    let proofBundle: ReviewPackProofBundleResponse
-    let reviewSequence: [String]
-    let twoMinuteReview: [String]
+    let proofBundle: ArchitecturePackProofBundleResponse
+    let architectureSequence: [String]
+    let twoMinuteArchitecture: [String]
     let syncBoundary: [String]
     let watchouts: [String]
     let proofAssets: [ProofAsset]
@@ -374,23 +374,23 @@ private struct ServiceReviewPackResponse: Decodable {
         case readinessContract = "readiness_contract"
         case headline
         case proofBundle = "proof_bundle"
-        case reviewSequence = "review_sequence"
-        case twoMinuteReview = "two_minute_review"
+        case architectureSequence = "architecture_sequence"
+        case twoMinuteArchitecture = "two_minute_architecture"
         case syncBoundary = "sync_boundary"
         case watchouts
         case proofAssets = "proof_assets"
     }
 
-    func toDomain() -> ServiceReviewPack {
-        ServiceReviewPack(
+    func toDomain() -> ServiceArchitecturePack {
+        ServiceArchitecturePack(
             generatedAt: generatedAt,
             readinessContract: readinessContract,
             headline: headline,
             authMode: proofBundle.authMode,
             uploadedSurfaceCount: proofBundle.uploadedSurfaceCount,
-            reviewRouteCount: proofBundle.reviewRoutes.count,
-            reviewSequence: reviewSequence,
-            twoMinuteReview: twoMinuteReview,
+            architectureRouteCount: proofBundle.architectureRoutes.count,
+            architectureSequence: architectureSequence,
+            twoMinuteArchitecture: twoMinuteArchitecture,
             syncBoundary: syncBoundary,
             watchouts: watchouts,
             proofAssets: proofAssets.map { .init(label: $0.label, href: $0.href) }
@@ -402,15 +402,15 @@ private struct ReportContractResponse: Decodable {
     let schema: String
 }
 
-private struct ReviewPackProofBundleResponse: Decodable {
+private struct ArchitecturePackProofBundleResponse: Decodable {
     let authMode: String
     let uploadedSurfaceCount: Int
-    let reviewRoutes: [String]
+    let architectureRoutes: [String]
 
     enum CodingKeys: String, CodingKey {
         case authMode = "auth_mode"
         case uploadedSurfaceCount = "uploaded_surface_count"
-        case reviewRoutes = "review_routes"
+        case architectureRoutes = "architecture_routes"
     }
 }
 

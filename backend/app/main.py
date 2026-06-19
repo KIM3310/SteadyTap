@@ -22,7 +22,7 @@ from .schemas import (
     RuntimeScorecardResponse,
     ServiceBriefResponse,
     ServiceMetaResponse,
-    ServiceReviewPackResponse,
+    ServiceArchitecturePackResponse,
     SessionUploadPayload,
     UploadSessionResponse,
 )
@@ -33,7 +33,7 @@ APP_VERSION = "1.0.0"
 API_KEY = os.getenv("STEADYTAP_API_KEY", "").strip()
 DB_PATH = os.getenv("STEADYTAP_DB_PATH", "./data/steadytap.sqlite")
 READINESS_CONTRACT = "steadytap-service-brief-v1"
-REVIEW_PACK_CONTRACT = "steadytap-architecture-pack-v1"
+ARCHITECTURE_PACK_CONTRACT = "steadytap-architecture-pack-v1"
 RUNTIME_SCORECARD_CONTRACT = "steadytap-runtime-scorecard-v1"
 COACH_REPORT_SCHEMA = "steadytap-coach-report-v1"
 SERVICE_ROUTES = [
@@ -151,7 +151,7 @@ def build_review_queue(user_id: str = "demo-user") -> dict[str, object]:
                 "priority": "high",
                 "reason": "No uploaded session summaries are available yet.",
                 "architecture_claim": (
-                    "Remote coaching should stay in review-only posture "
+                    "Remote coaching should stay in read-only posture "
                     "until at least one session summary lands."
                 ),
                 "recommended_action": (
@@ -186,7 +186,7 @@ def build_review_queue(user_id: str = "demo-user") -> dict[str, object]:
                 "recommended_action": (
                     "Recalibrate locally before increasing remote coaching intensity."
                     if avg_confidence < 0.72
-                    else "Local confidence band is reviewable."
+                    else "Local confidence band is inspectable."
                 ),
             },
             {
@@ -254,7 +254,7 @@ def build_service_brief() -> dict[str, object]:
             "benchmark_surfaces": 3,
             "review_queue_items": 3,
         },
-        "review_flow": [
+        "architecture_flow": [
             "Open /v1/health or /v1/meta to confirm storage posture and auth mode.",
             "Read /v1/runtime-scorecard and /v1/runtime-brief before enabling cloud mode in the app.",
             "Open /v1/review-queue for the clinician/architecture handoff surface before trusting remote guidance.",
@@ -264,7 +264,7 @@ def build_service_brief() -> dict[str, object]:
             ),
             "Attention queued uploads in the app before trusting remote guidance as the source of truth.",
         ],
-        "two_minute_review": [
+        "two_minute_architecture": [
             "Open /v1/health or /v1/meta to confirm auth mode and storage posture.",
             "Read /v1/runtime-scorecard for event volume, busiest routes, and sync posture.",
             "Read /v1/runtime-brief for sync boundary and current watchouts.",
@@ -313,7 +313,7 @@ def build_architecture_pack() -> dict[str, object]:
         "status": "ok",
         "service": "steadytap-backend",
         "generated_at": datetime.now(tz=timezone.utc),
-        "readiness_contract": REVIEW_PACK_CONTRACT,
+        "readiness_contract": ARCHITECTURE_PACK_CONTRACT,
         "headline": (
             "Architecture brief for SteadyTap cloud coaching: mobile-first sync boundary, auth posture, "
             "and remote guidance handoff in one contract."
@@ -324,7 +324,7 @@ def build_architecture_pack() -> dict[str, object]:
             "session_count": session_count,
             "runtime_event_count": runtime_summary["event_count"],
             "uploaded_surface_count": 5,
-            "review_routes": [
+            "architecture_routes": [
                 "/v1/health",
                 "/v1/meta",
                 "/v1/runtime-scorecard",
@@ -340,7 +340,7 @@ def build_architecture_pack() -> dict[str, object]:
             "Cloud sync uploads session summaries and adaptive profile outcomes, not full touch telemetry.",
             "Remote coach outputs should augment the mobile experience, not replace local fallback behavior.",
         ],
-        "review_sequence": [
+        "architecture_sequence": [
             "Open /v1/health or /v1/meta to confirm auth mode, storage posture, and route availability.",
             (
                 "Read /v1/runtime-scorecard, /v1/runtime-brief, and /v1/architecture-pack "
@@ -348,9 +348,9 @@ def build_architecture_pack() -> dict[str, object]:
             ),
             "Open /v1/review-queue to identify architecture follow-up before cloud guidance is treated as stable.",
             "Compare /v1/coach/plan and /v1/benchmarks against recent local sessions before adopting remote guidance.",
-            "Keep queued uploads reviewable in the app so sync failures never become silent data loss.",
+            "Keep queued uploads inspectable in the app so sync failures never become silent data loss.",
         ],
-        "two_minute_review": [
+        "two_minute_architecture": [
             "Open /v1/health or /v1/meta to confirm auth and storage posture.",
             "Read /v1/runtime-scorecard for runtime event pressure and busiest sync surfaces.",
             "Read /v1/runtime-brief for sync boundary and watchouts.",
@@ -409,7 +409,7 @@ def build_runtime_scorecard() -> dict[str, object]:
         },
         "runtime": {
             "persistence": runtime_summary,
-            "review_routes": [
+            "architecture_routes": [
                 "/v1/health",
                 "/v1/meta",
                 "/v1/runtime-scorecard",
@@ -518,10 +518,10 @@ def progress_report(user_id: str = "demo-user") -> ProgressReportResponse:
     )
 
 
-@app.get("/v1/architecture-pack", response_model=ServiceReviewPackResponse)
-def architecture_pack() -> ServiceReviewPackResponse:
+@app.get("/v1/architecture-pack", response_model=ServiceArchitecturePackResponse)
+def architecture_pack() -> ServiceArchitecturePackResponse:
     record_runtime_event(event_type="route_hit", route="/v1/architecture-pack")
-    return ServiceReviewPackResponse(**build_architecture_pack())
+    return ServiceArchitecturePackResponse(**build_architecture_pack())
 
 
 @app.get("/v1/schema/coach-report", response_model=CoachReportSchemaResponse)

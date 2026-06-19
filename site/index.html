@@ -41,7 +41,7 @@
       <h1>Calibration, adaptive challenge, and coaching for steadier touch interaction.</h1>
       <p class="lede">SteadyTap is for people who need steadier touch, not just prettier charts. This page gives operators the shortest path into the real iOS interaction, the coaching loop, and the backend proof that supports it.</p>
       <div class="hero-actions">
-        <a class="action-btn primary" href="https://github.com/KIM3310/SteadyTap/blob/main/README.md">Open native review path</a>
+        <a class="action-btn primary" href="https://github.com/KIM3310/SteadyTap/blob/main/README.md">Open native architecture path</a>
         <a class="action-btn" href="#care-team-handoff">Try handoff bar</a>
       </div>
     </section>
@@ -59,7 +59,7 @@
       <article class="panel">
         <h2>Why the proof stays native</h2>
         <ul class="list">
-          <li>The review-worthy interaction is the real tap flow on device or simulator.</li>
+          <li>The architecture-worthy interaction is the real tap flow on device or simulator.</li>
           <li>The backend contract matters, but it supports the coaching loop instead of replacing it.</li>
           <li>This page stays small on purpose so the repo reads like a product, not a browser clone.</li>
         </ul>
@@ -93,7 +93,7 @@
         </ul>
       </article>
       <article class="panel">
-        <h2>Clinical review path</h2>
+        <h2>Clinical architecture path</h2>
         <ul class="list">
           <li>Read the main README for product behavior and app flow.</li>
           <li>Read the backend README for runtime brief, architecture pack, and schema routes.</li>
@@ -123,10 +123,10 @@
       <h2>Care-team handoff bar</h2>
       <p class="hint">Copy the clinical path first, then the capability brief only if someone needs a shorter summary.</p>
       <div class="action-row">
-        <button id="copyReviewPathBtn" class="action-btn" type="button">Copy Review Path</button>
+        <button id="copyArchitecturePathBtn" class="action-btn" type="button">Copy Architecture Path</button>
         <button id="copyArchitectureBriefBtn" class="action-btn" type="button">Copy Capability Brief</button>
       </div>
-      <p id="quickActionStatus" class="hint">Default move: copy the clinical path. Shortcut keys: C review path · B capability brief · ? help</p>
+      <p id="quickActionStatus" class="hint">Default move: copy the clinical path. Shortcut keys: C architecture path · B capability brief · ? help</p>
     </section>
   </main>
 
@@ -183,16 +183,16 @@
         cards: [
           ["01 · Real interaction", "Keep the real tap path on device or simulator at the center of the story."],
           ["02 · Coaching support", "Frame the backend as support for coaching, not a replacement for the native experience."],
-          ["03 · Review handoff", "Use the capability brief only after the accessibility story is already grounded."],
+          ["03 · Architecture handoff", "Use the capability brief only after the accessibility story is already grounded."],
         ],
       },
       backend: {
         headline: "Backend support lens",
-        summary: "Use this when a technical reader wants to know how the native app and the FastAPI contract reinforce each other.",
+        summary: "Use this when a architecture inspection wants to know how the native app and the FastAPI contract reinforce each other.",
         cards: [
           ["01 · Runtime contract", "Start from the backend README and architecture pack routes before claims of measured progress."],
           ["02 · Cohort proof", "Use coach-plan and cohort benchmark talk only after the native loop is clear."],
-          ["03 · Copyable handoff", "Send the review path when you need to move the conversation from app to service."],
+          ["03 · Copyable handoff", "Send the architecture path when you need to move the conversation from app to service."],
         ],
       },
     };
@@ -208,7 +208,7 @@
       if (currentLens === "accessibility") lensAccessibilityBtn?.classList.add("active");
       if (currentLens === "backend") lensBackendBtn?.classList.add("active");
     }
-    const reviewPathPayload = 'SteadyTap review path\n- Read the main README for the product flow.\n- Read the backend README for calibration/runtime contracts.\n- Open the app in Xcode or Swift Playgrounds for the real interaction path.';
+    const architecturePathPayload = 'SteadyTap architecture path\n- Read the main README for the product flow.\n- Read the backend README for calibration/runtime contracts.\n- Open the app in Xcode or Swift Playgrounds for the real interaction path.';
     const architectureBriefPayload = 'SteadyTap architecture brief\nHeadline: Calibration, adaptive challenge, and coaching for steadier touch interaction.\nNative proof: iOS app on device or simulator.\nService proof: backend runtime brief and architecture pack in the backend README.\nPublic surface: a architecture landing page that points back to the native flow.';
 
     async function runQuickCopy(text, successLabel, failureLabel) {
@@ -218,7 +218,7 @@
       }
     }
 
-    document.getElementById("copyReviewPathBtn")?.addEventListener("click", () => runQuickCopy(reviewPathPayload, "Review path copied.", "Failed to copy review path."));
+    document.getElementById("copyArchitecturePathBtn")?.addEventListener("click", () => runQuickCopy(architecturePathPayload, "Architecture path copied.", "Failed to copy architecture path."));
     document.getElementById("copyArchitectureBriefBtn")?.addEventListener("click", () => runQuickCopy(architectureBriefPayload, "Capability brief copied.", "Failed to copy capability brief."));
     lensClinicianBtn?.addEventListener("click", () => { currentLens = "clinician"; renderLensPanel(); });
     lensAccessibilityBtn?.addEventListener("click", () => { currentLens = "accessibility"; renderLensPanel(); });
@@ -233,13 +233,13 @@
       if (key === "?") {
         event.preventDefault();
         if (quickActionStatus) {
-          quickActionStatus.textContent = "Start with the clinical path. Then share the capability brief if a technical reader wants the shorter version.";
+          quickActionStatus.textContent = "Start with the clinical path. Then share the capability brief if a architecture inspection wants the shorter version.";
         }
         return;
       }
       if (key === "c") {
         event.preventDefault();
-        void runQuickCopy(reviewPathPayload, "Review path copied.", "Failed to copy review path.");
+        void runQuickCopy(architecturePathPayload, "Architecture path copied.", "Failed to copy architecture path.");
       }
       if (key === "b") {
         event.preventDefault();

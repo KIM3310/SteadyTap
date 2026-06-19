@@ -507,8 +507,8 @@ struct ServiceBrief: Codable {
     let authMode: String
     let storageMode: String
     let sessionCount: Int
-    let reviewFlow: [String]
-    let twoMinuteReview: [String]
+    let architectureFlow: [String]
+    let twoMinuteArchitecture: [String]
     let watchouts: [String]
     let trustBoundary: [String]
     let proofAssets: [ProofAsset]
@@ -521,12 +521,12 @@ struct ServiceBrief: Codable {
         authMode: "open-review",
         storageMode: "sqlite-local",
         sessionCount: 4,
-        reviewFlow: [
+        architectureFlow: [
             "Calibrate locally before creating a new coaching plan.",
             "Upload only run summaries when cloud sync is enabled.",
             "Refresh the remote coach after queue health is stable."
         ],
-        twoMinuteReview: [
+        twoMinuteArchitecture: [
             "Open health or meta to confirm auth and storage status.",
             "Read runtime brief for sync boundary and watchouts.",
             "Compare coach outputs against recent local sessions.",
@@ -549,7 +549,7 @@ struct ServiceBrief: Codable {
     )
 }
 
-struct ServiceReviewPack: Codable {
+struct ServiceArchitecturePack: Codable {
     struct ProofAsset: Codable, Hashable {
         let label: String
         let href: String
@@ -560,26 +560,26 @@ struct ServiceReviewPack: Codable {
     let headline: String
     let authMode: String
     let uploadedSurfaceCount: Int
-    let reviewRouteCount: Int
-    let reviewSequence: [String]
-    let twoMinuteReview: [String]
+    let architectureRouteCount: Int
+    let architectureSequence: [String]
+    let twoMinuteArchitecture: [String]
     let syncBoundary: [String]
     let watchouts: [String]
     let proofAssets: [ProofAsset]
 
-    static let placeholder = ServiceReviewPack(
+    static let placeholder = ServiceArchitecturePack(
         generatedAt: .now,
         readinessContract: "steadytap-architecture-pack-v1",
         headline: "Demo fallback: mobile-to-cloud coaching sync and local-first fallback.",
         authMode: "open-review",
         uploadedSurfaceCount: 5,
-        reviewRouteCount: 5,
-        reviewSequence: [
+        architectureRouteCount: 5,
+        architectureSequence: [
             "Review health, runtime brief, and architecture pack before enabling cloud mode.",
             "Compare remote coach guidance against recent local sessions.",
             "Keep sync queue visible so cloud failures never hide local progress."
         ],
-        twoMinuteReview: [
+        twoMinuteArchitecture: [
             "Open health or meta to confirm auth and storage status.",
             "Read runtime brief for sync boundary and watchouts.",
             "Read architecture pack before enabling shared cloud testing.",

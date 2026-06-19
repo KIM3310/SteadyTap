@@ -21,7 +21,7 @@ struct IntroView: View {
     let pendingSyncCount: Int
     let syncState: SyncState
     let serviceBrief: ServiceBrief?
-    let reviewPack: ServiceReviewPack?
+    let architecturePack: ServiceArchitecturePack?
     let coachPlan: CoachPlan?
     let benchmark: BenchmarkSnapshot?
     let trendPoints: [Double]
@@ -102,7 +102,7 @@ struct IntroView: View {
                 challengeCard.staged(index: 4, appear: appear)
                 opsCard.staged(index: 5, appear: appear)
                 serviceBriefCard.staged(index: 6, appear: appear)
-                reviewPackCard.staged(index: 7, appear: appear)
+                architecturePackCard.staged(index: 7, appear: appear)
                 coachCard.staged(index: 8, appear: appear)
                 momentumCard.staged(index: 9, appear: appear)
                 progressReportCard.staged(index: 10, appear: appear)
@@ -498,7 +498,7 @@ struct IntroView: View {
                         Text("Review Flow")
                             .font(.subheadline.weight(.semibold))
                             .foregroundStyle(AppTheme.textPrimary)
-                        ForEach(serviceBrief.reviewFlow, id: \.self) { item in
+                        ForEach(serviceBrief.architectureFlow, id: \.self) { item in
                             briefLine(item, tone: AppTheme.mint)
                         }
                     }
@@ -507,7 +507,7 @@ struct IntroView: View {
                         Text("Review Flow")
                             .font(.subheadline.weight(.semibold))
                             .foregroundStyle(AppTheme.textPrimary)
-                        ForEach(serviceBrief.twoMinuteReview, id: \.self) { item in
+                        ForEach(serviceBrief.twoMinuteArchitecture, id: \.self) { item in
                             briefLine(item, tone: AppTheme.mint.opacity(0.8))
                         }
                     }
@@ -627,33 +627,33 @@ struct IntroView: View {
         }
     }
 
-    private var reviewPackCard: some View {
+    private var architecturePackCard: some View {
         GlassCard {
             VStack(alignment: .leading, spacing: 12) {
                 Text("Architecture Pack")
                     .font(.title3.weight(.bold))
                     .foregroundStyle(AppTheme.textPrimary)
 
-                if let reviewPack {
+                if let architecturePack {
                     HStack(spacing: 10) {
-                        MetricTile(title: "Contract", value: reviewPack.readinessContract)
-                        MetricTile(title: "Auth", value: reviewPack.authMode)
+                        MetricTile(title: "Contract", value: architecturePack.readinessContract)
+                        MetricTile(title: "Auth", value: architecturePack.authMode)
                     }
 
                     HStack(spacing: 10) {
-                        MetricTile(title: "Uploaded Surfaces", value: "\(reviewPack.uploadedSurfaceCount)")
-                        MetricTile(title: "Review Routes", value: "\(reviewPack.reviewRouteCount)")
+                        MetricTile(title: "Uploaded Surfaces", value: "\(architecturePack.uploadedSurfaceCount)")
+                        MetricTile(title: "Architecture Routes", value: "\(architecturePack.architectureRouteCount)")
                     }
 
-                    Text(reviewPack.headline)
+                    Text(architecturePack.headline)
                         .font(.footnote)
                         .foregroundStyle(AppTheme.textSecondary)
 
                     VStack(alignment: .leading, spacing: 6) {
-                        Text("Review Sequence")
+                        Text("Architecture Sequence")
                             .font(.subheadline.weight(.semibold))
                             .foregroundStyle(AppTheme.textPrimary)
-                        ForEach(reviewPack.reviewSequence, id: \.self) { item in
+                        ForEach(architecturePack.architectureSequence, id: \.self) { item in
                             briefLine(item, tone: AppTheme.mint)
                         }
                     }
@@ -662,7 +662,7 @@ struct IntroView: View {
                         Text("Review Flow")
                             .font(.subheadline.weight(.semibold))
                             .foregroundStyle(AppTheme.textPrimary)
-                        ForEach(reviewPack.twoMinuteReview, id: \.self) { item in
+                        ForEach(architecturePack.twoMinuteArchitecture, id: \.self) { item in
                             briefLine(item, tone: AppTheme.mint.opacity(0.8))
                         }
                     }
@@ -671,7 +671,7 @@ struct IntroView: View {
                         Text("Sync Boundary")
                             .font(.subheadline.weight(.semibold))
                             .foregroundStyle(AppTheme.textPrimary)
-                        ForEach(reviewPack.syncBoundary, id: \.self) { item in
+                        ForEach(architecturePack.syncBoundary, id: \.self) { item in
                             briefLine(item, tone: AppTheme.amber)
                         }
                     }
@@ -680,7 +680,7 @@ struct IntroView: View {
                         Text("Watchouts")
                             .font(.subheadline.weight(.semibold))
                             .foregroundStyle(AppTheme.textPrimary)
-                        ForEach(reviewPack.watchouts, id: \.self) { item in
+                        ForEach(architecturePack.watchouts, id: \.self) { item in
                             briefLine(item, tone: .red.opacity(0.8))
                         }
                     }
@@ -689,19 +689,19 @@ struct IntroView: View {
                         Text("Proof Assets")
                             .font(.subheadline.weight(.semibold))
                             .foregroundStyle(AppTheme.textPrimary)
-                        ForEach(reviewPack.proofAssets, id: \.self) { item in
+                        ForEach(architecturePack.proofAssets, id: \.self) { item in
                             briefLine("\(item.label) -> \(item.href)", tone: AppTheme.amber.opacity(0.85))
                         }
                     }
 
                     HStack(spacing: 10) {
                         Button("Copy Architecture Pack") {
-                            copyArchitectureText(reviewPackSnapshot, success: "Copied architecture pack snapshot.")
+                            copyArchitectureText(architecturePackSnapshot, success: "Copied architecture pack snapshot.")
                         }
                         .buttonStyle(.borderedProminent)
                         .tint(AppTheme.mint.opacity(0.84))
 
-                        Button("Copy Review Routes") {
+                        Button("Copy Architecture Routes") {
                             copyArchitectureText(reviewRouteSnapshot, success: "Copied architecture route checklist.")
                         }
                         .buttonStyle(.bordered)
@@ -765,8 +765,8 @@ struct IntroView: View {
     }
 
     private var reviewRouteSnapshot: String {
-        if let reviewPack {
-            let proofRoutes = reviewPack.proofAssets.map(\.href).joined(separator: "\n")
+        if let architecturePack {
+            let proofRoutes = architecturePack.proofAssets.map(\.href).joined(separator: "\n")
             return [
                 "Health -> /v1/health",
                 "Runtime Brief -> /v1/runtime-brief",
@@ -796,34 +796,34 @@ struct IntroView: View {
             "Storage: \(serviceBrief.storageMode)",
             "Sessions: \(serviceBrief.sessionCount)",
             "Review Flow:",
-            serviceBrief.reviewFlow.joined(separator: "\n"),
+            serviceBrief.architectureFlow.joined(separator: "\n"),
             "Review Flow:",
-            serviceBrief.twoMinuteReview.joined(separator: "\n"),
+            serviceBrief.twoMinuteArchitecture.joined(separator: "\n"),
             "Proof Assets:",
             serviceBrief.proofAssets.map { "\($0.label) -> \($0.href)" }.joined(separator: "\n"),
         ].joined(separator: "\n")
     }
 
-    private var reviewPackSnapshot: String {
-        guard let reviewPack else {
+    private var architecturePackSnapshot: String {
+        guard let architecturePack else {
             return "Architecture pack unavailable."
         }
 
         return [
-            "Contract: \(reviewPack.readinessContract)",
-            "Headline: \(reviewPack.headline)",
-            "Auth: \(reviewPack.authMode)",
+            "Contract: \(architecturePack.readinessContract)",
+            "Headline: \(architecturePack.headline)",
+            "Auth: \(architecturePack.authMode)",
             "Sync Boundary:",
-            reviewPack.syncBoundary.joined(separator: "\n"),
+            architecturePack.syncBoundary.joined(separator: "\n"),
             "Review Flow:",
-            reviewPack.twoMinuteReview.joined(separator: "\n"),
+            architecturePack.twoMinuteArchitecture.joined(separator: "\n"),
             "Proof Assets:",
-            reviewPack.proofAssets.map { "\($0.label) -> \($0.href)" }.joined(separator: "\n"),
+            architecturePack.proofAssets.map { "\($0.label) -> \($0.href)" }.joined(separator: "\n"),
         ].joined(separator: "\n")
     }
 
     private var cloudSnapshot: String {
-        guard let reviewPack else {
+        guard let architecturePack else {
             return "Cloud sync snapshot unavailable."
         }
 
@@ -835,14 +835,14 @@ struct IntroView: View {
             "Remaining: \(weeklyGoalRemaining)",
             "Avg Delta: \(signedScore(averageScoreDelta))",
             "Status: \(weeklyGoalStatusText)",
-            "Auth: \(reviewPack.authMode)",
+            "Auth: \(architecturePack.authMode)",
             "Storage: \(storage)",
             "Sessions: \(sessions)",
-            "Uploaded Surfaces: \(reviewPack.uploadedSurfaceCount)",
-            "Review Routes: \(reviewPack.reviewRouteCount)",
+            "Uploaded Surfaces: \(architecturePack.uploadedSurfaceCount)",
+            "Architecture Routes: \(architecturePack.architectureRouteCount)",
             "",
             "Sync Boundary:",
-            reviewPack.syncBoundary.joined(separator: "\n"),
+            architecturePack.syncBoundary.joined(separator: "\n"),
         ].joined(separator: "\n")
     }
 
@@ -851,7 +851,7 @@ struct IntroView: View {
             "SteadyTap architecture bundle",
             serviceBriefSnapshot,
             "",
-            reviewPackSnapshot,
+            architecturePackSnapshot,
             "",
             cloudSnapshot,
             "",
@@ -869,10 +869,10 @@ struct IntroView: View {
             "Readiness: \(readinessBand)",
             "Trend: \(trendDirection)",
             "Suggested Intensity: \(localIntensityRecommendation.shortTitle)",
-            "Auth: \(serviceBrief?.authMode ?? reviewPack?.authMode ?? "unknown")",
+            "Auth: \(serviceBrief?.authMode ?? architecturePack?.authMode ?? "unknown")",
             "Storage: \(serviceBrief?.storageMode ?? "local-first")",
             "",
-            "Review Routes:",
+            "Architecture Routes:",
             reviewRouteSnapshot,
         ].joined(separator: "\n")
     }

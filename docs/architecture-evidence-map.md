@@ -12,14 +12,14 @@ This repository is now curated as supporting material. Architecture it only afte
 | Status | Archived supporting repository |
 | Lane | B2C/B2B2C accessibility coaching |
 | Primary reader | Accessibility-focused users, care teams, educators, and mobile product teams. |
-| Why it moved back | Good mobile/accessibility craft, but it dilutes the main enterprise AI and operations story. |
+| Why it moved back | Good mobile/accessibility craft, but it dilutes the main enterprise AI and operations architecture story. |
 | Current successor | aix-pilot, enterprise-llm-adoption-kit, and doeon-kim-portfolio |
 
 ## Open First
 
 1. Start with the successor repositories named above.
 2. Use this repository only for optional domain breadth or historical product exploration.
-3. Check `docs/portfolio-fit.md` before presenting it externally.
+3. Check `docs/repository-positioning.md` before presenting it externally.
 4. Keep the archived/supporting status visible in any external writeup or technical walkthrough.
 
 ## Evidence
@@ -41,7 +41,7 @@ This repository is now curated as supporting material. Architecture it only afte
 - Sensitive routine data needs consent
 - Avoid medical/therapeutic claims
 - Sync must be opt-in
-- Good mobile/accessibility craft, but it dilutes the main enterprise AI and operations story.
+- Good mobile/accessibility craft, but it dilutes the main enterprise AI and operations architecture story.
 - Do not present this as a current flagship or maintained product surface.
 
 ## Useful Metrics
