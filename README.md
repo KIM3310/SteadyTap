@@ -273,3 +273,17 @@ This repository includes a neutral cloud and AI engineering blueprint that maps 
 ## Service Architecture
 
 - [Service architecture](docs/service-architecture.md) defines the cloud resources, account information, cost controls, and production guardrails needed to turn this repo into a scoped service without publishing public financial assumptions.
+
+<!-- search-growth-readme:start -->
+
+## Search And Service Surface
+
+- Public entry: free local-first mobile demo and static explainer
+- Paid boundary: premium progress history, organization dashboard, and private calibration templates
+- Canonical URL: https://steadytap.pages.dev/
+- Lead capture: mailto:ehdjs1351@gmail.com?subject=SteadyTap%20private%20workspace&body=I%20am%20interested%20in%20premium%20progress%20history%2C%20organization%20dashboard%2C%20and%20private%20calibration%20templates%20for%20SteadyTap.
+- Machine-readable offer: [docs/service-offer.json](docs/service-offer.json)
+- Search growth implementation: [docs/search-growth-implementation.md](docs/search-growth-implementation.md)
+- Revenue architecture: [docs/revenue-architecture.md](docs/revenue-architecture.md)
+
+<!-- search-growth-readme:end -->

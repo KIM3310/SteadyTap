@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://steadytap.pages.dev/sitemap.xml
