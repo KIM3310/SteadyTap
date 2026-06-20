@@ -142,7 +142,7 @@ def build_progress_report(
     review_notes = [
         "Weekly cadence should be interpreted alongside local session freshness.",
         "Coach delta compares current average improvement against the active remote target.",
-        "Use this report as a architecture/clinician handoff snapshot, not a replacement for raw session playback.",
+        "Use this report as an architecture/clinician handoff snapshot, not a replacement for raw session playback.",
     ]
 
     copy_text = "\n".join(

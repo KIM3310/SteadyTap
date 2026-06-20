@@ -278,7 +278,7 @@
       },
       backend: {
         headline: "Backend support lens",
-        summary: "Use this when a architecture inspection wants to know how the native app and the FastAPI contract reinforce each other.",
+        summary: "Use this when an architecture inspection wants to know how the native app and the FastAPI contract reinforce each other.",
         cards: [
           ["01 · Runtime contract", "Start from the backend README and architecture pack routes before claims of measured progress."],
           ["02 · Cohort proof", "Use coach-plan and cohort benchmark talk only after the native loop is clear."],
@@ -299,7 +299,7 @@
       if (currentLens === "backend") lensBackendBtn?.classList.add("active");
     }
     const architecturePathPayload = 'SteadyTap architecture path\n- Read the main README for the product flow.\n- Read the backend README for calibration/runtime contracts.\n- Open the app in Xcode or Swift Playgrounds for the real interaction path.';
-    const architectureBriefPayload = 'SteadyTap architecture brief\nHeadline: Calibration, adaptive challenge, and coaching for steadier touch interaction.\nNative proof: iOS app on device or simulator.\nService proof: backend runtime brief and architecture pack in the backend README.\nPublic surface: a architecture landing page that points back to the native flow.';
+    const architectureBriefPayload = 'SteadyTap architecture brief\nHeadline: Calibration, adaptive challenge, and coaching for steadier touch interaction.\nNative proof: iOS app on device or simulator.\nService proof: backend runtime brief and architecture pack in the backend README.\nPublic surface: an architecture landing page that points back to the native flow.';
 
     async function runQuickCopy(text, successLabel, failureLabel) {
       const ok = await copyQuickActionText(text);
@@ -323,7 +323,7 @@
       if (key === "?") {
         event.preventDefault();
         if (quickActionStatus) {
-          quickActionStatus.textContent = "Start with the clinical path. Then share the capability brief if a architecture inspection wants the shorter version.";
+          quickActionStatus.textContent = "Start with the clinical path. Then share the capability brief if an architecture inspection wants the shorter version.";
         }
         return;
       }

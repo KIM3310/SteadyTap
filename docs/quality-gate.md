@@ -10,7 +10,7 @@ These notes keep the repository available as supporting proof while preventing i
 |---|---|
 | Repository | `SteadyTap` |
 | Status | Archived supporting proof |
-| Project role | Keep as optional mobile product proof when a architecture inspection asks for Swift/iOS breadth. |
+| Project role | Keep as optional mobile product proof when an architecture inspection asks for Swift/iOS breadth. |
 | Current successor | aix-pilot, enterprise-llm-adoption-kit, and doeon-kim-portfolio |
 
 ## Presentation Boundary
