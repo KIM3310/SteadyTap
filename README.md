@@ -121,17 +121,16 @@ If you only need the mobile flow, you can ignore `backend/` and `site/`.
 **Prerequisites:** Python 3.11+
 
 ```bash
-cd backend
-python3.11 -m venv .venv
-source .venv/bin/activate
-python -m pip install -U pip
-python -m pip install -e ".[dev]"
+make verify-backend
 ```
+
+If your default `python3` is older than 3.11, run `make BOOTSTRAP_PYTHON=/path/to/python3.11 verify-backend`.
 
 **Run the server:**
 
 ```bash
-uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload
+cd backend
+.venv/bin/python -m uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload
 ```
 
 **Environment variables:**
@@ -145,10 +144,7 @@ uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload
 **Run tests and lint:**
 
 ```bash
-cd backend
-source .venv/bin/activate
-python -m pytest -v
-python -m ruff check .
+make verify-backend
 ```
 
 ## User flow
