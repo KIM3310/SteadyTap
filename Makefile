@@ -1,6 +1,6 @@
 SHELL := /bin/sh
 
-.PHONY: verify verify-ios verify-backend
+.PHONY: check-bootstrap-python verify verify-ios verify-backend
 
 BOOTSTRAP_PYTHON ?= python3
 BACKEND_VENV := backend/.venv
@@ -13,7 +13,14 @@ verify-ios:
 	swift build
 	./scripts/verify_cli.sh
 
-$(BACKEND_STAMP): backend/pyproject.toml backend/requirements.txt backend/requirements-dev.txt
+check-bootstrap-python:
+	@$(BOOTSTRAP_PYTHON) -c "import sys; raise SystemExit(0 if sys.version_info >= (3, 11) else 1)" >/dev/null 2>&1 || { \
+		echo "Python 3.11+ is required to create $(BACKEND_VENV)."; \
+		echo "Set BOOTSTRAP_PYTHON=/path/to/python3.11, for example: make BOOTSTRAP_PYTHON=/opt/homebrew/bin/python3.11 verify-backend"; \
+		exit 1; \
+	}
+
+$(BACKEND_STAMP): backend/pyproject.toml backend/requirements.txt backend/requirements-dev.txt | check-bootstrap-python
 	@if [ ! -x "$(BACKEND_PYTHON)" ] || ! $(BACKEND_PYTHON) -c "import sys; raise SystemExit(0 if sys.version_info >= (3, 11) else 1)" >/dev/null 2>&1; then \
 		rm -rf $(BACKEND_VENV); \
 		$(BOOTSTRAP_PYTHON) -m venv $(BACKEND_VENV); \
