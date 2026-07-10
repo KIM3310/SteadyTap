@@ -51,7 +51,7 @@ struct IntroView: View {
     let onStart: () -> Void
 
     @State private var appear = false
-    @State private var architectureActionStatus = "Architecture shortcuts keep the cloud sync walkthrough path one tap away."
+    @State private var architectureActionStatus = "Review shortcuts keep the cloud sync walkthrough one tap away."
 
     private var latestResultText: String {
         guard let latest = history.first else {
@@ -504,7 +504,7 @@ struct IntroView: View {
                     }
 
                     VStack(alignment: .leading, spacing: 6) {
-                        Text("Review Flow")
+                        Text("Two-Minute Review")
                             .font(.subheadline.weight(.semibold))
                             .foregroundStyle(AppTheme.textPrimary)
                         ForEach(serviceBrief.twoMinuteArchitecture, id: \.self) { item in
@@ -630,7 +630,7 @@ struct IntroView: View {
     private var architecturePackCard: some View {
         GlassCard {
             VStack(alignment: .leading, spacing: 12) {
-                Text("Architecture Pack")
+                Text("Review Pack")
                     .font(.title3.weight(.bold))
                     .foregroundStyle(AppTheme.textPrimary)
 
@@ -642,7 +642,7 @@ struct IntroView: View {
 
                     HStack(spacing: 10) {
                         MetricTile(title: "Uploaded Surfaces", value: "\(architecturePack.uploadedSurfaceCount)")
-                        MetricTile(title: "Architecture Routes", value: "\(architecturePack.architectureRouteCount)")
+                        MetricTile(title: "Review Routes", value: "\(architecturePack.architectureRouteCount)")
                     }
 
                     Text(architecturePack.headline)
@@ -650,7 +650,7 @@ struct IntroView: View {
                         .foregroundStyle(AppTheme.textSecondary)
 
                     VStack(alignment: .leading, spacing: 6) {
-                        Text("Architecture Sequence")
+                        Text("Review Sequence")
                             .font(.subheadline.weight(.semibold))
                             .foregroundStyle(AppTheme.textPrimary)
                         ForEach(architecturePack.architectureSequence, id: \.self) { item in
@@ -695,14 +695,14 @@ struct IntroView: View {
                     }
 
                     HStack(spacing: 10) {
-                        Button("Copy Architecture Pack") {
-                            copyArchitectureText(architecturePackSnapshot, success: "Copied architecture pack snapshot.")
+                        Button("Copy Review Pack") {
+                            copyArchitectureText(architecturePackSnapshot, success: "Copied review pack snapshot.")
                         }
                         .buttonStyle(.borderedProminent)
                         .tint(AppTheme.mint.opacity(0.84))
 
-                        Button("Copy Architecture Routes") {
-                            copyArchitectureText(reviewRouteSnapshot, success: "Copied architecture route checklist.")
+                        Button("Copy Review Routes") {
+                            copyArchitectureText(reviewRouteSnapshot, success: "Copied review route checklist.")
                         }
                         .buttonStyle(.bordered)
                         .tint(AppTheme.amber.opacity(0.9))
@@ -713,8 +713,8 @@ struct IntroView: View {
                         .buttonStyle(.bordered)
                         .tint(AppTheme.ink.opacity(0.72))
 
-                        Button("Copy Architecture Bundle") {
-                            copyArchitectureText(architectureBundleSnapshot, success: "Copied architecture bundle.")
+                        Button("Copy Review Bundle") {
+                            copyArchitectureText(architectureBundleSnapshot, success: "Copied review bundle.")
                         }
                         .buttonStyle(.bordered)
                         .tint(AppTheme.mint.opacity(0.45))
@@ -730,7 +730,7 @@ struct IntroView: View {
                         .font(.caption)
                         .foregroundStyle(AppTheme.textSecondary)
                 } else {
-                    Text("Generating architecture pack from the active backend path.")
+                    Text("Generating the review pack from the active backend path.")
                         .font(.footnote)
                         .foregroundStyle(AppTheme.textSecondary)
                 }
@@ -770,7 +770,7 @@ struct IntroView: View {
             return [
                 "Health -> /v1/health",
                 "Runtime Brief -> /v1/runtime-brief",
-                "Architecture Pack -> /v1/architecture-pack",
+                "Review Pack -> /v1/architecture-pack",
                 proofRoutes,
             ]
             .filter { !$0.isEmpty }
@@ -780,7 +780,7 @@ struct IntroView: View {
         return [
             "Health -> /v1/health",
             "Runtime Brief -> /v1/runtime-brief",
-            "Architecture Pack -> /v1/architecture-pack",
+            "Review Pack -> /v1/architecture-pack",
         ].joined(separator: "\n")
     }
 
@@ -806,7 +806,7 @@ struct IntroView: View {
 
     private var architecturePackSnapshot: String {
         guard let architecturePack else {
-            return "Architecture pack unavailable."
+            return "Review pack unavailable."
         }
 
         return [
@@ -839,7 +839,7 @@ struct IntroView: View {
             "Storage: \(storage)",
             "Sessions: \(sessions)",
             "Uploaded Surfaces: \(architecturePack.uploadedSurfaceCount)",
-            "Architecture Routes: \(architecturePack.architectureRouteCount)",
+            "Review Routes: \(architecturePack.architectureRouteCount)",
             "",
             "Sync Boundary:",
             architecturePack.syncBoundary.joined(separator: "\n"),
@@ -848,7 +848,7 @@ struct IntroView: View {
 
     private var architectureBundleSnapshot: String {
         [
-            "SteadyTap architecture bundle",
+            "SteadyTap review bundle",
             serviceBriefSnapshot,
             "",
             architecturePackSnapshot,
@@ -872,7 +872,7 @@ struct IntroView: View {
             "Auth: \(serviceBrief?.authMode ?? architecturePack?.authMode ?? "unknown")",
             "Storage: \(serviceBrief?.storageMode ?? "local-first")",
             "",
-            "Architecture Routes:",
+            "Review Routes:",
             reviewRouteSnapshot,
         ].joined(separator: "\n")
     }

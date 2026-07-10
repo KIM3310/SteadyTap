@@ -15,4 +15,4 @@ Updated: 2026-05-30
 
 - Keep this repository available, but do not lead with it.
 - Use it only when this exact domain, stack, or product pattern is relevant.
-- Do not lead with it unless it is revived with fresh operating data and a narrow architecture path.
+- Do not lead with it unless it is revived with fresh operating data and a narrow product path.

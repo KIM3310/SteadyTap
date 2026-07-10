@@ -2,7 +2,7 @@
 
 Updated: 2026-05-30
 
-This repository is now curated as supporting material. Architecture it only after the flagship enterprise AI, operations, security, data, and runtime reliability projects have established the main story.
+This repository is now curated as supporting material. Review it only after the flagship enterprise AI, operations, security, data, and runtime reliability projects have established the main story.
 
 ## Summary
 
@@ -32,9 +32,9 @@ This repository is now curated as supporting material. Architecture it only afte
 
 | Possible offer | Working scope assumption | Scope |
 |---|---|---|
-| Freemium iOS app | Scope after product intake | Scoped after architecture. |
-| Coaching plan templates | Scope after product intake | Scoped after architecture. |
-| Caregiver or education cohort dashboard pilot | Scope after product intake | Scoped after architecture. |
+| Freemium iOS app | Scope after product intake | Scoped after review. |
+| Coaching plan templates | Scope after product intake | Scoped after review. |
+| Caregiver or education cohort dashboard pilot | Scope after product intake | Scoped after review. |
 
 ## Boundaries
 

@@ -12,31 +12,31 @@ Works in two modes:
 1. Fully local, offline-first app
 2. App + backend with API contracts for cloud sync and coaching
 
-## Product and System Surface
+## System Overview
 
 An accessibility coaching app that proves native UX judgment through calm routines, optional sync, and human-centered boundaries.
 
-| Lens | Definition |
+| Area | Details |
 |---|---|
-| Audience | Accessibility-focused users, care teams, educators, and mobile product architecture inspection paths. |
-| Architecture path | Validate the demo, README, architecture notes, and quality gate before deeper workflow architecture. |
-| System signal | SwiftUI surface, optional FastAPI backend, coaching plans, accessibility framing, and mobile-first interaction design. |
-| Safety boundary | Personal routines and accessibility data require consent, minimal collection, and clear local/offline behavior. |
-| Fast path | Build the iOS app or run backend checks, then inspect routine flows and sync boundaries. |
+| Users | Accessibility-focused users, care teams, educators, and mobile product evaluators. |
+| Technical path | Validate the demo, README, architecture notes, and quality gate before deeper workflow review. |
+| System scope | SwiftUI surface, optional FastAPI backend, coaching plans, accessibility framing, and mobile-first interaction design. |
+| Operating boundary | Personal routines and accessibility data require consent, minimal collection, and clear local/offline behavior. |
+| Evaluation path | Build the iOS app or run backend checks, then inspect routine flows and sync boundaries. |
 
-## System Fast Path
+## Evaluation Path
 
-- **First minute:** Inspect the local/offline coaching flow, then check where optional sync begins.
-- **Local demo:** Open the Swift package in Xcode for the app path; use the FastAPI backend only when architectureing cloud sync and cohort benchmarks.
-- **Verification:** Run `swift build`, `./scripts/verify_cli.sh`, or `make verify` after backend dev dependencies are installed.
+- **Start here:** Inspect the local/offline coaching flow, then check where optional sync begins.
+- **Local demo:** Open the Swift package in Xcode for the app path; use the FastAPI backend only when reviewing cloud sync and cohort benchmarks.
+- **Checks:** Run `swift build`, `./scripts/verify_cli.sh`, or `make verify` after backend dev dependencies are installed.
 
 ## Service Launch Playbook
 
-- [Service launch playbook](docs/service-launch-playbook.md) maps the repository to architecture audiences, operating gates, operating boundaries, and risk controls.
+- [Service launch playbook](docs/service-launch-playbook.md) maps the repository to intended audiences, operating gates, operating boundaries, and risk controls.
 
 ## Architecture Notes
 
-- [Architecture guide](docs/architecture-evidence-map.md) summarizes the project angle, first files to inspect, runtime commands, and known boundaries.
+- [Architecture guide](docs/architecture-evidence-map.md) summarizes the system scope, first files to inspect, runtime commands, and known boundaries.
 - [Quality notes](docs/quality-gate.md) lists the local checks, CI surface, and release expectations for this repository.
 - [Enterprise readiness notes](docs/enterprise-readiness.md) outlines security, data, operations, integration, and handoff expectations.
 - [Repository positioning](docs/repository-positioning.md) explains why this repository is archived/supporting and where the current technical entry points live.
@@ -151,7 +151,7 @@ make verify-backend
 
 1. Tap calibration
 2. Drag calibration
-3. Calibration architecture
+3. Calibration review
 4. Baseline challenge
 5. Adaptive challenge
 6. Before/after report
@@ -174,7 +174,7 @@ make verify-backend
 - `GET /v1/runtime-scorecard`
 - `GET /v1/architecture-pack`
 - `GET /v1/progress-report?user_id={user_id}`
-- `GET /v1/architecture-queue?user_id={user_id}`
+- `GET /v1/review-queue?user_id={user_id}`
 - `GET /v1/schema/coach-report`
 - `POST /v1/sessions` (protected)
 - `POST /v1/coach/plan` (protected)
@@ -252,15 +252,13 @@ SteadyTap/
 
 ## Cloud + AI Architecture
 
-This repository includes a neutral cloud and AI engineering blueprint that maps the current proof surface to runtime boundaries, data contracts, model-risk controls, deployment posture, and validation hooks.
-
 - [Cloud + AI architecture blueprint](docs/cloud-ai-architecture.md)
 - [Machine-readable architecture manifest](docs/architecture/blueprint.json)
 - Validation command: `python3 scripts/validate_architecture_blueprint.py`
 
 ## Enterprise Productization
 
-- [Product operating model](docs/product-operating-model.md) defines the architecture inspection, trust boundary, trust boundary, operating checks, and service path for this repository.
+- [Product operating model](docs/product-operating-model.md) defines the product scope, trust boundary, operating checks, and service path for this repository.
 
 ## System Architecture
 

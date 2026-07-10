@@ -543,7 +543,7 @@ struct ServiceBrief: Codable {
         proofAssets: [
             ProofAsset(label: "Health Surface", href: "/v1/health"),
             ProofAsset(label: "Runtime Brief", href: "/v1/runtime-brief"),
-            ProofAsset(label: "Architecture Pack", href: "/v1/architecture-pack"),
+            ProofAsset(label: "Review Pack", href: "/v1/architecture-pack"),
             ProofAsset(label: "Coach Schema", href: "/v1/schema/coach-report"),
         ]
     )
@@ -575,14 +575,14 @@ struct ServiceArchitecturePack: Codable {
         uploadedSurfaceCount: 5,
         architectureRouteCount: 5,
         architectureSequence: [
-            "Review health, runtime brief, and architecture pack before enabling cloud mode.",
+            "Review health, runtime brief, and the review pack before enabling cloud mode.",
             "Compare remote coach guidance against recent local sessions.",
             "Keep sync queue visible so cloud failures never hide local progress."
         ],
         twoMinuteArchitecture: [
             "Open health or meta to confirm auth and storage status.",
             "Read runtime brief for sync boundary and watchouts.",
-            "Read architecture pack before enabling shared cloud testing.",
+            "Read the review pack before enabling shared cloud testing.",
             "Compare remote coach outputs against local history."
         ],
         syncBoundary: [
@@ -595,7 +595,7 @@ struct ServiceArchitecturePack: Codable {
         ],
         proofAssets: [
             ProofAsset(label: "Health Surface", href: "/v1/health"),
-            ProofAsset(label: "Architecture Pack", href: "/v1/architecture-pack"),
+            ProofAsset(label: "Review Pack", href: "/v1/architecture-pack"),
             ProofAsset(label: "Coach Schema", href: "/v1/schema/coach-report"),
             ProofAsset(label: "Runtime Brief", href: "/v1/runtime-brief"),
         ]

@@ -66,6 +66,7 @@ let package = Package(
                 "Makefile",
                 "README.md",
                 "SECURITY.md",
+                "SUPPORT.md",
             ]
         ),
         .testTarget(

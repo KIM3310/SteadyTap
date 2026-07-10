@@ -20,9 +20,9 @@ from .schemas import (
     HealthResponse,
     ProgressReportResponse,
     RuntimeScorecardResponse,
+    ServiceArchitecturePackResponse,
     ServiceBriefResponse,
     ServiceMetaResponse,
-    ServiceArchitecturePackResponse,
     SessionUploadPayload,
     UploadSessionResponse,
 )
@@ -172,7 +172,7 @@ def build_review_queue(user_id: str = "demo-user") -> dict[str, object]:
                 "queue_id": f"{user_id}-freshness",
                 "priority": "high" if len(recent) < 3 else "medium",
                 "reason": "Recent cloud guidance depends on fresh local summaries.",
-                "architecture_claim": f"{len(recent)} recent sessions are available for architecture comparison.",
+                "architecture_claim": f"{len(recent)} recent sessions are available for review.",
                 "recommended_action": "Keep the latest session plus /v1/progress-report visible during review.",
             },
             {
@@ -257,18 +257,18 @@ def build_service_brief() -> dict[str, object]:
         "architecture_flow": [
             "Open /v1/health or /v1/meta to confirm storage posture and auth mode.",
             "Read /v1/runtime-scorecard and /v1/runtime-brief before enabling cloud mode in the app.",
-            "Open /v1/review-queue for the clinician/architecture handoff surface before trusting remote guidance.",
+            "Open /v1/review-queue for the clinician review handoff before trusting remote guidance.",
             (
                 "Use /v1/coach/plan and /v1/benchmarks with representative "
                 "session history, then compare against local insights."
             ),
-            "Attention queued uploads in the app before trusting remote guidance as the source of truth.",
+            "Review queued uploads in the app before trusting remote guidance as the source of truth.",
         ],
         "two_minute_architecture": [
             "Open /v1/health or /v1/meta to confirm auth mode and storage posture.",
             "Read /v1/runtime-scorecard for event volume, busiest routes, and sync posture.",
             "Read /v1/runtime-brief for sync boundary and current watchouts.",
-            "Open /v1/review-queue to see which users still need architecture attention before cloud mode is trusted.",
+            "Open /v1/review-queue to see which users still need clinician attention before cloud mode is trusted.",
             "Compare /v1/coach/plan and /v1/benchmarks against recent local sessions before enabling cloud mode.",
             "Check the in-app sync queue and /v1/architecture-pack before treating remote guidance as authoritative.",
         ],
@@ -288,7 +288,7 @@ def build_service_brief() -> dict[str, object]:
             {"label": "Review Queue", "href": "/v1/review-queue?user_id=demo-user"},
             {"label": "Progress Report", "href": "/v1/progress-report?user_id=demo-user"},
             {"label": "Runtime Brief", "href": "/v1/runtime-brief"},
-            {"label": "Architecture Pack", "href": "/v1/architecture-pack"},
+            {"label": "Review Pack", "href": "/v1/architecture-pack"},
             {"label": "Coach Schema", "href": "/v1/schema/coach-report"},
         ],
         "routes": SERVICE_ROUTES,
@@ -315,7 +315,7 @@ def build_architecture_pack() -> dict[str, object]:
         "generated_at": datetime.now(tz=timezone.utc),
         "readiness_contract": ARCHITECTURE_PACK_CONTRACT,
         "headline": (
-            "Architecture brief for SteadyTap cloud coaching: mobile-first sync boundary, auth posture, "
+            "Review brief for SteadyTap cloud coaching: mobile-first sync boundary, auth posture, "
             "and remote guidance handoff in one contract."
         ),
         "proof_bundle": {
@@ -346,7 +346,7 @@ def build_architecture_pack() -> dict[str, object]:
                 "Read /v1/runtime-scorecard, /v1/runtime-brief, and /v1/architecture-pack "
                 "before enabling cloud mode for shared testing."
             ),
-            "Open /v1/review-queue to identify architecture follow-up before cloud guidance is treated as stable.",
+            "Open /v1/review-queue to identify clinician follow-up before cloud guidance is treated as stable.",
             "Compare /v1/coach/plan and /v1/benchmarks against recent local sessions before adopting remote guidance.",
             "Keep queued uploads inspectable in the app so sync failures never become silent data loss.",
         ],
@@ -363,7 +363,7 @@ def build_architecture_pack() -> dict[str, object]:
             {"label": "Runtime Scorecard", "href": "/v1/runtime-scorecard"},
             {"label": "Review Queue", "href": "/v1/review-queue?user_id=demo-user"},
             {"label": "Progress Report", "href": "/v1/progress-report?user_id=demo-user"},
-            {"label": "Architecture Pack", "href": "/v1/architecture-pack"},
+            {"label": "Review Pack", "href": "/v1/architecture-pack"},
             {"label": "Coach Schema", "href": "/v1/schema/coach-report"},
             {"label": "Runtime Brief", "href": "/v1/runtime-brief"},
         ],
