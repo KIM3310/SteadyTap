@@ -276,6 +276,7 @@ SteadyTap/
 - Paid boundary: premium progress history, organization dashboard, and private calibration templates
 - Canonical URL: https://steadytap.pages.dev/
 - Lead capture: https://github.com/KIM3310/SteadyTap/issues/new?template=service-inquiry.yml&title=Private+workspace+inquiry%3A+SteadyTap
+- Commercial route: https://kim3310-doeon-kim-portfolio.pages.dev/?offer=SteadyTap#service-offers
 - Machine-readable offer: [docs/service-offer.json](docs/service-offer.json)
 - Search growth implementation: [docs/search-growth-implementation.md](docs/search-growth-implementation.md)
 - Revenue architecture: [docs/revenue-architecture.md](docs/revenue-architecture.md)

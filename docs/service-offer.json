@@ -69,5 +69,29 @@
     ],
     "isAccessibleForFree": true,
     "keywords": "SteadyTap, calibration, adaptive, touch, challenge, toolkit, coach, planning, cloud, sync, option, premium, progress, history, organization, dashboard, templates, local-first, mobile, static, explainer, tier"
+  },
+  "commerce": {
+    "gateway_url": "https://kim3310-doeon-kim-portfolio.pages.dev/?offer=SteadyTap#service-offers",
+    "lane_id": "consumer-learning-supporter-lane",
+    "lane_name": "Consumer Learning Supporter Lane",
+    "billing_mode": "supporter",
+    "price_unit": "supporter bundle from USD 5/month or one-time theme and report packs from USD 20",
+    "fulfillment_kind": "supporter access, export or theme pack, classroom setup notes, and content publishing",
+    "risk_bucket": "consumer-guarded",
+    "checkout": {
+      "provider": "lemon-squeezy",
+      "status": "account-onboarding-required",
+      "fallback_url": "https://kim3310-doeon-kim-portfolio.pages.dev/?offer=SteadyTap#service-offers"
+    },
+    "sponsorship": {
+      "provider": "github-sponsors",
+      "eligible": true,
+      "status": "account-onboarding-required"
+    },
+    "advertising": {
+      "provider": null,
+      "eligible": false,
+      "status": "not-applicable"
+    }
   }
 }
