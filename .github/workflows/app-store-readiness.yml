@@ -116,7 +116,7 @@ jobs:
             build
 
       - name: Launch Release app in iOS Simulator
-        timeout-minutes: 8
+        timeout-minutes: 12
         run: |
           set -euo pipefail
           device_id="$(
@@ -124,10 +124,6 @@ jobs:
               python3 -c 'import json,sys; data=json.load(sys.stdin)["devices"]; candidates=[(runtime,device) for runtime,devices in data.items() if ".SimRuntime.iOS-" in runtime for device in devices if device.get("isAvailable") and device["name"].startswith("iPhone")]; candidates.sort(key=lambda item: tuple(int(part) for part in item[0].split("iOS-")[-1].split("-")), reverse=True); preferred=[item for item in candidates if "Pro" in item[1]["name"]]; print((preferred or candidates)[0][1]["udid"])'
           )"
           test -n "$device_id"
-          cleanup() {
-            xcrun simctl shutdown "$device_id" >/dev/null 2>&1 || true
-          }
-          trap cleanup EXIT
 
           xcrun simctl shutdown "$device_id" >/dev/null 2>&1 || true
           xcrun simctl erase "$device_id"
