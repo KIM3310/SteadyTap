@@ -15,8 +15,8 @@ Commercial route: https://kim3310-doeon-kim-portfolio.pages.dev/?offer=SteadyTap
 
 Use this project as a runnable or inspectable reference for SteadyTap, touch calibration workflows, adaptive controls, local progress, privacy boundaries, and private prototype customization.
 # ADSENSE-PUBLICATION:START
-Editorial guide: https://steadytap.pages.dev/guide.html
-Architecture article: https://steadytap.pages.dev/architecture.html
-Verification article: https://steadytap.pages.dev/verification.html
-Publisher information: https://steadytap.pages.dev/publisher.html
+Editorial guide: https://steadytap.pages.dev/guide
+Architecture article: https://steadytap.pages.dev/architecture
+Verification article: https://steadytap.pages.dev/verification
+Publisher information: https://steadytap.pages.dev/publisher
 # ADSENSE-PUBLICATION:END
