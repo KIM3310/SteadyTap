@@ -6,7 +6,7 @@
   "audience": "solo builders and wellness app prototypers",
   "public_resource": {
     "url": "https://kim3310-doeon-kim-portfolio.pages.dev/resources/SteadyTap/",
-    "live_demo": "https://steadytap.pages.dev",
+    "live_demo": "https://steadytap.pages.dev/",
     "readiness_checklist": [
       "Architecture Summary",
       "Runtime And Data Flow",

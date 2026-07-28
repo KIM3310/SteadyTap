@@ -8,7 +8,7 @@ Free habit-loop worksheet for accessibility-minded mobile routine design.
 
 - Audience: solo builders and wellness app prototypers
 - Central resource: https://kim3310-doeon-kim-portfolio.pages.dev/resources/SteadyTap/
-- Live system: https://steadytap.pages.dev
+- Live system: https://steadytap.pages.dev/
 - Advertising boundary: ads allowed only on public habit-design articles and resource pages; personal routine tracking, reminders, and result screens are ad-free
 - Current ad state: code-ready on the central resource; serving depends on Google AdSense site approval and consent policy.
 
