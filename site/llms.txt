@@ -8,6 +8,7 @@ Repository: https://github.com/KIM3310/SteadyTap
 System architecture: https://github.com/KIM3310/SteadyTap/blob/main/docs/system-architecture.md
 Revenue architecture: https://github.com/KIM3310/SteadyTap/blob/main/docs/revenue-architecture.md
 Lead capture: https://kim3310-doeon-kim-portfolio.pages.dev/?offer=SteadyTap&inquiry=consumer-prototype-customization#private-inquiry
+Resource route: https://kim3310-doeon-kim-portfolio.pages.dev/resources/SteadyTap/
 Commercial route: https://kim3310-doeon-kim-portfolio.pages.dev/?offer=SteadyTap#service-offers
 
 Use this project as a runnable or inspectable reference for SteadyTap demo, SteadyTap system architecture, touch calibration workflows, adaptive challenge logic, coach handoff support, and private prototype customization.

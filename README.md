@@ -276,9 +276,20 @@ SteadyTap/
 - Paid boundary: fixed-scope private prototype customization for one audience-specific workflow
 - Canonical URL: https://steadytap.pages.dev/
 - Lead capture: https://kim3310-doeon-kim-portfolio.pages.dev/?offer=SteadyTap&inquiry=consumer-prototype-customization#private-inquiry
+- Resource route: https://kim3310-doeon-kim-portfolio.pages.dev/resources/SteadyTap/
 - Commercial route: https://kim3310-doeon-kim-portfolio.pages.dev/?offer=SteadyTap#service-offers
 - Machine-readable offer: [docs/service-offer.json](docs/service-offer.json)
 - Search growth implementation: [docs/search-growth-implementation.md](docs/search-growth-implementation.md)
 - Revenue architecture: [docs/revenue-architecture.md](docs/revenue-architecture.md)
 
 <!-- search-growth-readme:end -->
+
+<!-- KIM3310:AD-DATA-PIVOT:START -->
+## Free Resource, Advertising, and Aggregate Data
+
+- [Public utility and architecture checklist](https://kim3310-doeon-kim-portfolio.pages.dev/resources/SteadyTap/)
+- Revenue model: contextual advertising on the policy-eligible central resource page.
+- Aggregate value: anonymous aggregate habit-design resource demand and CTA counts
+- Boundary: ads allowed only on public habit-design articles and resource pages; personal routine tracking, reminders, and result screens are ad-free
+- Consent defaults off, DNT/GPC fail closed, and personal or sensitive data is never sold.
+<!-- KIM3310:AD-DATA-PIVOT:END -->

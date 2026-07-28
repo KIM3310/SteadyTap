@@ -254,7 +254,17 @@ def check_service_offer_surface() -> None:
         ("commerce.checkout.status", checkout.get("status"), "not-configured"),
         ("commerce.checkout.fallback_url", checkout.get("fallback_url"), PRIVATE_INQUIRY_URL),
         ("commerce.sponsorship.eligible", commerce.get("sponsorship", {}).get("eligible"), False),
-        ("commerce.advertising.eligible", commerce.get("advertising", {}).get("eligible"), False),
+        ("commerce.advertising.eligible", commerce.get("advertising", {}).get("eligible"), True),
+        (
+            "commerce.advertising.delivery_surface",
+            commerce.get("advertising", {}).get("delivery_surface"),
+            "https://kim3310-doeon-kim-portfolio.pages.dev/resources/SteadyTap/",
+        ),
+        (
+            "commerce.advertising.status",
+            commerce.get("advertising", {}).get("status"),
+            "central-resource-site-review-dependent",
+        ),
         ("structured_data.applicationCategory", structured.get("applicationCategory"), "AccessibilityApplication"),
     )
     for label, actual, expected in expectations:
