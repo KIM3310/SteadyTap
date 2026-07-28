@@ -245,12 +245,20 @@ def validate_release_policy() -> None:
 
     intro = read_text("Views/IntroView.swift")
     for fragment in (
+        "@Environment(\\.horizontalSizeClass)",
         "Clear Local Data",
         "DistributionPolicy.privacyPolicyURL",
         "DistributionPolicy.supportURL",
         "not a medical device",
+        "quickStartMetrics",
+        "quickStartActions",
+        'Image(systemName: "\\(index + 1).circle.fill")',
     ):
         require(fragment in intro, f"Release UI is missing: {fragment}")
+    require(
+        "ScrollView(.horizontal" not in intro,
+        "Release intro must not hide first-run steps in a horizontal scroller",
+    )
 
     release_sources = "\n".join(
         read_text(path)

@@ -6,6 +6,8 @@ import AppKit
 #endif
 
 struct IntroView: View {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
     @Binding var scoringPreset: ScoringPreset
     @Binding var challengeIntensity: ChallengeIntensity
     @Binding var weeklyGoalTarget: Int
@@ -178,11 +180,7 @@ struct IntroView: View {
                     quickStartRouteChipRow
                 }
 
-                HStack(spacing: 10) {
-                    MetricTile(title: "Readiness", value: "\(readinessScore) · \(readinessBand)")
-                    MetricTile(title: "Trend", value: trendDirection)
-                    MetricTile(title: "Last Delta", value: signedScore(averageScoreDelta))
-                }
+                quickStartMetrics
 
                 VStack(alignment: .leading, spacing: 8) {
                     Label(quickStartContent.firstUsePromise, systemImage: "leaf.circle")
@@ -213,44 +211,93 @@ struct IntroView: View {
                     .foregroundStyle(quickStartContent.recommendationDisabled ? AppTheme.mint : AppTheme.amber)
                     .fixedSize(horizontal: false, vertical: true)
 
-                HStack(spacing: 10) {
-                    Button(action: applyLaunchRecommendation) {
-                        Label(quickStartContent.recommendationLabel, systemImage: coachPlan == nil ? "speedometer" : "wand.and.stars")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.bordered)
-                    .tint(.white.opacity(0.92))
-                    .disabled(quickStartContent.recommendationDisabled)
-
-                    Button(action: onStart) {
-                        Label("Start Calibration", systemImage: "play.fill")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .tint(AppTheme.amber.opacity(0.92))
-                    .accessibilityHint("Begins tap and drag calibration")
-                }
+                quickStartActions
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
 
+    @ViewBuilder
+    private var quickStartMetrics: some View {
+        if horizontalSizeClass == .compact {
+            VStack(spacing: 10) {
+                HStack(spacing: 10) {
+                    MetricTile(title: "Readiness", value: "\(readinessScore) · \(readinessBand)")
+                    MetricTile(title: "Trend", value: trendDirection)
+                }
+
+                MetricTile(title: "Last Delta", value: signedScore(averageScoreDelta))
+            }
+        } else {
+            HStack(spacing: 10) {
+                MetricTile(title: "Readiness", value: "\(readinessScore) · \(readinessBand)")
+                MetricTile(title: "Trend", value: trendDirection)
+                MetricTile(title: "Last Delta", value: signedScore(averageScoreDelta))
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var quickStartActions: some View {
+        if horizontalSizeClass == .compact {
+            VStack(spacing: 10) {
+                quickStartRecommendationButton
+                quickStartCalibrationButton
+            }
+        } else {
+            HStack(spacing: 10) {
+                quickStartRecommendationButton
+                quickStartCalibrationButton
+            }
+        }
+    }
+
+    private var quickStartRecommendationButton: some View {
+        Button(action: applyLaunchRecommendation) {
+            Label(
+                quickStartContent.recommendationLabel,
+                systemImage: coachPlan == nil ? "speedometer" : "wand.and.stars"
+            )
+            .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.bordered)
+        .tint(.white.opacity(0.92))
+        .disabled(quickStartContent.recommendationDisabled)
+    }
+
+    private var quickStartCalibrationButton: some View {
+        Button(action: onStart) {
+            Label("Start Calibration", systemImage: "play.fill")
+                .frame(maxWidth: .infinity)
+        }
+        .buttonStyle(.borderedProminent)
+        .tint(AppTheme.amber.opacity(0.92))
+        .accessibilityHint("Begins tap and drag calibration")
+    }
+
     private var quickStartRouteChipRow: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) {
-                ForEach(quickStartContent.routeChips, id: \.self) { chip in
+        VStack(spacing: 8) {
+            ForEach(Array(quickStartContent.routeChips.enumerated()), id: \.offset) { index, chip in
+                HStack(alignment: .firstTextBaseline, spacing: 10) {
+                    Image(systemName: "\(index + 1).circle.fill")
+                        .foregroundStyle(AppTheme.mint)
+
                     Text(chip)
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(AppTheme.textPrimary)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 8)
-                        .background(AppTheme.deepBlue.opacity(0.76))
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 10)
+                .background(
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .fill(AppTheme.deepBlue.opacity(0.76))
                         .overlay(
-                            Capsule()
+                            RoundedRectangle(cornerRadius: 12, style: .continuous)
                                 .stroke(AppTheme.textTertiary.opacity(0.35), lineWidth: 1)
                         )
-                        .clipShape(Capsule())
-                }
+                )
             }
         }
     }
