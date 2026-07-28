@@ -1,9 +1,11 @@
 # SteadyTap
 
-Purpose: local-first touch calibration and adaptive challenge toolkit with optional coach handoff support
+Purpose: on-device touch-practice utility with guided calibration and adaptive comparison rounds
 Free entry point: free local-first mobile demo and static explainer
 Paid boundary: fixed-scope private prototype customization for one audience-specific workflow
 Canonical URL: https://steadytap.pages.dev/
+Privacy policy: https://steadytap.pages.dev/privacy/
+Support: https://steadytap.pages.dev/support/
 Repository: https://github.com/KIM3310/SteadyTap
 System architecture: https://github.com/KIM3310/SteadyTap/blob/main/docs/system-architecture.md
 Revenue architecture: https://github.com/KIM3310/SteadyTap/blob/main/docs/revenue-architecture.md
@@ -11,4 +13,4 @@ Lead capture: https://kim3310-doeon-kim-portfolio.pages.dev/?offer=SteadyTap&inq
 Resource route: https://kim3310-doeon-kim-portfolio.pages.dev/resources/SteadyTap/
 Commercial route: https://kim3310-doeon-kim-portfolio.pages.dev/?offer=SteadyTap#service-offers
 
-Use this project as a runnable or inspectable reference for SteadyTap demo, SteadyTap system architecture, touch calibration workflows, adaptive challenge logic, coach handoff support, and private prototype customization.
+Use this project as a runnable or inspectable reference for SteadyTap, touch calibration workflows, adaptive controls, local progress, privacy boundaries, and private prototype customization.

@@ -42,7 +42,7 @@ struct IntroView: View {
     let remoteRefreshCooldown: Int
     let isRefreshingBackend: Bool
 
-    let onClearHistory: () -> Void
+    let onClearLocalData: () -> Void
     let onClearSyncQueue: () -> Void
     let onRefreshBackend: () -> Void
     let onSyncNow: () -> Void
@@ -100,16 +100,23 @@ struct IntroView: View {
                 flowCard.staged(index: 2, appear: appear)
                 scoringCard.staged(index: 3, appear: appear)
                 challengeCard.staged(index: 4, appear: appear)
-                opsCard.staged(index: 5, appear: appear)
-                serviceBriefCard.staged(index: 6, appear: appear)
-                architecturePackCard.staged(index: 7, appear: appear)
-                coachCard.staged(index: 8, appear: appear)
+                if DistributionPolicy.showsDeveloperTools {
+                    opsCard.staged(index: 5, appear: appear)
+                    serviceBriefCard.staged(index: 6, appear: appear)
+                    architecturePackCard.staged(index: 7, appear: appear)
+                    coachCard.staged(index: 8, appear: appear)
+                }
                 momentumCard.staged(index: 9, appear: appear)
-                progressReportCard.staged(index: 10, appear: appear)
+                if DistributionPolicy.showsDeveloperTools {
+                    progressReportCard.staged(index: 10, appear: appear)
+                }
                 intelligenceCard.staged(index: 11, appear: appear)
-                benchmarkCard.staged(index: 12, appear: appear)
+                if DistributionPolicy.showsDeveloperTools {
+                    benchmarkCard.staged(index: 12, appear: appear)
+                }
                 preferencesCard.staged(index: 13, appear: appear)
-                progressCard.staged(index: 14, appear: appear)
+                privacyCard.staged(index: 14, appear: appear)
+                progressCard.staged(index: 15, appear: appear)
             }
             .padding(.top, 16)
             .padding(.bottom, 32)
@@ -133,7 +140,7 @@ struct IntroView: View {
                     .frame(width: 76, height: 76)
                     .blur(radius: 7)
 
-                Image(systemName: "waveform.path.ecg.rectangle.fill")
+                Image(systemName: "hand.tap.fill")
                     .font(.system(size: 30, weight: .bold))
                     .foregroundStyle(.black.opacity(0.68))
             }
@@ -142,7 +149,7 @@ struct IntroView: View {
                 .font(.system(size: 50, weight: .black, design: .serif))
                 .foregroundStyle(AppTheme.textPrimary)
 
-            Text("Production-grade adaptive motor accessibility training with local-first resilience and cloud coaching.")
+            Text("Calibrate touch targets, compare practice rounds, and keep progress private on this device.")
                 .font(.headline)
                 .foregroundStyle(AppTheme.textSecondary)
                 .multilineTextAlignment(.center)
@@ -332,7 +339,7 @@ struct IntroView: View {
                     .tint(AppTheme.mint.opacity(0.84))
 
                     Button(action: onRefreshBackend) {
-                        Label(isRefreshingBackend ? "Refreshing..." : "Refresh Coach", systemImage: "bolt.heart.fill")
+                        Label(isRefreshingBackend ? "Refreshing..." : "Refresh Plan", systemImage: "arrow.clockwise")
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.bordered)
@@ -592,7 +599,7 @@ struct IntroView: View {
     private var progressReportCard: some View {
         GlassCard {
             VStack(alignment: .leading, spacing: 10) {
-                Text("Clinician Progress Report")
+                Text("Progress Summary")
                     .font(.title3.weight(.bold))
                     .foregroundStyle(AppTheme.textPrimary)
 
@@ -612,7 +619,7 @@ struct IntroView: View {
 
                 HStack(spacing: 10) {
                     Button("Copy Progress Report") {
-                        copyArchitectureText(progressReportSnapshot, success: "Copied clinician progress report.")
+                        copyArchitectureText(progressReportSnapshot, success: "Copied progress summary.")
                     }
                     .buttonStyle(.borderedProminent)
                     .tint(AppTheme.mint.opacity(0.84))
@@ -893,7 +900,7 @@ struct IntroView: View {
 
     private var progressReportSnapshot: String {
         [
-            "SteadyTap clinician progress report",
+            "SteadyTap progress summary",
             "Weekly cadence: \(weeklySessionCount)/\(weeklyGoalTarget)",
             "Streak: \(streakDays) day(s)",
             "Average delta: \(signedScore(averageScoreDelta))",
@@ -986,56 +993,94 @@ struct IntroView: View {
                 }
                 .tint(AppTheme.mint)
 
-                LabeledContent("User ID") {
-                    TextField("demo-user", text: $userID)
-                        .multilineTextAlignment(.trailing)
-                        .foregroundStyle(AppTheme.textPrimary)
-                        .steadyTapTextEntryBehavior()
-                }
-                .foregroundStyle(AppTheme.textSecondary)
-
-                if backendMode == .cloudPreferred {
-                    LabeledContent("API Base URL") {
-                        TextField("http://127.0.0.1:8080", text: $backendBaseURL)
+                if DistributionPolicy.showsDeveloperTools {
+                    LabeledContent("Test User ID") {
+                        TextField("local-user", text: $userID)
                             .multilineTextAlignment(.trailing)
                             .foregroundStyle(AppTheme.textPrimary)
                             .steadyTapTextEntryBehavior()
                     }
                     .foregroundStyle(AppTheme.textSecondary)
 
-                    LabeledContent("Bearer Token") {
-                        SecureField("Optional token", text: $backendAuthToken)
-                            .multilineTextAlignment(.trailing)
-                            .foregroundStyle(AppTheme.textPrimary)
-                            .steadyTapTextEntryBehavior()
+                    if backendMode == .cloudPreferred {
+                        LabeledContent("API Base URL") {
+                            TextField("http://127.0.0.1:8080", text: $backendBaseURL)
+                                .multilineTextAlignment(.trailing)
+                                .foregroundStyle(AppTheme.textPrimary)
+                                .steadyTapTextEntryBehavior()
+                        }
+                        .foregroundStyle(AppTheme.textSecondary)
+
+                        LabeledContent("Bearer Token") {
+                            SecureField("Optional token", text: $backendAuthToken)
+                                .multilineTextAlignment(.trailing)
+                                .foregroundStyle(AppTheme.textPrimary)
+                                .steadyTapTextEntryBehavior()
+                        }
+                        .foregroundStyle(AppTheme.textSecondary)
                     }
-                    .foregroundStyle(AppTheme.textSecondary)
                 }
 
-                Text("All local data stays on-device. If cloud mode needs a bearer token, the token is stored in Keychain while uploads remain limited to run summaries.")
+                Text(
+                    DistributionPolicy.showsDeveloperTools
+                        ? "Debug builds can test an optional API. Release builds keep practice data on-device and disable network features."
+                        : "Practice history and settings stay on this device. SteadyTap has no account, ads, tracking, or cloud upload."
+                )
                     .font(.footnote)
                     .foregroundStyle(AppTheme.textTertiary)
 
                 HStack(spacing: 10) {
-                    if !history.isEmpty {
-                        Button(role: .destructive, action: onClearHistory) {
-                            Text("Clear History")
-                                .font(.subheadline.weight(.semibold))
-                                .frame(maxWidth: .infinity)
-                        }
-                        .buttonStyle(.bordered)
-                        .tint(.white.opacity(0.9))
+                    Button(role: .destructive, action: onClearLocalData) {
+                        Label("Clear Local Data", systemImage: "trash")
+                            .font(.subheadline.weight(.semibold))
+                            .frame(maxWidth: .infinity)
                     }
+                    .buttonStyle(.bordered)
+                    .tint(.white.opacity(0.9))
 
-                    if pendingSyncCount > 0 {
+                    if DistributionPolicy.showsDeveloperTools && pendingSyncCount > 0 {
                         Button(role: .destructive, action: onClearSyncQueue) {
-                            Text("Clear Queue")
+                            Label("Clear Queue", systemImage: "tray")
                                 .font(.subheadline.weight(.semibold))
                                 .frame(maxWidth: .infinity)
                         }
                         .buttonStyle(.bordered)
                         .tint(.white.opacity(0.9))
                     }
+                }
+            }
+        }
+    }
+
+    private var privacyCard: some View {
+        GlassCard {
+            VStack(alignment: .leading, spacing: 10) {
+                Label("Privacy & Purpose", systemImage: "hand.raised.fill")
+                    .font(.title3.weight(.bold))
+                    .foregroundStyle(AppTheme.textPrimary)
+
+                Text("SteadyTap is a touch-practice and interface-calibration tool. It is not a medical device and does not diagnose, monitor, or treat any condition.")
+                    .font(.footnote)
+                    .foregroundStyle(AppTheme.textSecondary)
+
+                Text("Your session summaries and preferences remain on this device. Use Clear Local Data above or uninstall the app to remove them.")
+                    .font(.footnote)
+                    .foregroundStyle(AppTheme.textTertiary)
+
+                HStack(spacing: 10) {
+                    Link(destination: DistributionPolicy.privacyPolicyURL) {
+                        Label("Privacy Policy", systemImage: "doc.text")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.bordered)
+                    .tint(.white.opacity(0.9))
+
+                    Link(destination: DistributionPolicy.supportURL) {
+                        Label("Support", systemImage: "questionmark.circle")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.bordered)
+                    .tint(.white.opacity(0.9))
                 }
             }
         }

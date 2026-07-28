@@ -194,7 +194,7 @@ def build_review_queue(user_id: str = "demo-user") -> dict[str, object]:
                 "priority": "high" if avg_stability < 0.7 or current_delta < 6 else "medium",
                 "reason": (
                     "Stability and score delta should be read together "
-                    "before a clinician treats progress as durable."
+                    "before a reviewer considers progress stable."
                 ),
                 "architecture_claim": (
                     f"Latest score delta is {current_delta:.2f} "
@@ -257,7 +257,7 @@ def build_service_brief() -> dict[str, object]:
         "architecture_flow": [
             "Open /v1/health or /v1/meta to confirm storage posture and auth mode.",
             "Read /v1/runtime-scorecard and /v1/runtime-brief before enabling cloud mode in the app.",
-            "Open /v1/review-queue for the clinician review handoff before trusting remote guidance.",
+            "Open /v1/review-queue for the review handoff before trusting remote guidance.",
             (
                 "Use /v1/coach/plan and /v1/benchmarks with representative "
                 "session history, then compare against local insights."
@@ -268,7 +268,7 @@ def build_service_brief() -> dict[str, object]:
             "Open /v1/health or /v1/meta to confirm auth mode and storage posture.",
             "Read /v1/runtime-scorecard for event volume, busiest routes, and sync posture.",
             "Read /v1/runtime-brief for sync boundary and current watchouts.",
-            "Open /v1/review-queue to see which users still need clinician attention before cloud mode is trusted.",
+            "Open /v1/review-queue to see which test users still need follow-up before cloud mode is trusted.",
             "Compare /v1/coach/plan and /v1/benchmarks against recent local sessions before enabling cloud mode.",
             "Check the in-app sync queue and /v1/architecture-pack before treating remote guidance as authoritative.",
         ],
@@ -346,7 +346,7 @@ def build_architecture_pack() -> dict[str, object]:
                 "Read /v1/runtime-scorecard, /v1/runtime-brief, and /v1/architecture-pack "
                 "before enabling cloud mode for shared testing."
             ),
-            "Open /v1/review-queue to identify clinician follow-up before cloud guidance is treated as stable.",
+            "Open /v1/review-queue to identify reviewer follow-up before cloud guidance is treated as stable.",
             "Compare /v1/coach/plan and /v1/benchmarks against recent local sessions before adopting remote guidance.",
             "Keep queued uploads inspectable in the app so sync failures never become silent data loss.",
         ],

@@ -36,6 +36,16 @@ enum PersistenceStore {
         UserDefaults.standard.removeObject(forKey: historyKey)
     }
 
+    static func clearAll() {
+        [
+            historyKey,
+            preferencesKey,
+            syncJobsKey,
+            coachPlanStorageName,
+            benchmarkKey,
+        ].forEach(UserDefaults.standard.removeObject)
+    }
+
     static func loadPreferences() -> AppPreferences {
         guard let data = UserDefaults.standard.data(forKey: preferencesKey) else {
             return .default

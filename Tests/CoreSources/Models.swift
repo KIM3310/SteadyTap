@@ -342,18 +342,18 @@ enum BackendMode: String, CaseIterable, Identifiable, Codable {
     var title: String {
         switch self {
         case .localOnly:
-            return "Local AI"
+            return "On-device"
         case .cloudPreferred:
-            return "Cloud API"
+            return "Developer API"
         }
     }
 
     var subtitle: String {
         switch self {
         case .localOnly:
-            return "Runs fully on-device with mock cloud analytics."
+            return "Keeps practice history and suggestions on this device."
         case .cloudPreferred:
-            return "Uses remote API when available and falls back locally."
+            return "Uses the configured test API and falls back on-device."
         }
     }
 }
@@ -761,8 +761,8 @@ struct AppPreferences: Codable {
         weeklyGoalTarget: 4,
         hapticsEnabled: true,
         backendModeRawValue: BackendMode.localOnly.rawValue,
-        autoSyncEnabled: true,
-        userID: "demo-user",
+        autoSyncEnabled: false,
+        userID: "local-user",
         backendBaseURL: ""
     )
 
@@ -808,8 +808,8 @@ struct AppPreferences: Codable {
         self.weeklyGoalTarget = try container.decodeIfPresent(Int.self, forKey: .weeklyGoalTarget) ?? 4
         self.hapticsEnabled = try container.decodeIfPresent(Bool.self, forKey: .hapticsEnabled) ?? true
         self.backendModeRawValue = try container.decodeIfPresent(String.self, forKey: .backendModeRawValue) ?? BackendMode.localOnly.rawValue
-        self.autoSyncEnabled = try container.decodeIfPresent(Bool.self, forKey: .autoSyncEnabled) ?? true
-        self.userID = try container.decodeIfPresent(String.self, forKey: .userID) ?? "demo-user"
+        self.autoSyncEnabled = try container.decodeIfPresent(Bool.self, forKey: .autoSyncEnabled) ?? false
+        self.userID = try container.decodeIfPresent(String.self, forKey: .userID) ?? "local-user"
         self.backendBaseURL = try container.decodeIfPresent(String.self, forKey: .backendBaseURL) ?? ""
     }
 }

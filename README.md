@@ -1,34 +1,32 @@
 # SteadyTap
 
-> **Curated supporting repo**
-> This repository is kept as optional proof, but it no longer leads the portfolio.
-> Current front door: **aix-pilot, enterprise-llm-adoption-kit, and doeon-kim-portfolio**.
-> Reason: Good mobile/accessibility craft, but it dilutes the main enterprise AI and operations architecture story.
+SteadyTap is an accessibility-aware touch-practice utility for iPhone and iPad. It calibrates tap and drag input, compares baseline and adaptive rounds, and keeps App Store release data on the device.
 
-An accessibility-focused iOS coaching app with an optional FastAPI backend for sync, coach-plan generation, and cohort benchmarks.
+## Distribution boundary
 
-Works in two modes:
+- **App Store Release:** local-only operation with no account, ads, tracking, analytics, or network upload.
+- **Debug development:** optional FastAPI integration for testing sync and aggregate comparison contracts.
 
-1. Fully local, offline-first app
-2. App + backend with API contracts for cloud sync and coaching
+The release boundary is enforced in `Core/DistributionPolicy.swift` and checked by `scripts/validate_app_store_readiness.py`.
 
 ## System Overview
 
-An accessibility coaching app that proves native UX judgment through calm routines, optional sync, and human-centered boundaries.
+An on-device practice app with a separate, developer-only backend sandbox.
 
 | Area | Details |
 |---|---|
-| Users | Accessibility-focused users, care teams, educators, and mobile product evaluators. |
-| Technical path | Validate the demo, README, architecture notes, and quality gate before deeper workflow review. |
-| System scope | SwiftUI surface, optional FastAPI backend, coaching plans, accessibility framing, and mobile-first interaction design. |
-| Operating boundary | Personal routines and accessibility data require consent, minimal collection, and clear local/offline behavior. |
-| Evaluation path | Build the iOS app or run backend checks, then inspect routine flows and sync boundaries. |
+| Users | People practicing touch precision and teams evaluating adaptive mobile interaction patterns. |
+| Technical path | Build the SwiftUI app, run the calibration flow, and inspect the release-policy validation. |
+| System scope | SwiftUI app, local persistence, adaptive profile generation, and a debug-only FastAPI sandbox. |
+| Operating boundary | App Store builds remain local-only; debug API work uses synthetic or explicitly approved test data. |
+| Evaluation path | Run the iOS Release build and automated App Store readiness checks before testing the optional backend. |
 
 ## Evaluation Path
 
-- **Start here:** Inspect the local/offline coaching flow, then check where optional sync begins.
-- **Local demo:** Open the Swift package in Xcode for the app path; use the FastAPI backend only when reviewing cloud sync and cohort benchmarks.
-- **Checks:** Run `swift build`, `./scripts/verify_cli.sh`, or `make verify` after backend dev dependencies are installed.
+- **Start here:** Open the app and complete calibration, baseline practice, adaptive practice, and result review.
+- **Release check:** Run `make verify-app-store`.
+- **Core regression:** Run `./scripts/verify_cli.sh`.
+- **Backend sandbox:** Run `make verify-backend` only when evaluating the developer API.
 
 ## Service Launch Playbook
 
@@ -89,7 +87,7 @@ An accessibility coaching app that proves native UX judgment through calm routin
 └─────────────────────────────────────────────────────┘
 ```
 
-**Data flow:** The iOS app runs calibration and challenges locally. Session summaries are optionally uploaded via the sync queue to the FastAPI backend, which stores them in SQLite and uses them to generate coach plans, benchmarks, and progress reports. The app falls back to mock/local behavior when the backend is unreachable.
+**Data flow:** The App Store release runs calibration, practice, history, and suggestions locally. Debug builds can opt into the FastAPI sandbox, which stores synthetic or approved test summaries in SQLite and returns plan and benchmark fixtures.
 
 ## Getting started
 
@@ -102,16 +100,16 @@ If this is your first time looking at the repo:
 ## What's included
 
 - Swift App Playground for calibration, baseline/adaptive challenges, and results
-- Local persistence, sync queue, and backend settings
-- FastAPI backend under `backend/`
-- HTTP contract for session upload, coach plans, and benchmarks
+- Local persistence and complete local-data deletion
+- Privacy manifest, production icon catalog, and submission metadata
+- Debug-only FastAPI sandbox under `backend/`
 
 ## Setup
 
 ### iOS App
 
 1. Open the Swift package in Xcode or Swift Playgrounds with App Playground support.
-2. Update `teamIdentifier` in `Package.swift` if signing is needed.
+2. Set `teamIdentifier` in `Package.swift` when preparing a signed archive.
 3. Run on iPhone or iPad simulator.
 
 If you only need the mobile flow, you can ignore `backend/` and `site/`.
@@ -162,8 +160,8 @@ make verify-backend
 - Three scoring presets: `Mistake-first`, `Balanced`, `Speed-first`
 - Challenge intensity modes: `Supportive`, `Standard`, `Advanced`
 - Local history, streak, trend, and weekly goal tracking
-- Optional cloud sync queue with retry controls
-- Remote coach-plan and cohort benchmark cards
+- Release-safe local persistence and deletion controls
+- Debug-only sync, plan, and benchmark inspection cards
 - Readiness score, trend direction, and next-intensity recommendation
 
 ## Backend API
@@ -181,40 +179,32 @@ make verify-backend
 - `POST /v1/benchmarks` (protected)
 - `GET /v1/sessions/{user_id}` (protected)
 
-## Cloud mode in the app
+## Developer API mode
 
-From the home settings screen:
+Developer API controls are compiled for debug workflows and hidden from Release users:
 
-- `Local AI`: local/mock backend behavior only
-- `Cloud API`: HTTP API with local fallback when URL is missing
+- `On-device`: local behavior only
+- `Developer API`: test HTTP API with local fallback when its URL is missing
 
 Recommended simulator URL: `http://127.0.0.1:8080`
 
-If `STEADYTAP_API_KEY` is set on the backend, paste the same bearer token into the app settings.
+If `STEADYTAP_API_KEY` is set on the backend, use the same bearer token only in a debug build. Never place it in source control.
 
 ## Tests
 
-Backend test suite: **10 tests, all passing**
+Run current checks instead of relying on a recorded status:
 
+```bash
+make verify-app-store
+./scripts/verify_cli.sh
+make verify-backend
 ```
-tests/test_api.py::test_health_and_meta_report_runtime_state PASSED
-tests/test_api.py::test_progress_report_tracks_weekly_cadence_and_coach_delta PASSED
-tests/test_api.py::test_protected_routes_require_bearer_token_when_api_key_is_configured PASSED
-tests/test_api.py::test_coach_plan_low_delta_yields_precision_focus PASSED
-tests/test_api.py::test_coach_plan_high_delta_yields_speed_focus PASSED
-tests/test_api.py::test_benchmark_percentile_reflects_delta PASSED
-tests/test_api.py::test_coach_plan_moderate_delta_yields_balanced PASSED
-tests/test_api.py::test_sync_queue_upload_lookup_and_dedup PASSED
-tests/test_api.py::test_input_validation_rejects_invalid_payloads PASSED
-tests/test_api.py::test_structured_error_response_format PASSED
-```
-
-Lint: `ruff check .` passes clean.
 
 ## CI/CD
 
 - `.github/workflows/backend-ci.yml`: Python 3.11 -- install, compile check, ruff lint, pytest
-- `.github/workflows/app-ci.yml`: macOS -- Swift build
+- `.github/workflows/app-ci.yml`: macOS -- Swift build and tests
+- `.github/workflows/app-store-readiness.yml`: metadata, privacy, icon, Swift tests, and unsigned iOS Release build
 
 ## Repo layout
 
@@ -225,6 +215,8 @@ SteadyTap/
   RootView.swift
   Core/
   Views/
+  Resources/
+  app-store/
   backend/
     README.md
     app/
@@ -239,16 +231,19 @@ SteadyTap/
 ## Main files
 
 - `Package.swift`: App Playground product setup
-- `Core/BackendClient.swift`: remote/mock backend client layer
+- `Core/DistributionPolicy.swift`: Release and debug feature boundary
+- `Core/BackendClient.swift`: developer backend client layer
 - `Core/PersistenceStore.swift`: local persistence, preferences, sync queue
 - `Core/AppViewModel.swift`: app orchestration and remote insight state
 - `Core/CalibrationEngine.swift`: touch metric analysis and adaptive profile generation
-- `Views/IntroView.swift`: home dashboard and backend settings panel
+- `Views/IntroView.swift`: practice home, preferences, privacy, and debug-only settings
 - `Views/PracticeView.swift`: baseline/adaptive challenge
 - `Views/ResultsView.swift`: before/after report
 - `backend/app/main.py`: FastAPI service entrypoint
 - `backend/app/service.py`: coach-plan and benchmark logic
 - `backend/tests/test_api.py`: backend test coverage
+- `Resources/PrivacyInfo.xcprivacy`: required-reason API and privacy declarations
+- `app-store/metadata.json`: submission copy, privacy answers, and reviewer notes
 
 ## Cloud + AI Architecture
 

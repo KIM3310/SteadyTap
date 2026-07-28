@@ -121,10 +121,7 @@ struct SteadyTapVerification {
     }
 
     private static func verifyPersistenceStore() throws {
-        PersistenceStore.clearHistory()
-        PersistenceStore.clearSyncJobs()
-        PersistenceStore.saveCoachPlan(nil)
-        PersistenceStore.saveBenchmark(nil)
+        PersistenceStore.clearAll()
 
         let sessions = (0..<20).map { i in
             SessionSummary(
@@ -159,10 +156,12 @@ struct SteadyTapVerification {
         let loadedPlan = PersistenceStore.loadCoachPlan()
         try expect(loadedPlan?.focusArea == "Precision", "coach plan persistence")
 
-        PersistenceStore.clearHistory()
-        PersistenceStore.clearSyncJobs()
-        PersistenceStore.saveCoachPlan(nil)
-        PersistenceStore.saveBenchmark(nil)
+        PersistenceStore.savePreferences(.default)
+        PersistenceStore.clearAll()
+        try expect(PersistenceStore.loadHistory().isEmpty, "clear all history")
+        try expect(PersistenceStore.loadCoachPlan() == nil, "clear all coach plan")
+        try expect(PersistenceStore.loadPreferences().userID == "local-user", "privacy-safe default user")
+        try expect(!PersistenceStore.loadPreferences().autoSyncEnabled, "privacy-safe default sync")
     }
 
     private static func verifyQuickStartContent() throws {
@@ -207,7 +206,7 @@ struct SteadyTapVerification {
         )
         try expect(local.recommendationDisabled, "local recommendation disabled when already active")
         try expect(local.firstUsePromise.contains("calm calibration pass"), "local quick-start promise")
-        try expect(local.routeChips[2] == "Review · Keep cloud optional", "local review chip")
+        try expect(local.routeChips[2] == "Review · Save progress locally", "local review chip")
     }
 
     private static func expect(_ condition: @autoclosure () -> Bool, _ message: String) throws {

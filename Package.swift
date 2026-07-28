@@ -19,7 +19,7 @@ let packageProducts: [Product] = [
         teamIdentifier: "",
         displayVersion: "1.0",
         bundleVersion: "1",
-        appIcon: .placeholder(icon: .heart),
+        appIcon: .asset("AppIcon"),
         accentColor: .presetColor(.teal),
         supportedDeviceFamilies: [
             .pad,
@@ -30,7 +30,9 @@ let packageProducts: [Product] = [
             .landscapeRight,
             .landscapeLeft,
             .portraitUpsideDown(.when(deviceFamilies: [.pad]))
-        ]
+        ],
+        appCategory: "public.app-category.utilities",
+        additionalInfoPlistContentFilePath: "Resources/AdditionalInfo.plist"
     )
 ]
 #else
@@ -56,6 +58,7 @@ let package = Package(
             path: ".",
             exclude: [
                 "backend",
+                "app-store",
                 "docs",
                 "site",
                 "scripts",
@@ -67,6 +70,9 @@ let package = Package(
                 "README.md",
                 "SECURITY.md",
                 "SUPPORT.md",
+            ],
+            resources: [
+                .process("Resources"),
             ]
         ),
         .testTarget(

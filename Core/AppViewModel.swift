@@ -54,25 +54,25 @@ final class AppViewModel: ObservableObject {
     @Published var backendMode: BackendMode = .localOnly {
         didSet {
             persistPreferencesIfReady()
-            if !isHydrating {
+            if DistributionPolicy.allowsDeveloperCloudFeatures && !isHydrating {
                 scheduleRemoteInsightsRefresh(delay: 0.15)
             }
         }
     }
 
-    @Published var autoSyncEnabled: Bool = true {
+    @Published var autoSyncEnabled: Bool = false {
         didSet {
             persistPreferencesIfReady()
-            if autoSyncEnabled && !isHydrating {
+            if DistributionPolicy.allowsDeveloperCloudFeatures && autoSyncEnabled && !isHydrating {
                 syncNowButtonTapped()
             }
         }
     }
 
-    @Published var userID: String = "demo-user" {
+    @Published var userID: String = "local-user" {
         didSet {
             persistPreferencesIfReady()
-            if !isHydrating {
+            if DistributionPolicy.allowsDeveloperCloudFeatures && !isHydrating {
                 scheduleRemoteInsightsRefresh(delay: 0.45)
             }
         }
@@ -81,7 +81,9 @@ final class AppViewModel: ObservableObject {
     @Published var backendBaseURL: String = "" {
         didSet {
             persistPreferencesIfReady()
-            if backendMode == .cloudPreferred && !isHydrating {
+            if DistributionPolicy.allowsDeveloperCloudFeatures
+                && backendMode == .cloudPreferred
+                && !isHydrating {
                 scheduleRemoteInsightsRefresh(delay: 0.45)
             }
         }
@@ -91,7 +93,9 @@ final class AppViewModel: ObservableObject {
         didSet {
             persistTokenToKeychainIfReady()
             persistPreferencesIfReady()
-            if backendMode == .cloudPreferred && !isHydrating {
+            if DistributionPolicy.allowsDeveloperCloudFeatures
+                && backendMode == .cloudPreferred
+                && !isHydrating {
                 scheduleRemoteInsightsRefresh(delay: 0.45)
             }
         }
@@ -109,32 +113,53 @@ final class AppViewModel: ObservableObject {
         challengeIntensity = preferences.challengeIntensity
         weeklyGoalTarget = preferences.weeklyGoalTarget.clamped(to: 1...14)
         hapticsEnabled = preferences.hapticsEnabled
-        backendMode = preferences.backendMode
-        autoSyncEnabled = preferences.autoSyncEnabled
-        userID = preferences.userID
-        backendBaseURL = preferences.backendBaseURL
-        let tokenInKeychain = KeychainStore.get(
-            service: Self.tokenService,
-            account: Self.tokenAccount
-        )
-        backendAuthToken = tokenInKeychain ?? PersistenceStore.loadLegacyBackendAuthToken() ?? ""
+
+        if DistributionPolicy.allowsDeveloperCloudFeatures {
+            backendMode = preferences.backendMode
+            autoSyncEnabled = preferences.autoSyncEnabled
+            userID = preferences.userID
+            backendBaseURL = preferences.backendBaseURL
+            let tokenInKeychain = KeychainStore.get(
+                service: Self.tokenService,
+                account: Self.tokenAccount
+            )
+            backendAuthToken = tokenInKeychain ?? PersistenceStore.loadLegacyBackendAuthToken() ?? ""
+        } else {
+            backendMode = .localOnly
+            autoSyncEnabled = false
+            userID = "local-user"
+            backendBaseURL = ""
+            backendAuthToken = ""
+        }
         HapticsManager.isEnabled = hapticsEnabled
 
         sessionHistory = PersistenceStore.loadHistory()
             .sorted(by: { $0.timestamp > $1.timestamp })
-        syncJobs = PersistenceStore.loadSyncJobs()
-            .sorted(by: { $0.createdAt < $1.createdAt })
-        coachPlan = PersistenceStore.loadCoachPlan()
-        benchmark = PersistenceStore.loadBenchmark()
+        if DistributionPolicy.allowsDeveloperCloudFeatures {
+            syncJobs = PersistenceStore.loadSyncJobs()
+                .sorted(by: { $0.createdAt < $1.createdAt })
+            coachPlan = PersistenceStore.loadCoachPlan()
+            benchmark = PersistenceStore.loadBenchmark()
+        } else {
+            syncJobs = []
+            coachPlan = nil
+            benchmark = nil
+            PersistenceStore.clearSyncJobs()
+            PersistenceStore.saveCoachPlan(nil)
+            PersistenceStore.saveBenchmark(nil)
+            KeychainStore.remove(service: Self.tokenService, account: Self.tokenAccount)
+        }
 
         isHydrating = false
         persistTokenToKeychainIfReady()
         persistPreferencesIfReady()
 
-        Task {
-            await refreshRemoteInsights()
-            if autoSyncEnabled && !syncJobs.isEmpty {
-                await syncNow()
+        if DistributionPolicy.allowsDeveloperCloudFeatures {
+            Task {
+                await refreshRemoteInsights()
+                if autoSyncEnabled && !syncJobs.isEmpty {
+                    await syncNow()
+                }
             }
         }
     }
@@ -246,11 +271,11 @@ final class AppViewModel: ObservableObject {
     var readinessBandTitle: String {
         switch readinessScore {
         case 80...:
-            return "Prime"
+            return "Ready"
         case 58..<80:
             return "Building"
         default:
-            return "Recover"
+            return "Ease In"
         }
     }
 
@@ -362,7 +387,7 @@ final class AppViewModel: ObservableObject {
 
         phase = .results
 
-        if autoSyncEnabled {
+        if DistributionPolicy.allowsDeveloperCloudFeatures && autoSyncEnabled {
             Task {
                 await syncNow()
             }
@@ -376,6 +401,43 @@ final class AppViewModel: ObservableObject {
         PersistenceStore.clearHistory()
     }
 
+    func clearLocalData() {
+        isHydrating = true
+        refreshDebounceTask?.cancel()
+
+        scoringPreset = .missFocused
+        challengeIntensity = .standard
+        weeklyGoalTarget = 4
+        hapticsEnabled = true
+        backendMode = .localOnly
+        autoSyncEnabled = false
+        userID = "local-user"
+        backendBaseURL = ""
+        backendAuthToken = ""
+        calibrationResult = nil
+        adaptiveProfile = .baseline
+        baselineMetrics = nil
+        adaptiveMetrics = nil
+        practiceRounds.removeAll()
+        sessionHistory.removeAll()
+        syncJobs.removeAll()
+        coachPlan = nil
+        benchmark = nil
+        serviceBrief = nil
+        architecturePack = nil
+        syncState = .idle
+        isSyncRunning = false
+        isInsightRefreshRunning = false
+        isRefreshingBackend = false
+        lastRemoteRefreshAt = nil
+
+        PersistenceStore.clearAll()
+        KeychainStore.remove(service: Self.tokenService, account: Self.tokenAccount)
+        HapticsManager.isEnabled = true
+        isHydrating = false
+        persistPreferencesIfReady()
+    }
+
     func clearSyncQueue() {
         syncJobs.removeAll()
         PersistenceStore.clearSyncJobs()
@@ -387,6 +449,9 @@ final class AppViewModel: ObservableObject {
     }
 
     func refreshRemoteInsightsButtonTapped() {
+        guard DistributionPolicy.allowsDeveloperCloudFeatures else {
+            return
+        }
         refreshDebounceTask?.cancel()
         Task {
             await refreshRemoteInsights(force: true)
@@ -394,12 +459,19 @@ final class AppViewModel: ObservableObject {
     }
 
     func syncNowButtonTapped() {
+        guard DistributionPolicy.allowsDeveloperCloudFeatures else {
+            return
+        }
         Task {
             await syncNow()
         }
     }
 
     func refreshRemoteInsights(force: Bool = false) async {
+        guard DistributionPolicy.allowsDeveloperCloudFeatures else {
+            return
+        }
+
         if !force {
             let cooldown = remoteRefreshCooldownRemaining
             if cooldown > 0 {
@@ -460,6 +532,11 @@ final class AppViewModel: ObservableObject {
     }
 
     func syncNow() async {
+        guard DistributionPolicy.allowsDeveloperCloudFeatures else {
+            syncState = .idle
+            return
+        }
+
         guard !isSyncRunning else {
             return
         }
@@ -503,7 +580,9 @@ final class AppViewModel: ObservableObject {
     }
 
     private func enqueueUploadJobIfPossible(baseline: PracticeMetrics, adaptive: PracticeMetrics) {
-        guard let calibrationResult else {
+        guard DistributionPolicy.allowsDeveloperCloudFeatures,
+              backendMode == .cloudPreferred,
+              let calibrationResult else {
             return
         }
 
@@ -544,15 +623,22 @@ final class AppViewModel: ObservableObject {
             challengeIntensityRawValue: challengeIntensity.rawValue,
             weeklyGoalTarget: weeklyGoalTarget,
             hapticsEnabled: hapticsEnabled,
-            backendModeRawValue: backendMode.rawValue,
-            autoSyncEnabled: autoSyncEnabled,
-            userID: userID,
-            backendBaseURL: backendBaseURL
+            backendModeRawValue: DistributionPolicy.allowsDeveloperCloudFeatures
+                ? backendMode.rawValue
+                : BackendMode.localOnly.rawValue,
+            autoSyncEnabled: DistributionPolicy.allowsDeveloperCloudFeatures
+                ? autoSyncEnabled
+                : false,
+            userID: DistributionPolicy.allowsDeveloperCloudFeatures ? userID : "local-user",
+            backendBaseURL: DistributionPolicy.allowsDeveloperCloudFeatures ? backendBaseURL : ""
         )
         PersistenceStore.savePreferences(preferences)
     }
 
     private func scheduleRemoteInsightsRefresh(delay: TimeInterval) {
+        guard DistributionPolicy.allowsDeveloperCloudFeatures else {
+            return
+        }
         refreshDebounceTask?.cancel()
         refreshDebounceTask = Task { [weak self] in
             let clampedDelay = max(0.05, delay)
@@ -566,6 +652,10 @@ final class AppViewModel: ObservableObject {
     }
 
     private func makeBackendClient() -> any SteadyTapBackendClient {
+        guard DistributionPolicy.allowsDeveloperCloudFeatures else {
+            return MockBackendClient()
+        }
+
         switch backendMode {
         case .localOnly:
             return MockBackendClient()
@@ -580,12 +670,20 @@ final class AppViewModel: ObservableObject {
     }
 
     private var normalizedUserID: String {
+        guard DistributionPolicy.allowsDeveloperCloudFeatures else {
+            return "local-user"
+        }
         let trimmed = userID.trimmingCharacters(in: .whitespacesAndNewlines)
         return trimmed.isEmpty ? "anonymous-user" : trimmed
     }
 
     private func persistTokenToKeychainIfReady() {
         guard !isHydrating else {
+            return
+        }
+
+        guard DistributionPolicy.allowsDeveloperCloudFeatures else {
+            KeychainStore.remove(service: Self.tokenService, account: Self.tokenAccount)
             return
         }
 

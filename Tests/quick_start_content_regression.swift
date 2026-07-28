@@ -12,6 +12,8 @@ struct QuickStartContentRegression {
             targetScoreDelta: 6,
             targetSessionsPerWeek: 5,
             confidence: 0.8,
+            evidenceBasis: [],
+            alignmentWithLocal: "",
             actionItems: []
         )
 
@@ -46,11 +48,11 @@ struct QuickStartContentRegression {
         )
         precondition(local.recommendationDisabled)
         precondition(local.firstUsePromise.contains("calm calibration pass"))
-        precondition(local.architectureSafetyNote.contains("local-first path"))
+        precondition(local.architectureSafetyNote.contains("stay on this device"))
         precondition(local.recommendationDetail.contains("Weekly goal achieved"))
         precondition(local.recommendationStatus.contains("already active"))
         precondition(local.routeChips[0] == "Setup · Local suggestion active")
-        precondition(local.routeChips[2] == "Review · Keep cloud optional")
+        precondition(local.routeChips[2] == "Review · Save progress locally")
         print("SteadyTap quick-start regression OK")
     }
 }

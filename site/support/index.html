@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Support and troubleshooting for the SteadyTap iOS and iPadOS app." />
+  <meta name="robots" content="index,follow" />
+  <link rel="canonical" href="https://steadytap.pages.dev/support/" />
+  <title>Support | SteadyTap</title>
+  <style>
+    :root { color-scheme:light; --ink:#171a20; --muted:#59616e; --line:#d9dee6; --mint:#157f72; --coral:#b24b3b; --wash:#f4f7f6; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--wash); color:var(--ink); font:16px/1.7 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+    header, main, footer { width:min(760px,calc(100% - 36px)); margin-inline:auto; }
+    header { display:flex; align-items:center; justify-content:space-between; gap:18px; padding:24px 0; border-bottom:1px solid var(--line); }
+    header a { color:var(--ink); font-weight:750; text-decoration:none; }
+    nav { display:flex; gap:16px; }
+    nav a { color:var(--muted); font-size:.94rem; }
+    main { padding:48px 0 56px; }
+    h1 { margin:0 0 8px; font-size:3.6rem; line-height:1.05; letter-spacing:0; }
+    h2 { margin:32px 0 8px; font-size:1.2rem; letter-spacing:0; }
+    p, li { color:var(--muted); }
+    section { padding-bottom:18px; border-bottom:1px solid var(--line); }
+    .actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:20px; }
+    .actions a { display:inline-flex; align-items:center; min-height:44px; padding:0 14px; border:1px solid var(--line); color:var(--ink); font-weight:700; text-decoration:none; }
+    .actions a:first-child { background:var(--mint); border-color:var(--mint); color:white; }
+    a { color:var(--coral); }
+    footer { padding:22px 0 36px; color:var(--muted); font-size:.9rem; }
+    @media (max-width:560px) { header { align-items:flex-start; flex-direction:column; } h1 { font-size:2.4rem; } .actions a { width:100%; justify-content:center; } }
+  </style>
+</head>
+<body>
+  <header>
+    <a href="/">SteadyTap</a>
+    <nav aria-label="Support navigation">
+      <a href="/privacy/">Privacy</a>
+      <a href="https://github.com/KIM3310/SteadyTap">Source</a>
+    </nav>
+  </header>
+  <main>
+    <h1>Support</h1>
+    <p>Help for the public SteadyTap iOS and iPadOS app.</p>
+
+    <section>
+      <h2>Start a session</h2>
+      <ol>
+        <li>Select <strong>Start Calibration</strong>.</li>
+        <li>Complete the tap targets and drag path.</li>
+        <li>Review the generated profile.</li>
+        <li>Complete the baseline and adaptive rounds.</li>
+        <li>Review the comparison and local progress.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Haptics or layout</h2>
+      <p>Open Preferences to toggle haptic feedback or change the challenge intensity. If a run feels uncomfortable or inaccurate, exit it and repeat calibration at a comfortable pace.</p>
+    </section>
+
+    <section>
+      <h2>Delete app data</h2>
+      <p>Select <strong>Clear Local Data</strong> in Preferences. This removes saved session summaries, settings, and any local test state. Removing the app also deletes its local container, subject to the user's Apple backup settings.</p>
+    </section>
+
+    <section>
+      <h2>Contact</h2>
+      <p>Use the private contact route for account-independent support or a privacy request. Use GitHub Issues only for non-sensitive software defects. Never post health information, credentials, or other sensitive personal data in a public issue.</p>
+      <div class="actions">
+        <a href="https://kim3310-doeon-kim-portfolio.pages.dev/?offer=SteadyTap&amp;inquiry=app-support#private-inquiry">Private support</a>
+        <a href="https://github.com/KIM3310/SteadyTap/issues/new?template=bug_report.yml">Report a public bug</a>
+      </div>
+    </section>
+  </main>
+  <footer>SteadyTap support</footer>
+</body>
+</html>

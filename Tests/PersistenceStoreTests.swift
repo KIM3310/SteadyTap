@@ -5,18 +5,11 @@ final class PersistenceStoreTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        // Clear all persisted state before each test
-        PersistenceStore.clearHistory()
-        PersistenceStore.clearSyncJobs()
-        PersistenceStore.saveCoachPlan(nil)
-        PersistenceStore.saveBenchmark(nil)
+        PersistenceStore.clearAll()
     }
 
     override func tearDown() {
-        PersistenceStore.clearHistory()
-        PersistenceStore.clearSyncJobs()
-        PersistenceStore.saveCoachPlan(nil)
-        PersistenceStore.saveBenchmark(nil)
+        PersistenceStore.clearAll()
         super.tearDown()
     }
 
@@ -120,6 +113,23 @@ final class PersistenceStoreTests: XCTestCase {
         PersistenceStore.saveSyncJobs(makeSyncJobs(count: 5))
         PersistenceStore.clearSyncJobs()
         XCTAssertTrue(PersistenceStore.loadSyncJobs().isEmpty)
+    }
+
+    func testClearAllRemovesEveryPersistedCategory() {
+        PersistenceStore.saveHistory(makeSessions(count: 2))
+        PersistenceStore.saveSyncJobs(makeSyncJobs(count: 2))
+        PersistenceStore.saveCoachPlan(.placeholder)
+        PersistenceStore.saveBenchmark(.placeholder)
+        PersistenceStore.savePreferences(.default)
+
+        PersistenceStore.clearAll()
+
+        XCTAssertTrue(PersistenceStore.loadHistory().isEmpty)
+        XCTAssertTrue(PersistenceStore.loadSyncJobs().isEmpty)
+        XCTAssertNil(PersistenceStore.loadCoachPlan())
+        XCTAssertNil(PersistenceStore.loadBenchmark())
+        XCTAssertEqual(PersistenceStore.loadPreferences().userID, "local-user")
+        XCTAssertFalse(PersistenceStore.loadPreferences().autoSyncEnabled)
     }
 
     // MARK: - Helpers

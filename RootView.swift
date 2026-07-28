@@ -139,7 +139,7 @@ struct RootView: View {
             oldestPendingSyncAge: model.oldestPendingSyncAgeLabel,
             remoteRefreshCooldown: model.remoteRefreshCooldownRemaining,
             isRefreshingBackend: model.isRefreshingBackend,
-            onClearHistory: model.clearHistory,
+            onClearLocalData: model.clearLocalData,
             onClearSyncQueue: model.clearSyncQueue,
             onRefreshBackend: model.refreshRemoteInsightsButtonTapped,
             onSyncNow: model.syncNowButtonTapped,

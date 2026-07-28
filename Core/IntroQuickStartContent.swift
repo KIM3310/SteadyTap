@@ -56,7 +56,7 @@ struct IntroQuickStartContent {
                 : "Apply the local suggestion before calibration so the first benchmark starts from the safest local intensity."
             recommendationDisabled = localIntensityRecommendation == challengeIntensity
             firstUsePromise = "Start with one calm calibration pass. You can verify comfort before the timed challenges begin."
-            architectureSafetyNote = "The local-first path still produces a valid benchmark even if you keep cloud coaching optional."
+            architectureSafetyNote = "Calibration, comparison, and progress stay on this device."
             focusItems = [
                 "Readiness · \(readinessBand)",
                 "Weekly goal · \(weeklyGoalStatusText)",
@@ -65,7 +65,7 @@ struct IntroQuickStartContent {
             routeChips = [
                 localIntensityRecommendation == challengeIntensity ? "Setup · Local suggestion active" : "Setup · Apply local suggestion",
                 "Run · Calibration before challenge",
-                "Review · Keep cloud optional"
+                "Review · Save progress locally"
             ]
         }
     }
@@ -75,7 +75,7 @@ struct IntroQuickStartContent {
             return [
                 "Keep the current setup and start calibration.",
                 "Review the adaptive profile before baseline practice.",
-                "Finish baseline + adaptive runs, then check sync and coaching surfaces."
+                "Finish baseline + adaptive runs, then check local progress."
             ]
         }
         return [

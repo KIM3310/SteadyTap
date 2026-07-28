@@ -1,6 +1,6 @@
 SHELL := /bin/sh
 
-.PHONY: check-bootstrap-python verify verify-ios verify-backend
+.PHONY: check-bootstrap-python verify verify-ios verify-app-store verify-backend
 
 BOOTSTRAP_PYTHON ?= python3
 BACKEND_VENV := backend/.venv
@@ -12,6 +12,11 @@ verify: verify-ios verify-backend
 verify-ios:
 	swift build
 	./scripts/verify_cli.sh
+
+verify-app-store:
+	python3 scripts/validate_app_store_readiness.py
+	plutil -lint Resources/PrivacyInfo.xcprivacy
+	plutil -lint Resources/AdditionalInfo.plist
 
 check-bootstrap-python:
 	@$(BOOTSTRAP_PYTHON) -c "import sys; raise SystemExit(0 if sys.version_info >= (3, 11) else 1)" >/dev/null 2>&1 || { \
@@ -32,4 +37,4 @@ $(BACKEND_STAMP): backend/pyproject.toml backend/requirements.txt backend/requir
 	touch $(BACKEND_STAMP)
 
 verify-backend: $(BACKEND_STAMP)
-	cd backend && .venv/bin/python -m py_compile app/main.py && .venv/bin/python -m pytest -q tests/test_api.py tests/test_cors.py
+	cd backend && .venv/bin/python -m py_compile app/main.py && .venv/bin/python -m pytest -W error -q tests/test_api.py tests/test_cors.py

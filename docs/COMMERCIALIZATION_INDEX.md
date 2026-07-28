@@ -16,7 +16,7 @@ This index keeps the revenue, deployment, payments, privacy, and support surface
 | Revenue strategy | [`REVENUE_READINESS.md`](REVENUE_READINESS.md) | Positioning, monetization path, resource needs, and next revenue action. |
 | Business operations | [`BUSINESS_OPERATIONS.md`](BUSINESS_OPERATIONS.md) | Deployment, payment, privacy, and support lanes. |
 | Deployment activation | [`DEPLOYMENT_ACTIVATION.md`](DEPLOYMENT_ACTIVATION.md) | Preview/production sequencing, hosting references, and secret rules. |
-| Privacy draft | [`PRIVACY_POLICY_DRAFT.md`](PRIVACY_POLICY_DRAFT.md) | Owner-input privacy policy draft and pre-launch data commitments. |
+| App privacy policy | [`PRIVACY_POLICY.md`](PRIVACY_POLICY.md) | Published disclosure for the local-only App Store release. |
 | Payments/refunds draft | [`PAYMENTS_AND_REFUNDS_DRAFT.md`](PAYMENTS_AND_REFUNDS_DRAFT.md) | Payment activation checklist, refund stance, and provider references. |
 | Support policy | [`../SUPPORT.md`](../SUPPORT.md) | Public/private support boundaries and response expectations. |
 

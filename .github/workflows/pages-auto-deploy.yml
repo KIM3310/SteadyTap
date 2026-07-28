@@ -36,3 +36,22 @@ jobs:
       - name: Deploy static site
         if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
         run: npx wrangler@4.71.0 pages deploy site --project-name=kim3310-steadytap --branch=main --commit-dirty=true
+      - name: Verify App Store policy routes
+        if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
+        run: |
+          set -euo pipefail
+          verify_page() {
+            url="$1"
+            expected="$2"
+            for attempt in $(seq 1 12); do
+              html="$(curl --fail --silent --show-error --retry 3 --retry-all-errors "$url")"
+              if printf '%s' "$html" | grep --fixed-strings --quiet "$expected"; then
+                return 0
+              fi
+              sleep 5
+            done
+            printf 'Expected content was not deployed at %s\n' "$url" >&2
+            return 1
+          }
+          verify_page https://steadytap.pages.dev/privacy/ "<title>Privacy Policy | SteadyTap</title>"
+          verify_page https://steadytap.pages.dev/support/ "<title>Support | SteadyTap</title>"

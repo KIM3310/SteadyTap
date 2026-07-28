@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "app": {
+    "name": "SteadyTap",
+    "bundleIdentifier": "com.kim.steadytap",
+    "version": "1.0",
+    "build": "1",
+    "primaryLocale": "en-US",
+    "primaryCategory": "Utilities",
+    "contentRights": "SteadyTap uses original first-party code, copy, and icon artwork."
+  },
+  "localizations": {
+    "en-US": {
+      "subtitle": "Adaptive touch practice",
+      "promotionalText": "Calibrate touch targets, compare baseline and adaptive rounds, and keep your progress private on your device.",
+      "description": "SteadyTap is a focused touch-practice utility for iPhone and iPad.\n\nBegin with a guided tap and drag calibration. SteadyTap then creates an adaptive interaction profile and lets you compare a baseline round with an adjusted round. Clear result cards show accuracy, misses, timing, score changes, recent sessions, and weekly practice progress.\n\nChoose a scoring focus, adjust challenge intensity, enable or disable haptics, and repeat sessions at your own pace. Practice history and preferences stay on your device. The App Store release has no account, ads, tracking, analytics, or cloud upload.\n\nSteadyTap is an interface-calibration and practice tool. It is not a medical device and is not intended to diagnose, monitor, prevent, or treat any condition.",
+      "keywords": "touch practice,calibration,accessibility,precision,haptics,adaptive controls",
+      "supportURL": "https://steadytap.pages.dev/support/",
+      "privacyPolicyURL": "https://steadytap.pages.dev/privacy/",
+      "marketingURL": "https://steadytap.pages.dev/"
+    }
+  },
+  "privacy": {
+    "tracking": false,
+    "dataCollected": [],
+    "accountRequired": false,
+    "advertising": false,
+    "analytics": false,
+    "networkUploadInRelease": false
+  },
+  "review": {
+    "signInRequired": false,
+    "externalHardwareRequired": false,
+    "backendRequired": false,
+    "notes": "No account, sign-in, backend, or external hardware is required. Launch the app and select Start Calibration. Complete the tap targets and drag path, review the generated profile, then run the baseline and adaptive rounds. The Results screen shows the comparison and stores a local session summary. Release builds keep all app data on-device and expose Clear Local Data, Privacy Policy, and Support in Preferences. SteadyTap is a touch-practice utility, not a medical device."
+  },
+  "manualAppStoreConnectFields": [
+    "Developer team and signing certificate",
+    "App Review contact name, phone, and email",
+    "Age rating questionnaire",
+    "Availability, price, and tax settings",
+    "Production screenshots",
+    "Final signed build selection",
+    "Submission confirmation"
+  ]
+}

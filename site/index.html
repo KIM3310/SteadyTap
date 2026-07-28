@@ -3,339 +3,285 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  
-  <meta name="description" content="SteadyTap is a local-first touch calibration and adaptive challenge toolkit. The public demo uses synthetic examples; private customization is available by inquiry for one bounded workflow." />
+  <meta name="description" content="SteadyTap is a private, on-device touch-practice utility for iPhone and iPad with guided calibration and adaptive comparison rounds." />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <meta name="keywords" content="SteadyTap, touch practice, touch calibration, adaptive controls, precision, haptics, iPhone, iPad" />
   <meta property="og:type" content="website" />
   <meta property="og:title" content="SteadyTap" />
-  <meta property="og:description" content="SteadyTap is a local-first touch calibration and adaptive challenge toolkit. The public demo uses synthetic examples; private customization is available by inquiry for one bounded workflow." />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="SteadyTap" />
-  <meta name="twitter:description" content="SteadyTap is a local-first touch calibration and adaptive challenge toolkit. The public demo uses synthetic examples; private customization is available by inquiry for one bounded workflow." /><title>SteadyTap | touch calibration and adaptive challenge toolkit</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
-  <style>
-    :root { --bg:#f6f1e8; --panel:#fffdfa; --ink:#16181d; --muted:#5e6672; --line:#d8d3c9; --accent:#a33d2b; --soft:#fdeeea; }
-    *{box-sizing:border-box} body{margin:0;font-family:"IBM Plex Sans",sans-serif;background:linear-gradient(180deg,#fbf7ef 0,#f1ebe0 100%);color:var(--ink)}
-    .shell{max-width:1100px;margin:0 auto;padding:32px 20px 56px}.panel{background:var(--panel);border:1px solid var(--line);border-radius:24px;padding:24px;box-shadow:0 18px 40px rgba(15,23,42,.05)}
-    .hero,.grid{display:grid;gap:16px}.hero{margin-bottom:18px}.eyebrow,.chip{display:inline-flex;padding:8px 12px;border-radius:999px;font-size:.82rem;font-weight:700}.eyebrow{background:#111318;color:#fff}.chip{background:var(--soft);color:var(--accent)}
-    h1,h2{font-family:"Space Grotesk",sans-serif;letter-spacing:-.04em;margin:0}.hero h1{font-size:clamp(2.4rem,4.8vw,4.4rem);line-height:.96}.lede{max-width:860px;margin:0;color:var(--muted);line-height:1.75}
-    .two{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:18px}.list{margin:0;padding-left:18px;color:var(--muted);line-height:1.8}.links a{color:var(--accent);text-decoration:none;font-weight:600}
-    .hero-actions{display:flex;gap:10px;flex-wrap:wrap}.action-btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--ink);font:inherit;font-weight:700;text-decoration:none;cursor:pointer}.action-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
-    .lens-panel{margin-top:18px}.lens-tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px}.lens-tab{border:1px solid var(--line);background:#fff;padding:10px 14px;border-radius:999px;font:inherit;font-weight:600;color:var(--muted);cursor:pointer}.lens-tab.active{color:var(--ink);border-color:var(--accent);background:var(--soft)}.lens-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.lens-card{border:1px solid var(--line);border-radius:18px;background:#fff;padding:16px}.lens-card strong{display:block;margin-bottom:8px}
-    .action-btn:hover, button:hover { background: rgba(163, 61, 43, 0.08); transform: translateY(-1px); }
-    @media (max-width:900px){.two{grid-template-columns:1fr}}
-    @media (max-width:900px){.lens-grid{grid-template-columns:1fr}}
-  
-    .quick-actions{margin-top:18px}.quick-actions .action-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.quick-actions .action-btn{border:1px solid var(--line);background:#fff;padding:10px 14px;border-radius:999px;font:inherit;font-weight:600;color:var(--ink);cursor:pointer;transition:transform .12s ease,box-shadow .12s ease,border-color .12s ease}.quick-actions .action-btn:hover{transform:translateY(-1px);border-color:var(--accent);box-shadow:0 10px 24px rgba(15,23,42,.08)}.quick-actions .hint{margin:10px 0 0;color:var(--muted);font-size:.92rem;line-height:1.6}
-  </style>
-  <meta name="robots" content="index,follow,max-image-preview:large" />
-  <meta name="keywords" content="SteadyTap, touch calibration, adaptive challenge, accessibility workflow, local-first mobile demo, coach handoff, private prototype customization" />
-  <link rel="canonical" href="https://steadytap.pages.dev/" />
+  <meta property="og:description" content="Private touch practice with guided calibration and adaptive comparison rounds." />
+  <meta property="og:image" content="https://steadytap.pages.dev/assets/steadytap-app-icon.png" />
   <meta property="og:url" content="https://steadytap.pages.dev/" />
   <meta property="og:site_name" content="SteadyTap" />
-  <link rel="alternate" type="application/json" title="Service offer" href="service-offer.json" />
-<!-- search-growth-jsonld:start -->
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"SteadyTap","applicationCategory":"AccessibilityApplication","operatingSystem":"Web, serverless, and local development environments","url":"https://steadytap.pages.dev/","codeRepository":"https://github.com/KIM3310/SteadyTap","description":"SteadyTap is a local-first touch calibration and adaptive challenge toolkit. The public demo uses synthetic examples; private customization is available by inquiry for one bounded workflow.","creator":{"@type":"Person","name":"KIM3310","url":"https://github.com/KIM3310"},"offers":[{"@type":"Offer","name":"free local-first mobile demo and static explainer","price":"0","priceCurrency":"USD","availability":"https://schema.org/InStock","url":"https://steadytap.pages.dev/"},{"@type":"Offer","name":"fixed-scope private prototype customization for one audience-specific workflow","availability":"https://schema.org/LimitedAvailability","url":"https://kim3310-doeon-kim-portfolio.pages.dev/?offer=SteadyTap&inquiry=consumer-prototype-customization#private-inquiry"}],"isAccessibleForFree":true,"keywords":"SteadyTap, touch calibration, adaptive challenge, accessibility workflow, local-first mobile demo, coach handoff, private prototype customization"}</script>
-<!-- search-growth-jsonld:end -->
-<style id="search-growth-offer-style">
-    .search-growth-offer {
-      width: min(1180px, calc(100% - 32px));
-      margin: 18px auto 42px;
-      padding: clamp(18px, 3vw, 28px);
-      border: 1px solid rgba(28, 35, 48, 0.14);
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.82);
-      color: #15171c;
-      box-shadow: 0 20px 54px rgba(25, 34, 51, 0.10);
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="SteadyTap" />
+  <meta name="twitter:description" content="Private touch practice with guided calibration and adaptive comparison rounds." />
+  <meta name="twitter:image" content="https://steadytap.pages.dev/assets/steadytap-app-icon.png" />
+  <link rel="canonical" href="https://steadytap.pages.dev/" />
+  <title>SteadyTap | private adaptive touch practice</title>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "SteadyTap",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "iOS, iPadOS",
+      "url": "https://steadytap.pages.dev/",
+      "codeRepository": "https://github.com/KIM3310/SteadyTap",
+      "image": "https://steadytap.pages.dev/assets/steadytap-app-icon.png",
+      "description": "An on-device touch-practice utility with guided calibration and adaptive comparison rounds.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      },
+      "isAccessibleForFree": true,
+      "privacyPolicy": "https://steadytap.pages.dev/privacy/"
     }
-    .search-growth-offer p { margin: 0; color: #59616e; line-height: 1.65; }
-    .search-growth-offer h2 { margin: 0 0 10px; font-size: clamp(1.35rem, 2vw, 2rem); letter-spacing: 0; }
-    .search-growth-offer .offer-kicker {
-      margin-bottom: 8px;
-      color: #1266f1;
-      font-size: 0.78rem;
-      font-weight: 850;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
+  </script>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #141820;
+      --navy: #071326;
+      --paper: #ffffff;
+      --wash: #f3f6f5;
+      --mint: #5bd8b4;
+      --mint-deep: #126f61;
+      --coral: #f36f61;
+      --amber: #ffc441;
+      --muted: #5a6370;
+      --line: #d9e0df;
     }
-    .search-growth-offer .offer-grid {
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font: 16px/1.65 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    a { color: inherit; }
+    .hero {
+      position: relative;
+      min-height: min(700px, 88svh);
+      overflow: hidden;
+      background-color: var(--navy);
+      color: white;
+      isolation: isolate;
+    }
+    .hero::after {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: url("/assets/steadytap-app-icon.png") no-repeat right -80px center / min(720px, 64vw);
+      content: "";
+      opacity: .68;
+    }
+    .hero::before {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      background: rgba(7, 19, 38, .34);
+      content: "";
+      pointer-events: none;
+    }
+    .hero-inner,
+    .band-inner {
+      width: min(1120px, calc(100% - 40px));
+      margin-inline: auto;
+    }
+    .hero-inner { position: relative; z-index: 1; }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      min-height: 78px;
+      border-bottom: 1px solid rgba(255, 255, 255, .2);
+    }
+    .brand { font-size: 1.05rem; font-weight: 800; text-decoration: none; }
+    .nav { display: flex; gap: 20px; }
+    .nav a { color: rgba(255, 255, 255, .8); font-size: .94rem; font-weight: 650; text-decoration: none; }
+    .hero-copy {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
-      margin: 18px 0;
+      align-content: center;
+      min-height: calc(min(700px, 88svh) - 78px);
+      max-width: 690px;
+      padding: 72px 0 92px;
     }
-    .search-growth-offer .offer-grid div {
-      min-width: 0;
-      padding: 14px;
-      border: 1px solid rgba(28, 35, 48, 0.12);
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.72);
-    }
-    .search-growth-offer .offer-grid span {
-      display: block;
-      margin-bottom: 6px;
-      color: #59616e;
-      font-size: 0.78rem;
+    .eyebrow {
+      margin: 0 0 14px;
+      color: var(--mint);
+      font-size: .82rem;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
+      letter-spacing: 0;
     }
-    .search-growth-offer .offer-grid strong { display: block; overflow-wrap: anywhere; line-height: 1.38; }
-    .search-growth-offer .offer-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
-    .search-growth-offer .offer-actions a {
-      min-height: 42px;
+    h1, h2, h3 { margin: 0; letter-spacing: 0; }
+    h1 { max-width: 620px; font-size: 7rem; line-height: .95; }
+    .hero-lede { max-width: 600px; margin: 24px 0 0; color: rgba(255, 255, 255, .78); font-size: 1.3rem; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+    .button {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      border: 1px solid rgba(28, 35, 48, 0.14);
-      border-radius: 10px;
-      padding: 0 14px;
-      text-decoration: none;
-      font-weight: 780;
-      background: #15171c;
+      min-height: 46px;
+      padding: 0 17px;
+      border: 1px solid rgba(255, 255, 255, .32);
       color: white;
+      font-weight: 750;
+      text-decoration: none;
     }
-    .search-growth-offer .offer-actions a.secondary { background: white; color: #15171c; }
-    @media (max-width: 720px) {
-      .search-growth-offer .offer-grid { grid-template-columns: 1fr; }
-      .search-growth-offer .offer-actions a { width: 100%; }
+    .button.primary { border-color: var(--mint); background: var(--mint); color: var(--navy); }
+    .band { padding: 76px 0; }
+    .band.wash { background: var(--wash); }
+    .band.mint { background: var(--mint); color: var(--navy); }
+    .section-heading { max-width: 720px; margin-bottom: 38px; }
+    .section-heading p { margin: 12px 0 0; color: var(--muted); font-size: 1.08rem; }
+    .band.mint .section-heading p { color: rgba(7, 19, 38, .74); }
+    h2 { font-size: 3.2rem; line-height: 1.08; }
+    h3 { font-size: 1.15rem; }
+    .steps, .facts {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .step, .fact { min-width: 0; padding: 4px 28px 4px 0; }
+    .step + .step, .fact + .fact { padding-left: 28px; border-left: 1px solid var(--line); }
+    .step-number { display: block; margin-bottom: 12px; color: var(--coral); font-size: .82rem; font-weight: 850; }
+    .step p, .fact p { margin: 8px 0 0; color: var(--muted); }
+    .band.mint .fact + .fact { border-color: rgba(7, 19, 38, .2); }
+    .band.mint .fact p { color: rgba(7, 19, 38, .72); }
+    .policy-links { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+    .policy-links .button { border-color: var(--ink); color: var(--ink); }
+    footer {
+      background: var(--navy);
+      color: rgba(255, 255, 255, .7);
+      padding: 30px 0;
+      font-size: .9rem;
+    }
+    footer .band-inner { display: flex; justify-content: space-between; gap: 20px; }
+    footer a { color: white; }
+    @media (max-width: 900px) {
+      h1 { font-size: 5.4rem; }
+      h2 { font-size: 2.8rem; }
+      .hero-lede { font-size: 1.15rem; }
+    }
+    @media (max-width: 760px) {
+      .hero { min-height: min(680px, 86svh); }
+      .hero::after { background-position: center 82px; background-size: 540px; opacity: .38; }
+      .hero-copy { align-content: end; min-height: calc(min(680px, 86svh) - 78px); padding: 120px 0 54px; }
+      h1 { font-size: 4.6rem; }
+      h2 { font-size: 2.4rem; }
+      .hero-lede { font-size: 1.08rem; }
+      .steps, .facts { grid-template-columns: 1fr; gap: 28px; }
+      .step, .fact, .step + .step, .fact + .fact { padding: 0; border-left: 0; }
+      .step + .step, .fact + .fact { padding-top: 28px; border-top: 1px solid var(--line); }
+      .band { padding: 56px 0; }
+      footer .band-inner { flex-direction: column; }
+    }
+    @media (max-width: 460px) {
+      .hero-inner, .band-inner { width: min(100% - 28px, 1120px); }
+      .nav { gap: 13px; }
+      .nav a { font-size: .87rem; }
+      h1 { font-size: 3.7rem; }
+      .hero-actions .button { width: 100%; }
     }
   </style>
 </head>
 <body>
-  <main class="shell">
-    <section class="panel hero">
-      <div>
-        <span class="eyebrow">SteadyTap</span>
-        <span class="chip">iOS</span>
-        <span class="chip">accessibility-first</span>
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="topbar">
+        <a class="brand" href="/">SteadyTap</a>
+        <nav class="nav" aria-label="Primary navigation">
+          <a href="#how-it-works">How it works</a>
+          <a href="/privacy/">Privacy</a>
+          <a href="/support/">Support</a>
+        </nav>
       </div>
-      <h1>Calibration, adaptive challenge, and coaching for steadier touch interaction.</h1>
-      <p class="lede">SteadyTap is for people who need steadier touch, not just prettier charts. This page gives operators the shortest path into the real iOS interaction, the coaching loop, and the backend proof that supports it.</p>
-      <div class="hero-actions">
-        <a class="action-btn primary" href="https://github.com/KIM3310/SteadyTap/blob/main/README.md">Open native product path</a>
-        <a class="action-btn" href="#evaluator-handoff">Try handoff bar</a>
+      <div class="hero-copy">
+        <p class="eyebrow">On-device touch practice</p>
+        <h1>SteadyTap</h1>
+        <p class="hero-lede">Calibrate touch targets, compare baseline and adaptive rounds, and keep every saved session private on your iPhone or iPad.</p>
+        <div class="hero-actions">
+          <a class="button primary" href="#how-it-works">See the practice loop</a>
+          <a class="button" href="https://github.com/KIM3310/SteadyTap">View source</a>
+        </div>
       </div>
-    </section>
+    </div>
+  </header>
 
-    <section class="grid two">
-      <article class="panel">
-        <h2>Product flow</h2>
-        <ul class="list">
-          <li>Calibration and drag profiling</li>
-          <li>Baseline and adaptive challenges</li>
-          <li>Before/after results and trend tracking</li>
-          <li>Optional cloud sync, coach-plan, and cohort benchmarks</li>
-        </ul>
-      </article>
-      <article class="panel">
-        <h2>Why the proof stays native</h2>
-        <ul class="list">
-          <li>The core interaction is the real tap flow on device or simulator.</li>
-          <li>The backend contract matters, but it supports the coaching loop instead of replacing it.</li>
-          <li>This page stays small on purpose so the repo reads like a product, not a browser clone.</li>
-        </ul>
-      </article>
-    </section>
-
-    <section class="panel">
-      <h2>What to show after one calibration session</h2>
-      <div class="lens-grid" style="margin-top: 12px;">
-        <article class="lens-card">
-          <strong>01 · Baseline first</strong>
-          <p>Start with calibration and drag profiling so the care team sees the original touch posture before any coaching claim.</p>
-        </article>
-        <article class="lens-card">
-          <strong>02 · Adaptive response</strong>
-          <p>Use one adaptive challenge result to show the intervention loop, not just a score report.</p>
-        </article>
-        <article class="lens-card">
-          <strong>03 · Coach handoff</strong>
-          <p>Finish with trend proof and coach-plan context once the native interaction story is already clear.</p>
-        </article>
+  <main>
+    <section class="band" id="how-it-works">
+      <div class="band-inner">
+        <div class="section-heading">
+          <h2>One calm, local loop.</h2>
+          <p>SteadyTap focuses on the interaction itself: measure, adjust, compare, repeat.</p>
+        </div>
+        <div class="steps">
+          <article class="step">
+            <span class="step-number">01 / Calibrate</span>
+            <h3>Tap and drag naturally</h3>
+            <p>A short guided sequence measures target distance, touch variation, drag deviation, and timing on the device.</p>
+          </article>
+          <article class="step">
+            <span class="step-number">02 / Compare</span>
+            <h3>Run baseline and adaptive rounds</h3>
+            <p>The app adjusts target scale, spacing, hold duration, and swipe thresholds from the local calibration.</p>
+          </article>
+          <article class="step">
+            <span class="step-number">03 / Review</span>
+            <h3>See what changed</h3>
+            <p>Results compare accuracy, misses, time, and score change, then save a compact local summary.</p>
+          </article>
+        </div>
       </div>
     </section>
 
-    <section class="grid two">
-      <article class="panel links">
-        <h2>Documentation</h2>
-        <ul class="list">
-          <li><a href="https://github.com/KIM3310/SteadyTap/blob/main/README.md">README</a></li>
-          <li><a href="https://github.com/KIM3310/SteadyTap/blob/main/backend/README.md">Backend README</a></li>
-        </ul>
-      </article>
-      <article class="panel">
-        <h2>Evaluator walkthrough</h2>
-        <ul class="list">
-          <li>Read the main README for product behavior and app flow.</li>
-          <li>Read the backend README for the runtime brief, review pack, and schema routes.</li>
-          <li>Open the app in Xcode/Swift Playgrounds for the real interaction path.</li>
-        </ul>
-      </article>
-    </section>
-
-    <section class="panel lens-panel">
-      <div class="lens-tabs" role="tablist" aria-label="steadytap lens">
-        <button id="lensEvaluatorBtn" class="lens-tab active" type="button">Evaluator</button>
-        <button id="lensAccessibilityBtn" class="lens-tab" type="button">Accessibility</button>
-        <button id="lensBackendBtn" class="lens-tab" type="button">Backend</button>
-      </div>
-      <h2 id="lensHeadline">Evaluator-first walkthrough</h2>
-      <p id="lensSummary" class="hint">Lead with the calibration flow, then show adaptive challenge, then finish with trend proof and coach-plan support.</p>
-      <div id="lensGrid" class="lens-grid">
-        <article class="lens-card"><strong>01 · Calibration</strong><p>Prove the app understands baseline touch before talking about any coaching layer.</p></article>
-        <article class="lens-card"><strong>02 · Challenge</strong><p>Show the adaptive loop so the product feels like intervention, not measurement only.</p></article>
-        <article class="lens-card"><strong>03 · Trend</strong><p>End with before/after results and progress tracking as the durable proof.</p></article>
+    <section class="band mint">
+      <div class="band-inner">
+        <div class="section-heading">
+          <h2>Private by design.</h2>
+          <p>The App Store release stays useful without an account or a server connection.</p>
+        </div>
+        <div class="facts">
+          <article class="fact">
+            <h3>No account</h3>
+            <p>Open the app and begin. There is no sign-in, profile creation, or external hardware requirement.</p>
+          </article>
+          <article class="fact">
+            <h3>No tracking</h3>
+            <p>No advertising, analytics, tracking SDK, or cross-app identifier is included in version 1.0.</p>
+          </article>
+          <article class="fact">
+            <h3>Your controls</h3>
+            <p>Clear Local Data resets saved sessions and preferences. Removing the app deletes its local container.</p>
+          </article>
+        </div>
       </div>
     </section>
 
-
-
-    <section class="panel quick-actions" id="evaluator-handoff">
-      <h2>Evaluator handoff bar</h2>
-      <p class="hint">Copy the evaluator path first, then the capability brief only if someone needs a shorter summary.</p>
-      <div class="action-row">
-        <button id="copyArchitecturePathBtn" class="action-btn" type="button">Copy Evaluator Path</button>
-        <button id="copyArchitectureBriefBtn" class="action-btn" type="button">Copy Capability Brief</button>
+    <section class="band wash">
+      <div class="band-inner">
+        <div class="section-heading">
+          <h2>Touch practice, clearly bounded.</h2>
+          <p>SteadyTap is an interface-calibration and practice utility. It is not a medical device and does not diagnose, monitor, prevent, or treat any condition.</p>
+        </div>
+        <div class="policy-links">
+          <a class="button" href="/privacy/">Read the privacy policy</a>
+          <a class="button" href="/support/">Open support</a>
+          <a class="button" href="https://github.com/KIM3310/SteadyTap/blob/main/README.md">Technical documentation</a>
+        </div>
       </div>
-      <p id="quickActionStatus" class="hint">Default move: copy the evaluator path. Shortcut keys: C evaluator path · B capability brief · ? help</p>
     </section>
-  <!-- search-growth-offer:start -->
-<section class="search-growth-offer" aria-labelledby="search-growth-offer-title">
-  <p class="offer-kicker">Service launch path</p>
-  <h2 id="search-growth-offer-title">SteadyTap stays free to inspect, with private customization by inquiry.</h2>
-  <p>Local-first touch calibration and adaptive challenge toolkit with optional coach handoff support. The free surface stays public and synthetic; paid value begins only when someone asks for a bounded audience-specific workflow.</p>
-  <div class="offer-grid" aria-label="Free and paid service boundaries">
-    <div><span>Free entry</span><strong>free local-first mobile demo and static explainer</strong></div>
-    <div><span>Private inquiry</span><strong>fixed-scope private prototype customization for one audience-specific workflow</strong></div>
-    <div><span>Search intent</span><strong>SteadyTap demo / SteadyTap system architecture</strong></div>
-  </div>
-  <div class="offer-actions">
-    <a href="https://kim3310-doeon-kim-portfolio.pages.dev/?offer=SteadyTap&inquiry=consumer-prototype-customization#private-inquiry">Request customization</a>
-    <a href="https://github.com/KIM3310/SteadyTap/blob/main/docs/revenue-architecture.md" target="_blank" rel="noopener noreferrer">Revenue architecture</a>
-    <a class="secondary" href="https://github.com/KIM3310/SteadyTap" target="_blank" rel="noopener noreferrer">Repository</a>
-  </div>
-</section>
-<!-- search-growth-offer:end -->
-</main>
+  </main>
 
-
-
-  <script>
-    async function copyQuickActionText(text) {
-      if (!text) return false;
-      try {
-        if (navigator.clipboard?.writeText) {
-          await navigator.clipboard.writeText(text);
-          return true;
-        }
-      } catch (_error) {
-        // Fallback below.
-      }
-      try {
-        const helper = document.createElement("textarea");
-        helper.value = text;
-        helper.style.position = "fixed";
-        helper.style.opacity = "0";
-        document.body.appendChild(helper);
-        helper.focus();
-        helper.select();
-        const ok = document.execCommand("copy");
-        document.body.removeChild(helper);
-        return Boolean(ok);
-      } catch (_error) {
-        return false;
-      }
-    }
-
-    const quickActionStatus = document.getElementById("quickActionStatus");
-    const lensHeadline = document.getElementById("lensHeadline");
-    const lensSummary = document.getElementById("lensSummary");
-    const lensGrid = document.getElementById("lensGrid");
-    const lensEvaluatorBtn = document.getElementById("lensEvaluatorBtn");
-    const lensAccessibilityBtn = document.getElementById("lensAccessibilityBtn");
-    const lensBackendBtn = document.getElementById("lensBackendBtn");
-    let currentLens = "evaluator";
-    const lensConfig = {
-      evaluator: {
-        headline: "Evaluator-first walkthrough",
-        summary: "Lead with the calibration flow, then show adaptive challenge, then finish with trend proof and coach-plan support.",
-        cards: [
-          ["01 · Calibration", "Prove the app understands baseline touch before talking about any coaching layer."],
-          ["02 · Challenge", "Show the adaptive loop so the product feels like intervention, not measurement only."],
-          ["03 · Trend", "End with before/after results and progress tracking as the durable proof."],
-        ],
-      },
-      accessibility: {
-        headline: "Accessibility lens",
-        summary: "Use this when the audience cares about why steadier touch matters as an assistive interaction, not just a game mechanic.",
-        cards: [
-          ["01 · Real interaction", "Keep the real tap path on device or simulator at the center of the story."],
-          ["02 · Coaching support", "Frame the backend as support for coaching, not a replacement for the native experience."],
-          ["03 · Technical handoff", "Use the capability brief only after the accessibility story is already grounded."],
-        ],
-      },
-      backend: {
-        headline: "Backend support lens",
-        summary: "Use this when a technical evaluator wants to know how the native app and the FastAPI contract reinforce each other.",
-        cards: [
-          ["01 · Runtime contract", "Start from the backend README and review pack routes before claims of measured progress."],
-          ["02 · Cohort proof", "Use coach-plan and cohort benchmark talk only after the native loop is clear."],
-          ["03 · Copyable handoff", "Send the evaluator path when you need to move the conversation from app to service."],
-        ],
-      },
-    };
-
-    function renderLensPanel() {
-      const config = lensConfig[currentLens];
-      if (!config) return;
-      lensHeadline.textContent = config.headline;
-      lensSummary.textContent = config.summary;
-      lensGrid.innerHTML = config.cards.map(([title, body]) => `<article class="lens-card"><strong>${title}</strong><p>${body}</p></article>`).join("");
-      [lensEvaluatorBtn, lensAccessibilityBtn, lensBackendBtn].forEach((btn) => btn?.classList.remove("active"));
-      if (currentLens === "evaluator") lensEvaluatorBtn?.classList.add("active");
-      if (currentLens === "accessibility") lensAccessibilityBtn?.classList.add("active");
-      if (currentLens === "backend") lensBackendBtn?.classList.add("active");
-    }
-    const architecturePathPayload = 'SteadyTap evaluator path\n- Read the main README for the product flow.\n- Read the backend README for calibration/runtime contracts.\n- Open the app in Xcode or Swift Playgrounds for the real interaction path.';
-    const architectureBriefPayload = 'SteadyTap capability brief\nHeadline: Calibration, adaptive challenge, and coaching for steadier touch interaction.\nNative proof: iOS app on device or simulator.\nService proof: backend runtime brief and review pack in the backend README.\nPublic surface: a product landing page that points back to the native flow.';
-
-    async function runQuickCopy(text, successLabel, failureLabel) {
-      const ok = await copyQuickActionText(text);
-      if (quickActionStatus) {
-        quickActionStatus.textContent = ok ? successLabel : failureLabel;
-      }
-    }
-
-    document.getElementById("copyArchitecturePathBtn")?.addEventListener("click", () => runQuickCopy(architecturePathPayload, "Evaluator path copied.", "Failed to copy evaluator path."));
-    document.getElementById("copyArchitectureBriefBtn")?.addEventListener("click", () => runQuickCopy(architectureBriefPayload, "Capability brief copied.", "Failed to copy capability brief."));
-    lensEvaluatorBtn?.addEventListener("click", () => { currentLens = "evaluator"; renderLensPanel(); });
-    lensAccessibilityBtn?.addEventListener("click", () => { currentLens = "accessibility"; renderLensPanel(); });
-    lensBackendBtn?.addEventListener("click", () => { currentLens = "backend"; renderLensPanel(); });
-    renderLensPanel();
-
-    window.addEventListener("keydown", (event) => {
-      if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.altKey) return;
-      const target = event.target;
-      if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)) return;
-      const key = String(event.key || "").toLowerCase();
-      if (key === "?") {
-        event.preventDefault();
-        if (quickActionStatus) {
-          quickActionStatus.textContent = "Start with the evaluator path. Then share the capability brief if a technical evaluator wants the shorter version.";
-        }
-        return;
-      }
-      if (key === "c") {
-        event.preventDefault();
-        void runQuickCopy(architecturePathPayload, "Evaluator path copied.", "Failed to copy evaluator path.");
-      }
-      if (key === "b") {
-        event.preventDefault();
-        void runQuickCopy(architectureBriefPayload, "Capability brief copied.", "Failed to copy capability brief.");
-      }
-    });
-  </script>
+  <footer>
+    <div class="band-inner">
+      <span>SteadyTap</span>
+      <span><a href="/privacy/">Privacy</a> · <a href="/support/">Support</a></span>
+    </div>
+  </footer>
 </body>
 </html>

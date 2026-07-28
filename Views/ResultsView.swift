@@ -75,7 +75,7 @@ struct ResultsView: View {
     }
 
     private var shareSummary: String {
-        """
+        let localSummary = """
         SteadyTap result
         Mode: \(scoringPreset.title)
         Intensity: \(challengeIntensity.title)
@@ -85,8 +85,12 @@ struct ResultsView: View {
         Miss delta: \(signedInt(missDelta))
         Time delta: \(signedTime(timeDelta))
         Weekly goal: \(weeklySessionCount)/\(weeklyGoalTarget)
-        Sync state: \(syncState.title)
         """
+
+        guard DistributionPolicy.showsDeveloperTools else {
+            return localSummary
+        }
+        return "\(localSummary)\nSync state: \(syncState.title)"
     }
 
     private var performanceGrade: String {
@@ -108,8 +112,8 @@ struct ResultsView: View {
         scoreDelta > 0 && scoreDelta >= bestScoreDelta
     }
 
-    private var localPrescriptionText: String {
-        "Local model suggests \(localIntensityRecommendation.title) intensity next, based on your \(trendDirectionTitle.lowercased()) trend and recent execution quality."
+    private var localSuggestionText: String {
+        "Try \(localIntensityRecommendation.title) intensity next, based on your \(trendDirectionTitle.lowercased()) trend and recent practice results."
     }
 
     var body: some View {
@@ -217,7 +221,7 @@ struct ResultsView: View {
 
                 GlassCard {
                     VStack(alignment: .leading, spacing: 10) {
-                        Text("Coach Insight")
+                        Text("Practice Insight")
                             .font(.headline.weight(.bold))
                             .foregroundStyle(AppTheme.textPrimary)
 
@@ -240,12 +244,12 @@ struct ResultsView: View {
                             .foregroundStyle(AppTheme.textPrimary)
 
                         HStack(spacing: 10) {
-                            MetricTile(title: "Readiness", value: "\(readinessScore)")
+                            MetricTile(title: "Session Readiness", value: "\(readinessScore)")
                             MetricTile(title: "Trend", value: trendDirectionTitle)
                             MetricTile(title: "Local Next", value: localIntensityRecommendation.shortTitle)
                         }
 
-                        Text(localPrescriptionText)
+                        Text(localSuggestionText)
                             .font(.footnote)
                             .foregroundStyle(AppTheme.textSecondary)
                     }
@@ -253,7 +257,7 @@ struct ResultsView: View {
                 }
                 .staged(index: 6, appear: appear)
 
-                if let coachPlan {
+                if DistributionPolicy.showsDeveloperTools, let coachPlan {
                     GlassCard {
                         VStack(alignment: .leading, spacing: 10) {
                             Text("Next Best Action")
@@ -335,34 +339,36 @@ struct ResultsView: View {
                 }
                 .staged(index: 9, appear: appear)
 
-                GlassCard {
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text("Sync Delivery")
-                            .font(.headline.weight(.bold))
-                            .foregroundStyle(AppTheme.textPrimary)
+                if DistributionPolicy.showsDeveloperTools {
+                    GlassCard {
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text("Sync Delivery")
+                                .font(.headline.weight(.bold))
+                                .foregroundStyle(AppTheme.textPrimary)
 
-                        HStack(spacing: 10) {
-                            MetricTile(title: "Pending Uploads", value: "\(pendingSyncCount)")
-                            MetricTile(title: "Health", value: syncState.title)
-                        }
-
-                        Text(syncState.detail)
-                            .font(.footnote)
-                            .foregroundStyle(AppTheme.textTertiary)
-
-                        if pendingSyncCount > 0 {
-                            Button(action: onSyncNow) {
-                                Label("Retry Upload", systemImage: "arrow.clockwise.circle")
-                                    .font(.subheadline.weight(.semibold))
-                                    .frame(maxWidth: .infinity)
+                            HStack(spacing: 10) {
+                                MetricTile(title: "Pending Uploads", value: "\(pendingSyncCount)")
+                                MetricTile(title: "Status", value: syncState.title)
                             }
-                            .buttonStyle(.borderedProminent)
-                            .tint(AppTheme.mint.opacity(0.82))
+
+                            Text(syncState.detail)
+                                .font(.footnote)
+                                .foregroundStyle(AppTheme.textTertiary)
+
+                            if pendingSyncCount > 0 {
+                                Button(action: onSyncNow) {
+                                    Label("Retry Upload", systemImage: "arrow.clockwise.circle")
+                                        .font(.subheadline.weight(.semibold))
+                                        .frame(maxWidth: .infinity)
+                                }
+                                .buttonStyle(.borderedProminent)
+                                .tint(AppTheme.mint.opacity(0.82))
+                            }
                         }
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .staged(index: 10, appear: appear)
                 }
-                .staged(index: 10, appear: appear)
 
                 GlassCard {
                     VStack(alignment: .leading, spacing: 10) {
@@ -380,7 +386,7 @@ struct ResultsView: View {
 
                         Text(
                             isWeeklyGoalMet
-                                ? "Goal met this week. Stay consistent to lock in adaptation gains."
+                                ? "Goal met this week. Keep a comfortable, consistent practice routine."
                                 : "\(weeklyGoalRemaining) more session(s) needed to hit this week's target."
                         )
                         .font(.footnote)
