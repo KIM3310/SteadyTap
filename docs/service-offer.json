@@ -6,7 +6,7 @@
   "architecture_url": "https://github.com/KIM3310/SteadyTap/blob/main/docs/system-architecture.md",
   "revenue_architecture_url": "https://github.com/KIM3310/SteadyTap/blob/main/docs/revenue-architecture.md",
   "lead_capture_url": "https://kim3310-doeon-kim-portfolio.pages.dev/?offer=SteadyTap&inquiry=consumer-prototype-customization#private-inquiry",
-  "productized_offer": "local-first touch calibration and adaptive challenge toolkit with optional coach handoff support",
+  "productized_offer": "on-device touch-practice utility and adaptive control prototype",
   "first_paid_sku": "fixed-scope private prototype customization for one audience-specific workflow",
   "free_lead_magnet": "free local-first mobile demo and static explainer",
   "search_positioning": {
@@ -15,7 +15,7 @@
       "SteadyTap demo",
       "SteadyTap system architecture",
       "touch calibration app",
-      "adaptive touch challenge toolkit with coach handoff support"
+      "adaptive touch controls and local progress"
     ],
     "audience_intent": "Find a runnable demo, inspect the system architecture, and decide whether a private workspace or implementation package is useful."
   },
@@ -41,11 +41,11 @@
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     "name": "SteadyTap",
-    "applicationCategory": "AccessibilityApplication",
-    "operatingSystem": "Web, serverless, and local development environments",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "iOS, iPadOS",
     "url": "https://steadytap.pages.dev/",
     "codeRepository": "https://github.com/KIM3310/SteadyTap",
-    "description": "SteadyTap is a local-first touch calibration and adaptive challenge toolkit. The public demo uses synthetic examples; private customization is available by inquiry for one bounded workflow.",
+    "description": "SteadyTap is an on-device touch-practice utility with guided calibration and adaptive comparison rounds.",
     "creator": {
       "@type": "Person",
       "name": "KIM3310",
@@ -68,7 +68,7 @@
       }
     ],
     "isAccessibleForFree": true,
-    "keywords": "SteadyTap, touch calibration, adaptive challenge, accessibility workflow, local-first mobile demo, coach handoff, private prototype customization"
+    "keywords": "SteadyTap, touch practice, touch calibration, adaptive controls, local progress, private prototype customization"
   },
   "commerce": {
     "gateway_url": "https://kim3310-doeon-kim-portfolio.pages.dev/?offer=SteadyTap#service-offers",

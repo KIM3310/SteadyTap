@@ -265,7 +265,7 @@ def check_service_offer_surface() -> None:
             commerce.get("advertising", {}).get("status"),
             "central-resource-site-review-dependent",
         ),
-        ("structured_data.applicationCategory", structured.get("applicationCategory"), "AccessibilityApplication"),
+        ("structured_data.applicationCategory", structured.get("applicationCategory"), "UtilitiesApplication"),
     )
     for label, actual, expected in expectations:
         if actual != expected:
