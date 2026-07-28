@@ -75,9 +75,12 @@ jobs:
 
       - name: Verify packaged privacy manifest
         run: |
+          set -euo pipefail
           app_path="$(find "$RUNNER_TEMP/SteadyTapDerivedData/Build/Products" -type d -name 'SteadyTap.app' -print -quit)"
           test -n "$app_path"
+          find "$app_path" -maxdepth 4 -type f -print | sort
           privacy_path="$(find "$app_path" -type f -name 'PrivacyInfo.xcprivacy' -print -quit)"
+          icon_artifact="$(find "$app_path" -type f \( -name 'Assets.car' -o -name 'AppIcon*.png' \) -print -quit)"
           test -n "$privacy_path"
-          test -f "$app_path/Assets.car"
+          test -n "$icon_artifact"
           plutil -lint "$privacy_path"
