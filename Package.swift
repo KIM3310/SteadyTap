@@ -67,6 +67,7 @@ let package = Package(
                 "CONTRIBUTING.md",
                 "LICENSE",
                 "Makefile",
+                "project.yml",
                 "README.md",
                 "SECURITY.md",
                 "SUPPORT.md",

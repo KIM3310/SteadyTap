@@ -55,6 +55,14 @@ struct IntroView: View {
     @State private var appear = false
     @State private var architectureActionStatus = "Review shortcuts keep the cloud sync walkthrough one tap away."
 
+    private var latestResultText: String {
+        guard let latest = history.first else {
+            return "No local runs yet. Complete calibration to create a baseline."
+        }
+        let deltaPrefix = latest.scoreDelta >= 0 ? "+" : "-"
+        return "Last run (\(latest.timestamp.shortDateString)): \(deltaPrefix)\(String(format: "%.1f", abs(latest.scoreDelta))) score delta in \(latest.scoringPreset.title)."
+    }
+
     private var weeklyGoalStatusText: String {
         if isWeeklyGoalMet {
             return "Weekly goal achieved. Keep momentum and protect consistency."
