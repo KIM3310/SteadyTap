@@ -273,9 +273,9 @@ SteadyTap/
 ## Search And Service Surface
 
 - Public entry: free local-first mobile demo and static explainer
-- Paid boundary: premium progress history, organization dashboard, and private calibration templates
+- Paid boundary: fixed-scope private prototype customization for one audience-specific workflow
 - Canonical URL: https://steadytap.pages.dev/
-- Lead capture: https://github.com/KIM3310/SteadyTap/issues/new?template=service-inquiry.yml&title=Private+workspace+inquiry%3A+SteadyTap
+- Lead capture: https://kim3310-doeon-kim-portfolio.pages.dev/?offer=SteadyTap&inquiry=consumer-prototype-customization#private-inquiry
 - Commercial route: https://kim3310-doeon-kim-portfolio.pages.dev/?offer=SteadyTap#service-offers
 - Machine-readable offer: [docs/service-offer.json](docs/service-offer.json)
 - Search growth implementation: [docs/search-growth-implementation.md](docs/search-growth-implementation.md)

@@ -20,6 +20,14 @@ ARCH_DOC = ROOT / "docs" / "cloud-ai-architecture.md"
 ARCH_MANIFEST = ROOT / "docs" / "architecture" / "blueprint.json"
 ARCH_VALIDATOR = ROOT / "scripts" / "validate_architecture_blueprint.py"
 ARCH_WORKFLOW = ROOT / ".github" / "workflows" / "architecture-blueprint.yml"
+DOCS_SERVICE_OFFER = ROOT / "docs" / "service-offer.json"
+SITE_SERVICE_OFFER = ROOT / "site" / "service-offer.json"
+SITE_INDEX = ROOT / "site" / "index.html"
+SITE_LLMS = ROOT / "site" / "llms.txt"
+PRIVATE_INQUIRY_URL = (
+    "https://kim3310-doeon-kim-portfolio.pages.dev/"
+    "?offer=SteadyTap&inquiry=consumer-prototype-customization#private-inquiry"
+)
 
 REQUIRED_FILES = (
     README,
@@ -29,6 +37,10 @@ REQUIRED_FILES = (
     ARCH_MANIFEST,
     ARCH_VALIDATOR,
     ARCH_WORKFLOW,
+    DOCS_SERVICE_OFFER,
+    SITE_SERVICE_OFFER,
+    SITE_INDEX,
+    SITE_LLMS,
 )
 
 BANNED_TERMS = {
@@ -208,6 +220,82 @@ def load_manifest() -> dict[str, Any]:
     return cast(dict[str, Any], loaded)
 
 
+def load_json(path: Path) -> dict[str, Any]:
+    try:
+        loaded = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        fail(f"invalid JSON in {path.relative_to(ROOT)}: {exc}")
+    if not isinstance(loaded, dict):
+        fail(f"{path.relative_to(ROOT)} root must be an object")
+    return cast(dict[str, Any], loaded)
+
+
+def check_service_offer_surface() -> None:
+    docs_offer = load_json(DOCS_SERVICE_OFFER)
+    site_offer = load_json(SITE_SERVICE_OFFER)
+    if docs_offer != site_offer:
+        fail("docs/service-offer.json and site/service-offer.json must match")
+
+    commerce = docs_offer.get("commerce")
+    if not isinstance(commerce, dict):
+        fail("service offer missing commerce object")
+    checkout = commerce.get("checkout")
+    if not isinstance(checkout, dict):
+        fail("service offer missing checkout object")
+    structured = docs_offer.get("structured_data")
+    if not isinstance(structured, dict):
+        fail("service offer missing structured_data object")
+
+    expectations: tuple[tuple[str, Any, Any], ...] = (
+        ("lead_capture_url", docs_offer.get("lead_capture_url"), PRIVATE_INQUIRY_URL),
+        ("commerce.lane_id", commerce.get("lane_id"), "consumer-prototype-customization"),
+        ("commerce.billing_mode", commerce.get("billing_mode"), "one-time"),
+        ("commerce.checkout.provider", checkout.get("provider"), None),
+        ("commerce.checkout.status", checkout.get("status"), "not-configured"),
+        ("commerce.checkout.fallback_url", checkout.get("fallback_url"), PRIVATE_INQUIRY_URL),
+        ("commerce.sponsorship.eligible", commerce.get("sponsorship", {}).get("eligible"), False),
+        ("commerce.advertising.eligible", commerce.get("advertising", {}).get("eligible"), False),
+        ("structured_data.applicationCategory", structured.get("applicationCategory"), "AccessibilityApplication"),
+    )
+    for label, actual, expected in expectations:
+        if actual != expected:
+            fail(f"{label} mismatch: expected {expected!r}, got {actual!r}")
+
+    public_surface = "\n".join(
+        read_text(path)
+        for path in (
+            README,
+            ROOT / "docs" / "search-growth-implementation.md",
+            DOCS_SERVICE_OFFER,
+            SITE_SERVICE_OFFER,
+            SITE_INDEX,
+            SITE_LLMS,
+        )
+    )
+    required_markers = (
+        "fixed-scope private prototype customization",
+        "consumer-prototype-customization",
+        PRIVATE_INQUIRY_URL,
+        "no checkout provider is configured",
+    )
+    for marker in required_markers:
+        if marker not in public_surface:
+            fail(f"service surface missing marker: {marker}")
+    banned_claims = (
+        "GitHub Issue Form",
+        "premium progress history",
+        "organization dashboard",
+        "private calibration templates",
+        "SteadyTap health tool",
+        "Clinical path",
+        "clinical path",
+        "Clinician-first",
+    )
+    for marker in banned_claims:
+        if marker in public_surface:
+            fail(f"service surface contains unsupported marker: {marker}")
+
+
 def check_architecture_surface() -> None:
     manifest = load_manifest()
     required = {
@@ -240,6 +328,7 @@ def main() -> None:
     if not read_text(README).strip():
         fail("README.md is empty")
     check_architecture_surface()
+    check_service_offer_surface()
     check_markdown_links()
     scan_positioning_terms()
     print("repository surface validation ok")
