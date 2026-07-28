@@ -1,6 +1,6 @@
 SHELL := /bin/sh
 
-.PHONY: check-bootstrap-python generate-xcode-project verify verify-ios verify-app-store verify-backend
+.PHONY: check-bootstrap-python generate-xcode-project verify verify-ios verify-app-store verify-backend deploy-pages
 
 BOOTSTRAP_PYTHON ?= python3
 BACKEND_VENV := backend/.venv
@@ -43,3 +43,6 @@ $(BACKEND_STAMP): backend/pyproject.toml backend/requirements.txt backend/requir
 
 verify-backend: $(BACKEND_STAMP)
 	cd backend && .venv/bin/python -m py_compile app/main.py && .venv/bin/python -m pytest -W error -q tests/test_api.py tests/test_cors.py
+
+deploy-pages:
+	npx --yes wrangler@latest pages deploy site --project-name steadytap
