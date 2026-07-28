@@ -23,18 +23,13 @@ struct QuickStartContentRegression {
             challengeIntensity: .standard,
             weeklyGoalTarget: 4,
             localIntensityRecommendation: .advanced,
-            readinessBand: "Prime",
-            weeklyGoalStatusText: "1 session left to hit this week's goal.",
-            latestResultText: "Last run today"
+            weeklyGoalStatusText: "1 session left to hit this week's goal."
         )
-        precondition(coach.recommendationLabel == "Apply Coach Setup")
-        precondition(coach.firstUsePromise.contains("calibration only"))
-        precondition(coach.architectureSafetyNote.contains("cloud sync"))
+        precondition(coach.recommendationLabel == "Use coach setup")
+        precondition(coach.calibrationNote.contains("Calibration checks comfort"))
+        precondition(coach.localDataNote.contains("without cloud sync"))
         precondition(coach.steps.count == 3)
-        precondition(coach.recommendationStatus.contains("Apply the coach setup first"))
-        precondition(coach.routeChips.count == 3)
-        precondition(coach.routeChips[0] == "Setup · Apply coach preset")
-        precondition(coach.routeChips[2] == "Review · Local proof before sync")
+        precondition(coach.recommendationStatus == "Use the coach setup before calibration.")
 
         let local = IntroQuickStartContent(
             coachPlan: nil,
@@ -42,17 +37,14 @@ struct QuickStartContentRegression {
             challengeIntensity: .standard,
             weeklyGoalTarget: 4,
             localIntensityRecommendation: .standard,
-            readinessBand: "Building",
-            weeklyGoalStatusText: "Weekly goal achieved. Keep momentum and protect consistency.",
-            latestResultText: "No previous local runs yet."
+            weeklyGoalStatusText: "Weekly goal achieved. Keep momentum and protect consistency."
         )
         precondition(local.recommendationDisabled)
-        precondition(local.firstUsePromise.contains("calm calibration pass"))
-        precondition(local.architectureSafetyNote.contains("stay on this device"))
+        precondition(local.title == "Start with calibration")
+        precondition(local.calibrationNote.contains("target size and movement"))
+        precondition(local.localDataNote.contains("stay on this device"))
         precondition(local.recommendationDetail.contains("Weekly goal achieved"))
-        precondition(local.recommendationStatus.contains("already active"))
-        precondition(local.routeChips[0] == "Setup · Local suggestion active")
-        precondition(local.routeChips[2] == "Review · Save progress locally")
+        precondition(local.recommendationStatus == "Current controls match the suggestion.")
         print("SteadyTap quick-start regression OK")
     }
 }

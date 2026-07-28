@@ -55,14 +55,6 @@ struct IntroView: View {
     @State private var appear = false
     @State private var architectureActionStatus = "Review shortcuts keep the cloud sync walkthrough one tap away."
 
-    private var latestResultText: String {
-        guard let latest = history.first else {
-            return "No previous local runs yet. Start with calibration to create your first benchmark."
-        }
-        let deltaPrefix = latest.scoreDelta >= 0 ? "+" : "-"
-        return "Last run (\(latest.timestamp.shortDateString)): \(deltaPrefix)\(String(format: "%.1f", abs(latest.scoreDelta))) score delta in \(latest.scoringPreset.title)."
-    }
-
     private var weeklyGoalStatusText: String {
         if isWeeklyGoalMet {
             return "Weekly goal achieved. Keep momentum and protect consistency."
@@ -80,9 +72,7 @@ struct IntroView: View {
             challengeIntensity: challengeIntensity,
             weeklyGoalTarget: weeklyGoalTarget,
             localIntensityRecommendation: localIntensityRecommendation,
-            readinessBand: readinessBand,
-            weeklyGoalStatusText: weeklyGoalStatusText,
-            latestResultText: latestResultText
+            weeklyGoalStatusText: weeklyGoalStatusText
         )
     }
 
@@ -171,47 +161,34 @@ struct IntroView: View {
                     .font(.footnote)
                     .foregroundStyle(AppTheme.textSecondary)
 
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("First-run route")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(AppTheme.textTertiary)
-                        .textCase(.uppercase)
-
-                    quickStartRouteChipRow
-                }
+                quickStartActions
 
                 quickStartMetrics
 
                 VStack(alignment: .leading, spacing: 8) {
-                    Label(quickStartContent.firstUsePromise, systemImage: "leaf.circle")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(AppTheme.mint)
-                        .fixedSize(horizontal: false, vertical: true)
-
-                    Label(quickStartContent.architectureSafetyNote, systemImage: "checkmark.shield")
-                        .font(.caption)
+                    Label(quickStartContent.recommendationDetail, systemImage: "slider.horizontal.3")
+                        .font(.caption.weight(.medium))
                         .foregroundStyle(AppTheme.textSecondary)
                         .fixedSize(horizontal: false, vertical: true)
-                }
 
-                VStack(alignment: .leading, spacing: 8) {
-                    ForEach(quickStartContent.focusItems, id: \.self) { item in
-                        Text(item)
-                            .font(.caption.weight(.medium))
-                            .foregroundStyle(AppTheme.textSecondary)
-                    }
-                }
-
-                Text(quickStartContent.recommendationDetail)
-                    .font(.caption.weight(.medium))
-                    .foregroundStyle(AppTheme.textSecondary)
-
-                Label(quickStartContent.recommendationStatus, systemImage: quickStartContent.recommendationDisabled ? "checkmark.circle.fill" : "arrow.trianglehead.clockwise")
+                    Label(
+                        quickStartContent.recommendationStatus,
+                        systemImage: quickStartContent.recommendationDisabled ? "checkmark.circle.fill" : "arrow.trianglehead.clockwise"
+                    )
                     .font(.caption)
                     .foregroundStyle(quickStartContent.recommendationDisabled ? AppTheme.mint : AppTheme.amber)
                     .fixedSize(horizontal: false, vertical: true)
 
-                quickStartActions
+                    Label(quickStartContent.calibrationNote, systemImage: "hand.tap")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(AppTheme.mint)
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    Label(quickStartContent.localDataNote, systemImage: "checkmark.shield")
+                        .font(.caption)
+                        .foregroundStyle(AppTheme.textSecondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
@@ -241,13 +218,17 @@ struct IntroView: View {
     private var quickStartActions: some View {
         if horizontalSizeClass == .compact {
             VStack(spacing: 10) {
-                quickStartRecommendationButton
                 quickStartCalibrationButton
+                if !quickStartContent.recommendationDisabled {
+                    quickStartRecommendationButton
+                }
             }
         } else {
             HStack(spacing: 10) {
-                quickStartRecommendationButton
                 quickStartCalibrationButton
+                if !quickStartContent.recommendationDisabled {
+                    quickStartRecommendationButton
+                }
             }
         }
     }
@@ -273,33 +254,6 @@ struct IntroView: View {
         .buttonStyle(.borderedProminent)
         .tint(AppTheme.amber.opacity(0.92))
         .accessibilityHint("Begins tap and drag calibration")
-    }
-
-    private var quickStartRouteChipRow: some View {
-        VStack(spacing: 8) {
-            ForEach(Array(quickStartContent.routeChips.enumerated()), id: \.offset) { index, chip in
-                HStack(alignment: .firstTextBaseline, spacing: 10) {
-                    Image(systemName: "\(index + 1).circle.fill")
-                        .foregroundStyle(AppTheme.mint)
-
-                    Text(chip)
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(AppTheme.textPrimary)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 10)
-                .background(
-                    RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .fill(AppTheme.deepBlue.opacity(0.76))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                .stroke(AppTheme.textTertiary.opacity(0.35), lineWidth: 1)
-                        )
-                )
-            }
-        }
     }
 
     private var flowCard: some View {

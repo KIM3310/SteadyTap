@@ -252,12 +252,19 @@ def validate_release_policy() -> None:
         "not a medical device",
         "quickStartMetrics",
         "quickStartActions",
-        'Image(systemName: "\\(index + 1).circle.fill")',
     ):
         require(fragment in intro, f"Release UI is missing: {fragment}")
     require(
         "ScrollView(.horizontal" not in intro,
         "Release intro must not hide first-run steps in a horizontal scroller",
+    )
+    require(
+        intro.index("quickStartActions") < intro.index("quickStartMetrics"),
+        "The primary calibration action must appear before supporting metrics",
+    )
+    require(
+        "First-run route" not in intro,
+        "The release intro must not repeat the experience flow",
     )
 
     release_sources = "\n".join(
@@ -274,6 +281,10 @@ def validate_release_policy() -> None:
         "clinician progress report",
         "waveform.path.ecg",
         "localPrescriptionText",
+        "Latest proof",
+        "feels trustworthy",
+        "feels credible",
+        "grounded preset",
     ):
         require(banned not in release_sources, f"Risky release copy remains: {banned}")
 

@@ -185,14 +185,11 @@ struct SteadyTapVerification {
             challengeIntensity: .standard,
             weeklyGoalTarget: 4,
             localIntensityRecommendation: .advanced,
-            readinessBand: "Prime",
-            weeklyGoalStatusText: "1 session left to hit this week's goal.",
-            latestResultText: "Last run today"
+            weeklyGoalStatusText: "1 session left to hit this week's goal."
         )
-        try expect(coach.recommendationLabel == "Apply Coach Setup", "coach recommendation label")
-        try expect(coach.firstUsePromise.contains("calibration only"), "coach quick-start promise")
-        try expect(coach.architectureSafetyNote.contains("cloud sync"), "coach safety note")
-        try expect(coach.routeChips[0] == "Setup · Apply coach preset", "coach route chip")
+        try expect(coach.recommendationLabel == "Use coach setup", "coach recommendation label")
+        try expect(coach.calibrationNote.contains("Calibration checks comfort"), "coach calibration note")
+        try expect(coach.localDataNote.contains("without cloud sync"), "coach local data note")
 
         let local = IntroQuickStartContent(
             coachPlan: nil,
@@ -200,13 +197,11 @@ struct SteadyTapVerification {
             challengeIntensity: .standard,
             weeklyGoalTarget: 4,
             localIntensityRecommendation: .standard,
-            readinessBand: "Building",
-            weeklyGoalStatusText: "Weekly goal achieved. Keep momentum and protect consistency.",
-            latestResultText: "No previous local runs yet."
+            weeklyGoalStatusText: "Weekly goal achieved. Keep momentum and protect consistency."
         )
         try expect(local.recommendationDisabled, "local recommendation disabled when already active")
-        try expect(local.firstUsePromise.contains("calm calibration pass"), "local quick-start promise")
-        try expect(local.routeChips[2] == "Review · Save progress locally", "local review chip")
+        try expect(local.calibrationNote.contains("target size and movement"), "local calibration note")
+        try expect(local.localDataNote.contains("stay on this device"), "local data note")
     }
 
     private static func expect(_ condition: @autoclosure () -> Bool, _ message: String) throws {

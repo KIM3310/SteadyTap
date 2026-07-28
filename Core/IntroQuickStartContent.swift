@@ -7,10 +7,8 @@ struct IntroQuickStartContent {
     let recommendationDetail: String
     let recommendationStatus: String
     let recommendationDisabled: Bool
-    let firstUsePromise: String
-    let architectureSafetyNote: String
-    let focusItems: [String]
-    let routeChips: [String]
+    let calibrationNote: String
+    let localDataNote: String
 
     init(
         coachPlan: CoachPlan?,
@@ -18,70 +16,48 @@ struct IntroQuickStartContent {
         challengeIntensity: ChallengeIntensity,
         weeklyGoalTarget: Int,
         localIntensityRecommendation: ChallengeIntensity,
-        readinessBand: String,
-        weeklyGoalStatusText: String,
-        latestResultText: String
+        weeklyGoalStatusText: String
     ) {
         if let coachPlan {
-            title = "Coach-guided first run"
-            summary = "Use the remote coach setup for a \(coachPlan.focusArea.lowercased()) session, then start calibration while your readiness is \(readinessBand.lowercased())."
+            title = "Start with the coach setup"
+            summary = "Apply the recommended touch settings, then calibrate before timed practice."
             let coachSetupActive = coachPlan.recommendedPreset == scoringPreset
                 && coachPlan.recommendedIntensity == challengeIntensity
                 && coachPlan.targetSessionsPerWeek == weeklyGoalTarget
-            recommendationLabel = coachSetupActive ? "Coach Setup Active" : "Apply Coach Setup"
+            recommendationLabel = coachSetupActive ? "Coach setup active" : "Use coach setup"
             recommendationDetail = "\(coachPlan.recommendedPreset.shortTitle) · \(coachPlan.recommendedIntensity.shortTitle) · \(coachPlan.targetSessionsPerWeek)x / week"
             recommendationStatus = coachSetupActive
-                ? "Coach setup already matches your current controls. Start calibration to confirm the guided setup still feels comfortable."
-                : "Apply the coach setup first so your first calibration run matches the remote recommendation."
+                ? "Current controls match the coach setup."
+                : "Use the coach setup before calibration."
             recommendationDisabled = coachSetupActive
-            firstUsePromise = "Start with calibration only. The adaptive challenge comes after you confirm the profile looks credible."
-            architectureSafetyNote = "Local calibration and result review stay useful even if cloud sync waits until later."
-            focusItems = [
-                "Readiness · \(readinessBand)",
-                "Coach focus · \(coachPlan.focusArea)",
-                "Latest proof · \(latestResultText)"
-            ]
-            routeChips = [
-                coachSetupActive ? "Setup · Coach preset active" : "Setup · Apply coach preset",
-                "Run · Calibration before challenge",
-                "Review · Local proof before sync"
-            ]
+            calibrationNote = "Calibration checks comfort before baseline and adaptive rounds."
+            localDataNote = "Calibration and result review remain available without cloud sync."
         } else {
-            title = "Today's first helpful run"
-            summary = "Start with the local \(localIntensityRecommendation.title.lowercased()) intensity suggestion, then calibrate once so your first benchmark feels trustworthy."
-            recommendationLabel = localIntensityRecommendation == challengeIntensity ? "Local Suggestion Active" : "Apply Local Suggestion"
+            title = "Start with calibration"
+            summary = "Use the \(localIntensityRecommendation.title.lowercased()) intensity suggestion, then calibrate once before timed practice."
+            recommendationLabel = localIntensityRecommendation == challengeIntensity ? "Suggested setup active" : "Use suggested setup"
             recommendationDetail = "\(localIntensityRecommendation.title) intensity · \(weeklyGoalStatusText)"
             recommendationStatus = localIntensityRecommendation == challengeIntensity
-                ? "The local suggestion is already active. Keep this setup and start calibration while the recommendation is still fresh."
-                : "Apply the local suggestion before calibration so the first benchmark starts from the safest local intensity."
+                ? "Current controls match the suggestion."
+                : "Use the suggested intensity before calibration."
             recommendationDisabled = localIntensityRecommendation == challengeIntensity
-            firstUsePromise = "Start with one calm calibration pass. You can verify comfort before the timed challenges begin."
-            architectureSafetyNote = "Calibration, comparison, and progress stay on this device."
-            focusItems = [
-                "Readiness · \(readinessBand)",
-                "Weekly goal · \(weeklyGoalStatusText)",
-                "Latest proof · \(latestResultText)"
-            ]
-            routeChips = [
-                localIntensityRecommendation == challengeIntensity ? "Setup · Local suggestion active" : "Setup · Apply local suggestion",
-                "Run · Calibration before challenge",
-                "Review · Save progress locally"
-            ]
+            calibrationNote = "Calibration checks target size and movement before timed practice."
+            localDataNote = "Results and progress stay on this device."
         }
     }
 
     var steps: [String] {
         if recommendationDisabled {
             return [
-                "Keep the current setup and start calibration.",
-                "Review the adaptive profile before baseline practice.",
-                "Finish baseline + adaptive runs, then check local progress."
+                "Keep the current setup and run calibration.",
+                "Review target size and movement comfort.",
+                "Complete baseline and adaptive rounds, then compare results."
             ]
         }
         return [
-            "Apply the recommended setup first so the first run starts from a grounded preset.",
-            "Start calibration and confirm the adaptive profile feels credible.",
-            "Finish baseline + adaptive runs, then review the results and sync status."
+            "Use the recommended setup.",
+            "Run calibration and review target comfort.",
+            "Complete baseline and adaptive rounds, then compare results."
         ]
     }
 }
