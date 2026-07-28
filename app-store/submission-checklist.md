@@ -10,10 +10,11 @@
 - [x] Public privacy and support page sources with post-deploy content checks
 - [x] English metadata and reviewer walkthrough
 - [x] Automated metadata, icon, privacy-manifest, and release-policy validation
+- [x] Native Xcode application target, unsigned iOS device Release `.app` CI build, and simulator launch smoke test
 
 ## App Store Connect owner steps
 
-- [ ] Select the Apple Developer team and complete signing
+- [ ] Generate `SteadyTap.xcodeproj`, select the Apple Developer team, and complete signing
 - [ ] Create or confirm the `com.kim.steadytap` app record
 - [ ] Complete the age-rating questionnaire with the app's actual content
 - [ ] Enter App Review contact name, phone, and email

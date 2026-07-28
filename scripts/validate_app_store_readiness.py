@@ -75,6 +75,60 @@ def validate_package() -> None:
     require("appIcon: .placeholder" not in package, "Placeholder app icon is still configured")
 
 
+def validate_xcode_project_definition() -> None:
+    project = read_text("project.yml")
+    for fragment in (
+        "type: application",
+        "platform: iOS",
+        'deploymentTarget: "16.0"',
+        "ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon",
+        "INFOPLIST_FILE: Resources/SteadyTap-Info.plist",
+        "MARKETING_VERSION: \"1.0\"",
+        "CURRENT_PROJECT_VERSION: \"1\"",
+        "PRODUCT_BUNDLE_IDENTIFIER: com.kim.steadytap",
+        "SWIFT_VERSION: \"6.0\"",
+        "TARGETED_DEVICE_FAMILY: \"1,2\"",
+        "archive:",
+    ):
+        require(fragment in project, f"project.yml is missing: {fragment}")
+
+    install_script = read_text("scripts/install_xcodegen.sh")
+    require('version="2.45.4"' in install_script, "XcodeGen version must be pinned")
+    require(
+        'archive_sha256="090ec29491aad50aec10631bf6e62253fed733c50f3aab0f5ffc86bc170bdbef"'
+        in install_script,
+        "XcodeGen archive checksum must be pinned",
+    )
+    require(
+        'binary_sha256="6aa2b4da95304b343bea12890c59f9655aa428c08b351d57d592cfab4e88a9f1"'
+        in install_script,
+        "XcodeGen binary checksum must be pinned",
+    )
+
+    info = read_plist("Resources/SteadyTap-Info.plist")
+    require(info.get("CFBundlePackageType") == "APPL", "Native Info.plist must describe an app")
+    require(info.get("CFBundleDisplayName") == "SteadyTap", "Native display name must be SteadyTap")
+    require(
+        info.get("ITSAppUsesNonExemptEncryption") is False,
+        "Native Info.plist must declare exempt encryption usage",
+    )
+    require(info.get("LSRequiresIPhoneOS") is True, "Native Info.plist must require iPhone OS")
+    require(
+        set(info.get("UISupportedInterfaceOrientations", []))
+        == {
+            "UIInterfaceOrientationPortrait",
+            "UIInterfaceOrientationLandscapeLeft",
+            "UIInterfaceOrientationLandscapeRight",
+        },
+        "iPhone orientation declarations are incomplete",
+    )
+    require(
+        "UIInterfaceOrientationPortraitUpsideDown"
+        in info.get("UISupportedInterfaceOrientations~ipad", []),
+        "iPad orientation declarations are incomplete",
+    )
+
+
 def validate_icon_catalog() -> None:
     catalog = read_json("Resources/Assets.xcassets/AppIcon.appiconset/Contents.json")
     images = catalog.get("images", [])
@@ -235,6 +289,7 @@ def validate_public_policy_pages() -> None:
 
 def main() -> int:
     validate_package()
+    validate_xcode_project_definition()
     validate_icon_catalog()
     validate_privacy_manifests()
     validate_metadata()
@@ -248,6 +303,7 @@ def main() -> int:
         return 1
 
     print("App Store readiness validation passed.")
+    print("- Native Xcode application target: iPhone and iPad Release archive scheme")
     print("- Release cloud features: disabled")
     print("- App icon catalog: iPhone, iPad, and 1024px marketing icon")
     print("- Privacy manifest: UserDefaults CA92.1; no tracking or collected data")

@@ -1,6 +1,6 @@
 SHELL := /bin/sh
 
-.PHONY: check-bootstrap-python verify verify-ios verify-app-store verify-backend
+.PHONY: check-bootstrap-python generate-xcode-project verify verify-ios verify-app-store verify-backend
 
 BOOTSTRAP_PYTHON ?= python3
 BACKEND_VENV := backend/.venv
@@ -13,10 +13,15 @@ verify-ios:
 	swift build
 	./scripts/verify_cli.sh
 
+generate-xcode-project:
+	@xcodegen_bin="$$(./scripts/install_xcodegen.sh)"; \
+	"$$xcodegen_bin" generate
+
 verify-app-store:
 	python3 scripts/validate_app_store_readiness.py
 	plutil -lint Resources/PrivacyInfo.xcprivacy
 	plutil -lint Resources/AdditionalInfo.plist
+	plutil -lint Resources/SteadyTap-Info.plist
 
 check-bootstrap-python:
 	@$(BOOTSTRAP_PYTHON) -c "import sys; raise SystemExit(0 if sys.version_info >= (3, 11) else 1)" >/dev/null 2>&1 || { \

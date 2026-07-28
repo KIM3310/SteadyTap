@@ -11,7 +11,9 @@ on:
       - "app-store/**"
       - "site/**"
       - "scripts/validate_app_store_readiness.py"
+      - "scripts/install_xcodegen.sh"
       - "Package.swift"
+      - "project.yml"
       - "RootView.swift"
       - "SteadyTapApp.swift"
       - ".github/workflows/app-store-readiness.yml"
@@ -23,7 +25,9 @@ on:
       - "app-store/**"
       - "site/**"
       - "scripts/validate_app_store_readiness.py"
+      - "scripts/install_xcodegen.sh"
       - "Package.swift"
+      - "project.yml"
       - "RootView.swift"
       - "SteadyTapApp.swift"
       - ".github/workflows/app-store-readiness.yml"
@@ -63,24 +67,88 @@ jobs:
       - name: Build release package
         run: swift build -c release
 
+      - name: Generate native Xcode project
+        run: |
+          xcodegen_bin="$(./scripts/install_xcodegen.sh)"
+          "$xcodegen_bin" generate
+          xcodebuild -project SteadyTap.xcodeproj -scheme SteadyTap -list
+
       - name: Build unsigned iOS Release app
         run: |
           xcodebuild \
+            -project SteadyTap.xcodeproj \
             -scheme SteadyTap \
             -configuration Release \
-            -destination "generic/platform=iOS Simulator" \
+            -destination "generic/platform=iOS" \
             -derivedDataPath "$RUNNER_TEMP/SteadyTapDerivedData" \
             CODE_SIGNING_ALLOWED=NO \
             build
 
-      - name: Verify packaged privacy manifest
+      - name: Verify packaged App Store resources
         run: |
           set -euo pipefail
-          app_path="$(find "$RUNNER_TEMP/SteadyTapDerivedData/Build/Products" -type d -name 'SteadyTap.app' -print -quit)"
+          app_path="$RUNNER_TEMP/SteadyTapDerivedData/Build/Products/Release-iphoneos/SteadyTap.app"
+          test -d "$app_path"
           test -n "$app_path"
-          find "$app_path" -maxdepth 4 -type f -print | sort
-          privacy_path="$(find "$app_path" -type f -name 'PrivacyInfo.xcprivacy' -print -quit)"
-          icon_artifact="$(find "$app_path" -type f \( -name 'Assets.car' -o -name 'AppIcon*.png' \) -print -quit)"
-          test -n "$privacy_path"
-          test -n "$icon_artifact"
-          plutil -lint "$privacy_path"
+          test -x "$app_path/SteadyTap"
+          test -f "$app_path/Info.plist"
+          test -f "$app_path/PrivacyInfo.xcprivacy"
+          test -f "$app_path/Assets.car"
+          test "$(plutil -extract CFBundleIdentifier raw "$app_path/Info.plist")" = "com.kim.steadytap"
+          test "$(plutil -extract CFBundleShortVersionString raw "$app_path/Info.plist")" = "1.0"
+          test "$(plutil -extract CFBundleVersion raw "$app_path/Info.plist")" = "1"
+          test "$(plutil -extract ITSAppUsesNonExemptEncryption raw "$app_path/Info.plist")" = "false"
+          plutil -lint "$app_path/Info.plist"
+          plutil -lint "$app_path/PrivacyInfo.xcprivacy"
+          file "$app_path/SteadyTap"
+          find "$app_path" -maxdepth 2 -type f -print | sort
+
+      - name: Build iOS Simulator Release app
+        run: |
+          xcodebuild \
+            -project SteadyTap.xcodeproj \
+            -scheme SteadyTap \
+            -configuration Release \
+            -destination "generic/platform=iOS Simulator" \
+            -derivedDataPath "$RUNNER_TEMP/SteadyTapSimulatorDerivedData" \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+      - name: Launch Release app in iOS Simulator
+        run: |
+          set -euo pipefail
+          runtime_id="$(
+            xcrun simctl list runtimes available -j |
+              python3 -c 'import json,sys; runtimes=[item["identifier"] for item in json.load(sys.stdin)["runtimes"] if item.get("isAvailable") and ".SimRuntime.iOS-" in item["identifier"]]; print(runtimes[-1])'
+          )"
+          device_type_id="$(
+            xcrun simctl list devicetypes -j |
+              python3 -c 'import json,sys; devices=[item for item in json.load(sys.stdin)["devicetypes"] if item["name"].startswith("iPhone")]; preferred=[item for item in devices if "Pro" in item["name"]]; print((preferred or devices)[-1]["identifier"])'
+          )"
+          device_id="$(xcrun simctl create SteadyTap-CI "$device_type_id" "$runtime_id")"
+          cleanup() {
+            xcrun simctl shutdown "$device_id" >/dev/null 2>&1 || true
+            xcrun simctl delete "$device_id" >/dev/null 2>&1 || true
+          }
+          trap cleanup EXIT
+
+          xcrun simctl boot "$device_id"
+          xcrun simctl bootstatus "$device_id" -b
+          app_path="$RUNNER_TEMP/SteadyTapSimulatorDerivedData/Build/Products/Release-iphonesimulator/SteadyTap.app"
+          test -d "$app_path"
+          xcrun simctl install "$device_id" "$app_path"
+          launch_output="$(xcrun simctl launch "$device_id" com.kim.steadytap)"
+          app_pid="${launch_output##*: }"
+          sleep 5
+          xcrun simctl spawn "$device_id" kill -0 "$app_pid"
+          mkdir -p "$RUNNER_TEMP/steadytap-smoke"
+          xcrun simctl io "$device_id" screenshot "$RUNNER_TEMP/steadytap-smoke/steadytap-release.png"
+          test -s "$RUNNER_TEMP/steadytap-smoke/steadytap-release.png"
+
+      - name: Upload Release launch evidence
+        uses: actions/upload-artifact@v6
+        with:
+          name: steadytap-release-launch
+          path: ${{ runner.temp }}/steadytap-smoke/steadytap-release.png
+          if-no-files-found: error
+          retention-days: 14

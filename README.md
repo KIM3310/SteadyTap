@@ -25,6 +25,7 @@ An on-device practice app with a separate, developer-only backend sandbox.
 
 - **Start here:** Open the app and complete calibration, baseline practice, adaptive practice, and result review.
 - **Release check:** Run `make verify-app-store`.
+- **Native project:** Run `make generate-xcode-project`, then open `SteadyTap.xcodeproj`.
 - **Core regression:** Run `./scripts/verify_cli.sh`.
 - **Backend sandbox:** Run `make verify-backend` only when evaluating the developer API.
 
@@ -108,9 +109,11 @@ If this is your first time looking at the repo:
 
 ### iOS App
 
-1. Open the Swift package in Xcode or Swift Playgrounds with App Playground support.
-2. Set `teamIdentifier` in `Package.swift` when preparing a signed archive.
-3. Run on iPhone or iPad simulator.
+1. Run `make generate-xcode-project`.
+2. Open `SteadyTap.xcodeproj` in Xcode and select your Apple Developer team.
+3. Run on an iPhone or iPad, then archive the `SteadyTap` Release scheme.
+
+`Package.swift` remains available for Swift tests and Swift Playgrounds. App Store builds use the generated native Xcode application target so CI can inspect the same `.app` bundle structure used by Xcode archives.
 
 If you only need the mobile flow, you can ignore `backend/` and `site/`.
 
@@ -204,7 +207,7 @@ make verify-backend
 
 - `.github/workflows/backend-ci.yml`: Python 3.11 -- install, compile check, ruff lint, pytest
 - `.github/workflows/app-ci.yml`: macOS -- Swift build and tests
-- `.github/workflows/app-store-readiness.yml`: metadata, privacy, icon, Swift tests, and unsigned iOS Release build
+- `.github/workflows/app-store-readiness.yml`: metadata, privacy, icon, Swift tests, unsigned device `.app` inspection, and a Release simulator launch screenshot
 
 ## Repo layout
 
@@ -230,7 +233,8 @@ SteadyTap/
 
 ## Main files
 
-- `Package.swift`: App Playground product setup
+- `project.yml`: native iOS application target, signing boundary, and Release archive scheme
+- `Package.swift`: Swift tests and App Playground product setup
 - `Core/DistributionPolicy.swift`: Release and debug feature boundary
 - `Core/BackendClient.swift`: developer backend client layer
 - `Core/PersistenceStore.swift`: local persistence, preferences, sync queue

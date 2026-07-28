@@ -3,6 +3,8 @@
 - Root directory: `.`
 - Build command: `(none)`
 - Output directory: `site`
+- Pages project: `steadytap`
+- Production URL: `https://steadytap.pages.dev/`
 
 Notes:
 

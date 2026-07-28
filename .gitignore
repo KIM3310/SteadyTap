@@ -1,6 +1,7 @@
 .DS_Store
 .build/
 .swiftpm/
+SteadyTap.xcodeproj/
 xcuserdata/
 DerivedData/
 .pytest_cache/
