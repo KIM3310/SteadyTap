@@ -48,6 +48,7 @@ jobs:
 
   ios-release-build:
     runs-on: macos-latest
+    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -115,32 +116,40 @@ jobs:
             build
 
       - name: Launch Release app in iOS Simulator
+        timeout-minutes: 8
         run: |
           set -euo pipefail
-          runtime_id="$(
-            xcrun simctl list runtimes available -j |
-              python3 -c 'import json,sys; runtimes=[item["identifier"] for item in json.load(sys.stdin)["runtimes"] if item.get("isAvailable") and ".SimRuntime.iOS-" in item["identifier"]]; print(runtimes[-1])'
+          device_id="$(
+            xcrun simctl list devices available -j |
+              python3 -c 'import json,sys; data=json.load(sys.stdin)["devices"]; candidates=[(runtime,device) for runtime,devices in data.items() if ".SimRuntime.iOS-" in runtime for device in devices if device.get("isAvailable") and device["name"].startswith("iPhone")]; candidates.sort(key=lambda item: tuple(int(part) for part in item[0].split("iOS-")[-1].split("-")), reverse=True); preferred=[item for item in candidates if "Pro" in item[1]["name"]]; print((preferred or candidates)[0][1]["udid"])'
           )"
-          device_type_id="$(
-            xcrun simctl list devicetypes -j |
-              python3 -c 'import json,sys; devices=[item for item in json.load(sys.stdin)["devicetypes"] if item["name"].startswith("iPhone")]; preferred=[item for item in devices if "Pro" in item["name"]]; print((preferred or devices)[-1]["identifier"])'
-          )"
-          device_id="$(xcrun simctl create SteadyTap-CI "$device_type_id" "$runtime_id")"
+          test -n "$device_id"
           cleanup() {
             xcrun simctl shutdown "$device_id" >/dev/null 2>&1 || true
-            xcrun simctl delete "$device_id" >/dev/null 2>&1 || true
           }
           trap cleanup EXIT
 
+          xcrun simctl shutdown "$device_id" >/dev/null 2>&1 || true
+          xcrun simctl erase "$device_id"
           xcrun simctl boot "$device_id"
-          xcrun simctl bootstatus "$device_id" -b
+          open -a Simulator --args -CurrentDeviceUDID "$device_id"
+          python3 - "$device_id" <<'PY'
+          import subprocess
+          import sys
+
+          subprocess.run(
+              ["xcrun", "simctl", "bootstatus", sys.argv[1], "-b"],
+              check=True,
+              timeout=240,
+          )
+          PY
           app_path="$RUNNER_TEMP/SteadyTapSimulatorDerivedData/Build/Products/Release-iphonesimulator/SteadyTap.app"
           test -d "$app_path"
           xcrun simctl install "$device_id" "$app_path"
           launch_output="$(xcrun simctl launch "$device_id" com.kim.steadytap)"
           app_pid="${launch_output##*: }"
           sleep 5
-          xcrun simctl spawn "$device_id" kill -0 "$app_pid"
+          kill -0 "$app_pid"
           mkdir -p "$RUNNER_TEMP/steadytap-smoke"
           xcrun simctl io "$device_id" screenshot "$RUNNER_TEMP/steadytap-smoke/steadytap-release.png"
           test -s "$RUNNER_TEMP/steadytap-smoke/steadytap-release.png"
