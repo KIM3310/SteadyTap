@@ -269,7 +269,7 @@ def check_service_offer_surface() -> None:
     )
     for label, actual, expected in expectations:
         if actual != expected:
-            fail(f"{label} mismatch: expected {expected!r}, got {actual!r}")
+            fail(f"{label} mismatch")
 
     public_surface = "\n".join(
         read_text(path)
