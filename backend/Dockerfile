@@ -5,7 +5,9 @@ WORKDIR /app
 COPY pyproject.toml README.md ./
 COPY app ./app
 
-RUN pip install --no-cache-dir .
+RUN python -m pip install --no-cache-dir --upgrade "pip>=26.1.2" "setuptools>=83.0.0" && \
+    python -m pip install --no-cache-dir . && \
+    python -m pip check
 
 ENV PORT=8000
 ENV STEADYTAP_DB_PATH=/app/data/steadytap.sqlite
