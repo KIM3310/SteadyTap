@@ -1,5 +1,7 @@
 # SteadyTap
 
+[![CI](https://github.com/KIM3310/SteadyTap/actions/workflows/ci.yml/badge.svg)](https://github.com/KIM3310/SteadyTap/actions/workflows/ci.yml)
+
 SteadyTap is an accessibility-aware touch-practice utility for iPhone and iPad. It calibrates tap and drag input, compares baseline and adaptive rounds, and keeps App Store release data on the device.
 
 ## Distribution boundary
@@ -38,7 +40,7 @@ An on-device practice app with a separate, developer-only backend sandbox.
 - [Architecture guide](docs/architecture-evidence-map.md) summarizes the system scope, first files to inspect, runtime commands, and known boundaries.
 - [Quality notes](docs/quality-gate.md) lists the local checks, CI surface, and release expectations for this repository.
 - [Enterprise readiness notes](docs/enterprise-readiness.md) outlines security, data, operations, integration, and handoff expectations.
-- [Repository positioning](docs/repository-positioning.md) explains why this repository is archived/supporting and where the current technical entry points live.
+- [Repository positioning](docs/repository-positioning.md) explains why this active repository is a supporting project rather than a portfolio flagship and where the current technical entry points live.
 
 ## Architecture
 

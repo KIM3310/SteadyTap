@@ -42,7 +42,10 @@ $(BACKEND_STAMP): backend/pyproject.toml backend/requirements.txt backend/requir
 	touch $(BACKEND_STAMP)
 
 verify-backend: $(BACKEND_STAMP)
-	cd backend && .venv/bin/python -m py_compile app/main.py && .venv/bin/python -m pytest -W error -q tests/test_api.py tests/test_cors.py
+	cd backend && .venv/bin/python -m pip check
+	cd backend && .venv/bin/python -m compileall -q app tests
+	cd backend && .venv/bin/python -m ruff check .
+	cd backend && .venv/bin/python -m pytest -W error -q
 
 deploy-pages:
 	npx --yes wrangler@latest pages deploy site --project-name steadytap
