@@ -68,6 +68,7 @@ let package = Package(
                 "LICENSE",
                 "Makefile",
                 "project.yml",
+                "wrangler.jsonc",
                 "README.md",
                 "SECURITY.md",
                 "SUPPORT.md",
