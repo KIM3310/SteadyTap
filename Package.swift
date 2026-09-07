@@ -64,6 +64,8 @@ let package = Package(
                 "scripts",
                 "Tests",
                 "Verification",
+                "UITests",
+                "REFERENCE.md",
                 "CONTRIBUTING.md",
                 "LICENSE",
                 "Makefile",

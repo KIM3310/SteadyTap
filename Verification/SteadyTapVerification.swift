@@ -33,6 +33,13 @@ struct SteadyTapVerification {
         try expectNear(result.averageReactionTime, 1.25, accuracy: 0.001, "average reaction time")
         try expect(result.dragMeanDeviation > 0, "drag mean deviation should be positive")
 
+        let sanitized = CalibrationEngine.summarize(tapSamples: taps + [
+            TapSample(target: .zero, actual: CGPoint(x: CGFloat.nan, y: 0), elapsed: 1),
+            TapSample(target: .zero, actual: .zero, elapsed: -1)
+        ], dragSamples: [drag, DragSample(points: [], referenceY: 0, elapsed: 1)])
+        try expect(sanitized.tapSampleCount == 4 && sanitized.dragSampleCount == 1, "reject invalid samples")
+        try expectNear(sanitized.tapMeanError, 10, accuracy: 0.01, "finite sanitized mean")
+
         let profile = CalibrationEngine.generateAdaptiveProfile(
             from: CalibrationResult(
                 tapMeanError: 50,

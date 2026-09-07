@@ -42,6 +42,20 @@ targets:
         SWIFT_VERSION: "6.0"
         TARGETED_DEVICE_FAMILY: "1,2"
 
+  SteadyTapUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    deploymentTarget: "16.0"
+    sources:
+      - path: UITests
+    dependencies:
+      - target: SteadyTap
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: "YES"
+        PRODUCT_BUNDLE_IDENTIFIER: com.kim.steadytap.uitests
+        SWIFT_VERSION: "6.0"
+
 schemes:
   SteadyTap:
     build:
@@ -49,6 +63,10 @@ schemes:
         SteadyTap: all
     run:
       config: Debug
+    test:
+      config: Debug
+      targets:
+        - SteadyTapUITests
     profile:
       config: Release
     analyze:

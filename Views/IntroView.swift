@@ -261,6 +261,7 @@ struct IntroView: View {
         }
         .buttonStyle(.borderedProminent)
         .tint(AppTheme.amber.opacity(0.92))
+        .accessibilityIdentifier("start-calibration")
         .accessibilityHint("Begins tap and drag calibration")
     }
 
