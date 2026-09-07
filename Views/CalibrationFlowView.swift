@@ -70,6 +70,8 @@ private struct TapCalibrationStage: View {
                         )
                         .position(currentTarget)
                         .shadow(color: .white.opacity(0.35), radius: 16)
+                        .accessibilityLabel("Calibration target")
+                        .accessibilityIdentifier("tap-target")
 
                     VStack {
                         HStack {
@@ -102,6 +104,7 @@ private struct TapCalibrationStage: View {
                 }
             }
             .frame(height: 360)
+            .accessibilityIdentifier("tap-canvas")
 
             Text("Tip: stay consistent and use one finger for all taps.")
                 .font(.footnote)
@@ -212,6 +215,7 @@ private struct DragLaneView: View {
                 }
             }
             .contentShape(Rectangle())
+            .accessibilityIdentifier("drag-canvas")
             .gesture(
                 DragGesture(minimumDistance: 0)
                     .onChanged { value in

@@ -1,18 +1,11 @@
-# Repository Positioning - SteadyTap
+# SteadyTap in Selected Work
 
-Updated: 2026-05-30
+Updated 2026-09-07.
 
-## Curation Decision
+This project adds **native swiftui · accessible interaction · local persistence** to the portfolio. Selection is based on distinct, inspectable implementation rather than a particular employment role or startup category.
 
-| Field | Decision |
-|---|---|
-| Status | Supporting (active; not a flagship) |
-| Why | Good mobile/accessibility craft, but it dilutes the main enterprise AI and operations architecture story. |
-| Show instead | aix-pilot, enterprise-llm-adoption-kit, and doeon-kim-portfolio |
-| Still useful for | Keep as optional mobile product context when Swift/iOS breadth matters. |
+The actual shared Swift core passes the local CLI regression suite; release metadata/privacy checks and 12 backend tests pass. Native iOS release compilation and simulator gesture tests run in the linked GitHub Actions workflow; inspect its result and attached evidence for the exact revision.
 
-## Operating Rule
+No physical iPhone/iPad test or App Store publication is claimed. Calibration confidence is a coverage/consistency heuristic, not a clinical measure or validated health outcome. App Store Release remains on-device; the FastAPI backend is a separate debug sandbox.
 
-- Keep this repository available, but do not lead with it.
-- Use it only when this exact domain, stack, or product pattern is relevant.
-- Do not lead with it unless its portfolio role changes based on fresh operating data and a narrow product path.
+[Implementation entry points](../README.md) · [Verification](VERIFICATION.md)

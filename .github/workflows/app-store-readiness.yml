@@ -5,6 +5,7 @@ on:
     branches:
       - main
     paths:
+      - "UITests/**"
       - "Core/**"
       - "Views/**"
       - "Resources/**"
@@ -19,6 +20,7 @@ on:
       - ".github/workflows/app-store-readiness.yml"
   pull_request:
     paths:
+      - "UITests/**"
       - "Core/**"
       - "Views/**"
       - "Resources/**"
@@ -124,6 +126,7 @@ jobs:
               python3 -c 'import json,sys; data=json.load(sys.stdin)["devices"]; candidates=[(runtime,device) for runtime,devices in data.items() if ".SimRuntime.iOS-" in runtime for device in devices if device.get("isAvailable") and device["name"].startswith("iPhone")]; candidates.sort(key=lambda item: tuple(int(part) for part in item[0].split("iOS-")[-1].split("-")), reverse=True); preferred=[item for item in candidates if "Pro" in item[1]["name"]]; print((preferred or candidates)[0][1]["udid"])'
           )"
           test -n "$device_id"
+          echo "STEADYTAP_SIMULATOR=$device_id" >> "$GITHUB_ENV"
 
           xcrun simctl shutdown "$device_id" >/dev/null 2>&1 || true
           xcrun simctl erase "$device_id"
@@ -150,10 +153,18 @@ jobs:
           xcrun simctl io "$device_id" screenshot "$RUNNER_TEMP/steadytap-smoke/steadytap-release.png"
           test -s "$RUNNER_TEMP/steadytap-smoke/steadytap-release.png"
 
+      - name: Exercise native calibration gestures
+        run: |
+          xcodebuild -project SteadyTap.xcodeproj -scheme SteadyTap \
+            -destination "platform=iOS Simulator,id=$STEADYTAP_SIMULATOR" \
+            -derivedDataPath "$RUNNER_TEMP/SteadyTapUITestData" \
+            -resultBundlePath "$RUNNER_TEMP/steadytap-smoke/Calibration.xcresult" \
+            CODE_SIGNING_ALLOWED=NO test
+
       - name: Upload Release launch evidence
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           name: steadytap-release-launch
-          path: ${{ runner.temp }}/steadytap-smoke/steadytap-release.png
+          path: ${{ runner.temp }}/steadytap-smoke/
           if-no-files-found: error
           retention-days: 14

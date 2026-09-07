@@ -1,4 +1,5 @@
-import SwiftUI
+import Foundation
+import CoreGraphics
 
 extension CGPoint {
     func distance(to point: CGPoint) -> CGFloat {
@@ -9,17 +10,6 @@ extension CGPoint {
 extension Comparable {
     func clamped(to range: ClosedRange<Self>) -> Self {
         min(max(self, range.lowerBound), range.upperBound)
-    }
-}
-
-extension View {
-    @ViewBuilder
-    func applyIf<Content: View>(_ condition: Bool, transform: (Self) -> Content) -> some View {
-        if condition {
-            transform(self)
-        } else {
-            self
-        }
     }
 }
 
