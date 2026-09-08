@@ -4,7 +4,9 @@ import importlib
 import sys
 from pathlib import Path
 
-from fastapi.testclient import TestClient
+import pytest
+
+pytestmark = pytest.mark.anyio
 
 BACKEND_ROOT = Path(__file__).resolve().parents[1]
 if str(BACKEND_ROOT) not in sys.path:
@@ -23,11 +25,11 @@ def load_main_module(tmp_path: Path):
     return importlib.reload(module)
 
 
-def test_backend_cors_allows_known_frontend_origin(tmp_path):
+async def test_backend_cors_allows_known_frontend_origin(tmp_path, client_factory):
     main = load_main_module(tmp_path)
-    client = TestClient(main.app)
+    client = await client_factory(main.app)
 
-    response = client.options(
+    response = await client.options(
         "/v1/health",
         headers={
             "Origin": "https://steadytap.pages.dev",
@@ -39,11 +41,11 @@ def test_backend_cors_allows_known_frontend_origin(tmp_path):
     assert response.headers["access-control-allow-origin"] == "https://steadytap.pages.dev"
 
 
-def test_backend_cors_omits_unknown_origin(tmp_path):
+async def test_backend_cors_omits_unknown_origin(tmp_path, client_factory):
     main = load_main_module(tmp_path)
-    client = TestClient(main.app)
+    client = await client_factory(main.app)
 
-    response = client.options(
+    response = await client.options(
         "/v1/health",
         headers={
             "Origin": "https://unexpected.example",
