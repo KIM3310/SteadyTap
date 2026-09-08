@@ -50,7 +50,7 @@ jobs:
 
   ios-release-build:
     runs-on: macos-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
@@ -118,7 +118,7 @@ jobs:
             build
 
       - name: Launch Release app in iOS Simulator
-        timeout-minutes: 12
+        timeout-minutes: 15
         run: |
           set -euo pipefail
           device_id="$(
@@ -127,6 +127,7 @@ jobs:
           )"
           test -n "$device_id"
           echo "STEADYTAP_SIMULATOR=$device_id" >> "$GITHUB_ENV"
+          mkdir -p "$RUNNER_TEMP/steadytap-smoke"
 
           xcrun simctl shutdown "$device_id" >/dev/null 2>&1 || true
           xcrun simctl erase "$device_id"
@@ -135,12 +136,26 @@ jobs:
           python3 - "$device_id" <<'PY'
           import subprocess
           import sys
+          import os
+          from pathlib import Path
 
-          subprocess.run(
-              ["xcrun", "simctl", "bootstatus", sys.argv[1], "-b"],
-              check=True,
-              timeout=240,
-          )
+          device_id = sys.argv[1]
+          log = Path(os.environ["RUNNER_TEMP"]) / "steadytap-smoke" / "simulator-boot.log"
+          with log.open("w") as output:
+              for attempt in range(2):
+                  try:
+                      subprocess.run(
+                          ["xcrun", "simctl", "bootstatus", device_id, "-b"],
+                          check=True, timeout=360, stdout=output, stderr=subprocess.STDOUT,
+                      )
+                      print(f"Simulator ready on boot attempt {attempt + 1}")
+                      break
+                  except subprocess.TimeoutExpired:
+                      if attempt == 1:
+                          raise
+                      print("Simulator boot timed out; restarting once before any app tests.")
+                      subprocess.run(["xcrun", "simctl", "shutdown", device_id], check=True, timeout=30)
+                      subprocess.run(["xcrun", "simctl", "boot", device_id], check=True, timeout=30)
           PY
           app_path="$RUNNER_TEMP/SteadyTapSimulatorDerivedData/Build/Products/Release-iphonesimulator/SteadyTap.app"
           test -d "$app_path"
@@ -162,9 +177,10 @@ jobs:
             CODE_SIGNING_ALLOWED=NO test
 
       - name: Upload Release launch evidence
+        if: always()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         with:
           name: steadytap-release-launch
           path: ${{ runner.temp }}/steadytap-smoke/
-          if-no-files-found: error
+          if-no-files-found: warn
           retention-days: 14
