@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import json
 import os
 import sys
@@ -15,7 +16,7 @@ os.environ.setdefault(
     str(ROOT / "data" / "runtime-events.exercise.jsonl"),
 )
 
-from fastapi.testclient import TestClient  # noqa: E402
+from httpx2 import ASGITransport, AsyncClient  # noqa: E402
 
 from app.main import app  # noqa: E402
 
@@ -27,7 +28,7 @@ def _headers() -> dict[str, str]:
     return {"Authorization": f"Bearer {token}"}
 
 
-def main() -> None:
+async def main() -> None:
     headers = _headers()
     payload = {
         "id": "exercise-session-1",
@@ -46,20 +47,20 @@ def main() -> None:
         "hold_duration": 0.32,
         "swipe_threshold": 0.44,
     }
-    with TestClient(app) as client:
-        client.get("/v1/health").raise_for_status()
-        client.post("/v1/sessions", json=payload, headers=headers).raise_for_status()
-        client.post(
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://testserver") as client:
+        (await client.get("/v1/health")).raise_for_status()
+        (await client.post("/v1/sessions", json=payload, headers=headers)).raise_for_status()
+        (await client.post(
             "/v1/coach/plan",
             json={"user_id": "demo-user", "recent_sessions": []},
             headers=headers,
-        ).raise_for_status()
-        client.post(
+        )).raise_for_status()
+        (await client.post(
             "/v1/benchmarks",
             json={"user_id": "demo-user", "recent_sessions": []},
             headers=headers,
-        ).raise_for_status()
-        scorecard = client.get("/v1/runtime-scorecard")
+        )).raise_for_status()
+        scorecard = await client.get("/v1/runtime-scorecard")
         scorecard.raise_for_status()
         body = scorecard.json()
 
@@ -76,4 +77,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
