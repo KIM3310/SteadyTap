@@ -3,6 +3,15 @@ import CoreGraphics
 
 enum CalibrationEngine {
     static func summarize(tapSamples: [TapSample], dragSamples: [DragSample]) -> CalibrationResult {
+        // Invalid sensor/decoded samples must not poison all downstream metrics.
+        let tapSamples = tapSamples.filter {
+            $0.elapsed.isFinite && $0.elapsed >= 0 && $0.distance.isFinite
+        }
+        let dragSamples = dragSamples.filter {
+            !$0.points.isEmpty && $0.elapsed.isFinite && $0.elapsed >= 0 &&
+            $0.referenceY.isFinite && $0.points.allSatisfy { $0.x.isFinite && $0.y.isFinite } &&
+            $0.meanDeviation.isFinite
+        }
         let tapDistances = tapSamples.map(\.distance)
         let tapMean = mean(tapDistances)
         let tapStdDev = standardDeviation(tapDistances, mean: tapMean)

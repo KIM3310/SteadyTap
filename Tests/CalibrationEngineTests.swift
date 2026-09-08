@@ -238,6 +238,22 @@ final class CalibrationEngineTests: XCTestCase {
         XCTAssertEqual(weights.timePenalty, 1.5)
     }
 
+    func testInvalidSamplesCannotPoisonProfileOrCoverage() {
+        let valid = TapSample(target: .zero, actual: CGPoint(x: 3, y: 4), elapsed: 0.5)
+        let invalid = [
+            TapSample(target: .zero, actual: CGPoint(x: CGFloat.nan, y: 0), elapsed: 1),
+            TapSample(target: .zero, actual: .zero, elapsed: -.infinity),
+            TapSample(target: .zero, actual: .zero, elapsed: -1)
+        ]
+        let result = CalibrationEngine.summarize(tapSamples: [valid] + invalid,
+            dragSamples: [DragSample(points: [], referenceY: 0, elapsed: 1)])
+        XCTAssertEqual(result.tapSampleCount, 1)
+        XCTAssertEqual(result.dragSampleCount, 0)
+        XCTAssertEqual(result.tapMeanError, 5)
+        XCTAssertEqual(result.averageReactionTime, 0.5)
+        XCTAssertTrue(CalibrationEngine.generateAdaptiveProfile(from: result).buttonScale.isFinite)
+    }
+
     // MARK: - Helpers
 
     private func makeTapSamples(offsets: [(CGFloat, CGFloat)]) -> [TapSample] {
