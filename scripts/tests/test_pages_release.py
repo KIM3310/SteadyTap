@@ -13,6 +13,7 @@ import unittest
 from http.client import HTTPConnection
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+from typing import ClassVar
 from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -20,12 +21,29 @@ SCRIPT = ROOT / "scripts/pages_release.py"
 
 
 class CleanURLHandler(SimpleHTTPRequestHandler):
-    def do_GET(self):
-        route = urlsplit(self.path).path
-        path = Path(self.directory) / route.lstrip("/")
-        if not path.suffix and not path.is_dir():
-            self.path = route + ".html"
-        super().do_GET()
+    ROUTES: ClassVar[dict[str, str]] = {
+        "/": "index.html",
+        "/guide": "guide.html",
+        "/architecture": "architecture.html",
+        "/verification": "verification.html",
+        "/publisher": "publisher.html",
+        "/privacy/": "privacy/index.html",
+        "/support/": "support/index.html",
+        "/terms/": "terms/index.html",
+        "/revision.json": "revision.json",
+    }
+
+    def send_head(self):
+        filename = self.ROUTES.get(urlsplit(self.path).path)
+        if filename is None:
+            self.send_error(404)
+            return None
+        root = Path(self.directory).resolve()
+        if not (root / filename).resolve().is_relative_to(root):
+            self.send_error(404)
+            return None
+        self.path = "/" + filename
+        return super().send_head()
 
     def log_message(self, *args):
         pass
