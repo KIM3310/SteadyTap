@@ -178,6 +178,48 @@ class PagesReleaseTests(unittest.TestCase):
         self.assertEqual(result.returncode, 1, result.stdout)
         self.assertIn("HTTP Error 404", result.stdout)
 
+    def test_local_dispatch_delegates_auth_and_propagates_wrangler_failure(self):
+        shutil.copyfile(ROOT / "Makefile", self.checkout / "Makefile")
+        scripts = self.checkout / "scripts"
+        scripts.mkdir()
+        shutil.copyfile(SCRIPT, scripts / "pages_release.py")
+        self.git("add", ".")
+        self.git("commit", "-qm", "local dispatch fixture")
+        revision = self.git("rev-parse", "HEAD").strip()
+        bin_dir = self.root / "bin"
+        bin_dir.mkdir()
+        upload = bin_dir / "npx"
+        upload.write_text(
+            '#!/bin/sh\nprintf "%s\\n" "$@" > "$WRANGLER_ARGS"\n'
+            'echo "Wrangler test double failed with exit 23" >&2\nexit 23\n'
+        )
+        upload.chmod(0o755)
+        python = bin_dir / "python3"
+        python.write_text(
+            '#!/bin/sh\nif [ "$2" = verify ]; then\n'
+            'echo "Unexpected post-failure verification" >&2\nexit 99\nfi\n'
+            'exec "$TEST_PYTHON" "$@"\n'
+        )
+        python.chmod(0o755)
+        arguments = self.root / "wrangler-args"
+        env = dict(
+            self.env, PATH=str(bin_dir) + os.pathsep + os.defpath,
+            WRANGLER_ARGS=str(arguments), TEST_PYTHON=sys.executable,
+        )
+        result = subprocess.run(
+            ["make", "--assume-old=verify-site", "deploy-pages"], cwd=self.checkout, env=env,
+            text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=30, check=False,
+        )
+        self.assertIn("Wrangler test double failed with exit 23", result.stdout)
+        self.assertEqual(result.returncode, 2, result.stdout)
+        self.assertIn("Error 23", result.stdout)
+        self.assertNotIn("Unexpected post-failure verification", result.stdout)
+        self.assertEqual(arguments.read_text().splitlines(), [
+            "--yes", "wrangler@4.114.0", "pages", "deploy", "site",
+            "--project-name", "steadytap", "--branch=main", f"--commit-hash={revision}",
+        ])
+        self.assertEqual(json.loads((self.site / "revision.json").read_text())["revision"], revision)
+
     def test_static_preflight_failure_prevents_upload(self):
         workspace = self.root / "preflight"
         tests = workspace / "scripts/tests"

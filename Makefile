@@ -54,7 +54,6 @@ verify-site:
 	python3 scripts/validate_app_store_readiness.py
 
 deploy-pages: verify-site
-	python3 scripts/pages_release.py prerequisites --event-name workflow_dispatch
 	python3 scripts/pages_release.py prepare --revision "$$(git rev-parse HEAD)"
 	npx --yes wrangler@4.114.0 pages deploy site --project-name steadytap --branch=main --commit-hash="$$(git rev-parse HEAD)"
 	python3 scripts/pages_release.py verify --revision "$$(git rev-parse HEAD)" --origin https://steadytap.pages.dev

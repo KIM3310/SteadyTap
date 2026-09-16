@@ -12,7 +12,7 @@ make verify-site
 
 This command runs dependency-free content and publication regression tests, local link checks, the repository and architecture validators, and the metadata validator. It requires Python 3, Git, and Make. It does not require Cloudflare credentials, build an iOS app, or run the backend suite.
 
-To exercise the missing-credential path without reading credential values, clear both variables for that process.
+To exercise the GitHub workflow's missing-credential path without reading credential values, clear both variables for that process.
 
 ```sh
 env -u CLOUDFLARE_API_TOKEN -u CLOUDFLARE_ACCOUNT_ID python3 scripts/pages_release.py prerequisites --event-name push
@@ -33,7 +33,7 @@ Preparation rejects a dirty checkout or a revision that differs from HEAD. It wr
 
 ## Upload only after publication approval
 
-The [Pages workflow](../../.github/workflows/pages-auto-deploy.yml) runs static preflight before its upload job. The job checks the presence of `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` without printing their values. A push with missing configuration skips upload and writes an explicit summary. A manually requested release fails if either value is missing.
+The [Pages workflow](../../.github/workflows/pages-auto-deploy.yml) runs static preflight before its upload job. The job checks the presence of `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` without printing their values. A push with missing configuration skips upload and writes an explicit summary. A manually requested GitHub workflow run fails if either value is missing.
 
 For an approved manual production upload to the configured project, run this command from the intended clean revision.
 
@@ -41,7 +41,9 @@ For an approved manual production upload to the configured project, run this com
 make deploy-pages
 ```
 
-Both the workflow and this target use Wrangler `4.114.0` and the existing `steadytap` project on the `main` production branch. The target runs preflight and prerequisite checks, prepares the revision manifest, uploads, then checks the published bytes. There is no project-creation step.
+Both the workflow and this target use Wrangler `4.114.0` and the existing `steadytap` project on the `main` production branch. The local target runs static preflight, prepares the clean revision manifest, calls Wrangler, then checks the published bytes. There is no project-creation step.
+
+The local target delegates authentication to Wrangler, including an existing OAuth login. It does not impose the GitHub workflow's environment-variable gate. Wrangler authentication or upload failures stop the target and prevent post-upload verification.
 
 ## Verify the published revision and content
 
