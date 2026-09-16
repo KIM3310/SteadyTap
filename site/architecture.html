@@ -12,7 +12,7 @@
   <meta property="og:title" content="Architecture | SteadyTap">
   <meta property="og:description" content="Source-backed architecture, boundaries, data flow, and failure handling for SteadyTap.">
   <meta property="og:url" content="https://steadytap.pages.dev/architecture">
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Architecture | SteadyTap","description":"Source-backed architecture, boundaries, data flow, and failure handling for SteadyTap.","url":"https://steadytap.pages.dev/architecture","dateModified":"2026-07-28","author":{"@type":"Person","name":"Doeon Kim","alternateName":"KIM3310","url":"https://github.com/KIM3310","sameAs":["https://kim3310-doeon-kim-portfolio.pages.dev","https://www.linkedin.com/in/doeon-kim-4742a2388"]},"publisher":{"@type":"Person","name":"Doeon Kim","alternateName":"KIM3310","url":"https://kim3310-doeon-kim-portfolio.pages.dev","sameAs":["https://github.com/KIM3310","https://www.linkedin.com/in/doeon-kim-4742a2388"]},"isAccessibleForFree":true}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"TechArticle","headline":"Architecture | SteadyTap","description":"Source-backed architecture, boundaries, data flow, and failure handling for SteadyTap.","url":"https://steadytap.pages.dev/architecture","dateModified":"2026-09-16","author":{"@type":"Person","name":"Doeon Kim","alternateName":"KIM3310","url":"https://github.com/KIM3310","sameAs":["https://kim3310-doeon-kim-portfolio.pages.dev","https://www.linkedin.com/in/doeon-kim-4742a2388"]},"publisher":{"@type":"Person","name":"Doeon Kim","alternateName":"KIM3310","url":"https://kim3310-doeon-kim-portfolio.pages.dev","sameAs":["https://github.com/KIM3310","https://www.linkedin.com/in/doeon-kim-4742a2388"]},"isAccessibleForFree":true}</script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4973160293737562" crossorigin="anonymous"></script>
   <style>
     :root { color-scheme: light; --ink: #17201f; --muted: #52605d; --line: #cbd2ce; --paper: #ffffff; --ground: #f5f6f4; --green: #126455; --coral: #c94732; --gold: #b67a00; }
@@ -32,7 +32,7 @@
     h1 { margin: 10px 0 16px; max-width: 18ch; font-size: 3.5rem; line-height: 1.04; letter-spacing: 0; overflow-wrap: anywhere; }
     .lede { max-width: 68ch; color: var(--muted); font-size: 1.08rem; }
     .review-note { margin-top: 18px; color: var(--muted); font-size: .84rem; }
-    article { padding-top: 24px; }
+    article { padding-top: 24px; overflow-wrap: anywhere; }
     article h2 { margin: 42px 0 12px; padding-top: 6px; font-size: 1.75rem; line-height: 1.2; letter-spacing: 0; }
     article h3 { margin: 30px 0 8px; font-size: 1.2rem; letter-spacing: 0; }
     article h4 { margin: 24px 0 6px; font-size: 1.02rem; letter-spacing: 0; }
@@ -69,49 +69,48 @@
     <header class="article-intro">
       <div class="kicker">Architecture</div>
       <h1>Architecture | SteadyTap</h1>
-      <p class="lede">A repository-derived architecture review covering components, control flow, operating boundaries, and the evidence a technical reviewer should inspect.</p>
-      <p class="review-note">Reviewed 2026-07-28. This page is derived from checked-in repository evidence and links back to its source.</p>
+      <p class="lede">The SwiftUI calibration-to-practice flow, its shared Core logic, local storage, and the boundary between the on-device release app and the debug backend.</p>
+      <p class="review-note">Reviewed 2026-09-16. This page is derived from checked-in repository evidence and links back to its source.</p>
     </header>
 
-    <article><h2>System Architecture - SteadyTap</h2>
-<p>This document is the system-level architecture attachment for the repository. It keeps the technical stack, runtime boundary, data/control flow, deployment surface, and operating assumptions in one place.</p>
-<h3>Architecture Summary</h3>
-<div class="table-scroll"><table><thead><tr><th>Area</th><th>Design</th></tr></thead><tbody><tr><td>Repository</td><td><code>SteadyTap</code></td></tr><tr><td>Primary domain</td><td>edge, mobile, and local-first runtime systems</td></tr><tr><td>Primary stack</td><td>Python service or lab runtime, Terraform infrastructure modules, Container build surface, GitHub Actions validation</td></tr><tr><td>Architecture axes</td><td>cloud architecture, AI engineering, reliability, security, operator experience</td></tr></tbody></table></div>
-<p>Repository-local proof surface for edge, mobile, and local-first runtime systems, backed by Python service or lab runtime, Terraform infrastructure modules, Container build surface.</p>
-<h3>Runtime And Data Flow</h3>
-<pre><code>flowchart LR
-    User[&quot;User or technical evaluator&quot;] --&gt; Surface[&quot;Public demo, CLI, package, or README surface&quot;]
-    Surface --&gt; Runtime[&quot;Runtime boundary: Python service or lab runtime, Terraform infrastructure modules, Container build surface, GitHub Actions validation&quot;]
-    Runtime --&gt; Control[&quot;Control plane: configuration, policies, adapters, and jobs&quot;]
-    Control --&gt; Data[&quot;Data and artifacts: fixtures, reports, logs, exports, or model outputs&quot;]
-    Runtime --&gt; Observability[&quot;Observability and validation hooks&quot;]
-    Observability --&gt; Handoff[&quot;Documented handoff and operating boundary&quot;]
-    Data --&gt; Handoff</code></pre>
-<p>Primary domain: edge, mobile, and local-first runtime systems.</p>
-<h3>Stack Surface</h3>
-<div class="table-scroll"><table><thead><tr><th>Layer</th><th>Current surface</th><th>Operating note</th></tr></thead><tbody><tr><td>Interface</td><td>Public demo, README, CLI, package, or static proof surface depending on repository shape</td><td>Keep the first screen or command path inspectable without private credentials.</td></tr><tr><td>Runtime</td><td>Python service or lab runtime, Terraform infrastructure modules, Container build surface, GitHub Actions validation</td><td>Keep runtime adapters bounded by environment configuration and documented fallbacks.</td></tr><tr><td>Control plane</td><td>Policies, configuration, job orchestration, tests, and release scripts</td><td>Keep operator-impacting changes traceable through docs and validation hooks.</td></tr><tr><td>Data and artifacts</td><td>Fixtures, generated reports, screenshots, exports, logs, or model outputs</td><td>Keep sample and generated artifacts clearly separated from private or customer data.</td></tr><tr><td>Operations</td><td>CI, local validation, architecture guard, and handoff notes</td><td>Keep the architecture docs current when runtime, data, or deployment boundaries change.</td></tr></tbody></table></div>
-<h3>Cloud Or Local Deployment Boundary</h3>
-<p>Operating model: optional sync backends, signed release artifacts, edge observability, and constrained compute envelopes</p>
-<h4>Deployment patterns</h4>
-<ul><li>Infrastructure-as-code entrypoint with explicit variables, outputs, and provider boundaries</li><li>Containerized runtime path suitable for repeatable local, staging, or managed service deployment</li><li>Edge-first deployment model with server-side AI adapters and public-safe secrets handling</li><li>Local-first runtime that can add sync, edge telemetry, and signed release promotion without changing core logic</li></ul>
-<h4>Control boundaries</h4>
-<ul><li>identity boundary and least-privilege service access</li><li>environment separation for local, staging, and managed runtime paths</li><li>secret storage outside source and deterministic fallback for missing credentials</li><li>observability hooks for logs, metrics, traces, and audit events</li><li>rollback path for deployment, schema, and model changes</li></ul>
-<h4>Resilience controls</h4>
-<ul><li>bounded retries with explicit failure states</li><li>health/readiness checks before operator-facing flows are trusted</li><li>idempotent data or artifact writes where repeat execution is possible</li><li>cost and quota guardrails for hosted services and model adapters</li></ul>
-<h3>AI And Automation Boundary</h3>
-<p>Operating model: offline-safe inference adapters, local telemetry summaries, graceful fallback, and privacy-preserving sync boundaries</p>
-<h4>Engineering patterns</h4>
-<ul><li>Keep local fallback behavior useful when network, sensors, or hosted model adapters are unavailable</li><li>Summarize device/runtime telemetry without making cloud sync a hard dependency</li><li>Separate deterministic checks from model-generated output so the system remains testable without external credentials</li><li>Capture prompts, inputs, outputs, and decision metadata as inspectable artifacts instead of hidden side effects</li><li>Gate model-assisted actions with policy, confidence, and fallback states before they reach an operator path</li></ul>
-<h4>Evaluation and model-risk controls</h4>
-<ul><li>deterministic fixtures for CI-safe verification</li><li>golden output or schema checks for generated artifacts</li><li>trace capture for prompts, tool calls, inputs, and outputs</li><li>quality gates that fail closed when evidence is missing</li></ul>
-<h4>Risks to keep explicit</h4>
-<ul><li>offline state divergence</li><li>device-specific failure</li><li>privacy leakage</li><li>unclear cloud dependency</li></ul>
-<h3>Attached Architecture References</h3>
-<ul><li><a href="https://github.com/KIM3310/SteadyTap/blob/main/docs/service-architecture.md" rel="noopener">Service architecture</a></li><li><a href="https://github.com/KIM3310/SteadyTap/blob/main/docs/cloud-ai-architecture.md" rel="noopener">Cloud + AI architecture</a></li><li><a href="https://github.com/KIM3310/SteadyTap/blob/main/docs/architecture/blueprint.json" rel="noopener">Architecture manifest</a></li><li><a href="https://github.com/KIM3310/SteadyTap/blob/main/docs/product-operating-model.md" rel="noopener">Product operating model</a></li><li><a href="https://github.com/KIM3310/SteadyTap/blob/main/docs/quality-gate.md" rel="noopener">Quality gate</a></li></ul>
-<h3>Local Architecture Guard</h3>
-<pre><code>python3 scripts/validate_architecture_blueprint.py</code></pre>
-<p>CI workflow: <code>.github/workflows/architecture-blueprint.yml</code>.</p>
-<p>Update this document whenever runtime entrypoints, data stores, hosted services, model/provider boundaries, or operating assumptions change.</p></article>
+    <article>
+<h2>SteadyTap system architecture</h2>
+<p>SteadyTap is a native SwiftUI touch-practice app for iPhone and iPad. The app measures tap and drag samples, builds an adaptive interaction profile, and compares baseline and adaptive practice. The website explains this flow but does not run the app in a browser.</p>
+<h3>Native practice flow</h3>
+<pre><code>Tap and drag samples
+        |
+        v
+CalibrationEngine.summarize
+        |
+        v
+Adaptive interaction profile
+        |
+        v
+Calibration review
+        |
+        v
+Baseline practice
+        |
+        v
+Adaptive practice
+        |
+        v
+Results and local history</code></pre>
+<p><a href="https://github.com/KIM3310/SteadyTap/blob/main/SteadyTapApp.swift" rel="noopener">SteadyTapApp.swift</a> starts the app. <a href="https://github.com/KIM3310/SteadyTap/blob/main/RootView.swift" rel="noopener">RootView.swift</a> chooses the SwiftUI screen for the current phase. <a href="https://github.com/KIM3310/SteadyTap/blob/main/Core/AppViewModel.swift" rel="noopener">Core/AppViewModel.swift</a> owns the calibration, practice, and result transitions.</p>
+<p><a href="https://github.com/KIM3310/SteadyTap/blob/main/Core/CalibrationEngine.swift" rel="noopener">Core/CalibrationEngine.swift</a> filters unusable samples in <code>summarize</code> and derives bounded settings in <code>generateAdaptiveProfile</code>. These settings control button scale, grid spacing, hold duration, and swipe threshold. Calibration confidence is a coverage and consistency heuristic, not a clinical measure or a validated health outcome.</p>
+<h3>On-device storage</h3>
+<p><a href="https://github.com/KIM3310/SteadyTap/blob/main/Core/PersistenceStore.swift" rel="noopener">Core/PersistenceStore.swift</a> encodes session history and preferences as JSON in UserDefaults. It keeps at most 12 history entries. <code>clearAll</code> removes the app's stored history, preferences, and debug cache entries. <a href="https://github.com/KIM3310/SteadyTap/blob/main/Core/AppViewModel.swift" rel="noopener">Core/AppViewModel.swift</a> calls this storage layer after practice and when the user clears local data.</p>
+<h3>Release and debug boundary</h3>
+<p><a href="https://github.com/KIM3310/SteadyTap/blob/main/Core/DistributionPolicy.swift" rel="noopener">Core/DistributionPolicy.swift</a> sets <code>allowsDeveloperCloudFeatures</code> and <code>showsDeveloperTools</code> to false outside DEBUG builds. App Store Release operation is on-device. The app does not require the FastAPI service for calibration, practice, history, or local suggestions.</p>
+<p>FastAPI is a separate debug sandbox under <a href="https://github.com/KIM3310/SteadyTap/blob/main/backend/README.md" rel="noopener">backend/</a>. Debug builds can opt into HTTP calls through <a href="https://github.com/KIM3310/SteadyTap/blob/main/Core/BackendClient.swift" rel="noopener">Core/BackendClient.swift</a>. <a href="https://github.com/KIM3310/SteadyTap/blob/main/backend/app/main.py" rel="noopener">backend/app/main.py</a> exposes session, plan, and benchmark endpoints. The sandbox stores synthetic or approved test summaries in SQLite and writes runtime-event files. It is not part of the release app or the static website.</p>
+<p>The adaptive profile is deterministic Swift code. This native flow does not call a hosted AI model. Backend container and Terraform files describe the separate sandbox deployment, not an iOS runtime dependency.</p>
+<h3>Static publication and native distribution</h3>
+<p>Cloudflare Pages serves the checked-in <code>site/</code> HTML, images, and policy pages. It cannot run the SwiftUI app or the FastAPI service unchanged. Publishing the website does not build, sign, distribute, or approve an iOS app.</p>
+<p>Native builds require full Xcode. Distribution also needs an Apple Developer team, signing, provisioning, and the relevant TestFlight or App Store process. See the <a href="https://github.com/KIM3310/SteadyTap/blob/main/docs/VERIFICATION.md" rel="noopener">verification commands and limits</a> and <a href="https://github.com/KIM3310/SteadyTap/blob/main/docs/deployment/CLOUDFLARE_PAGES.md" rel="noopener">Pages publication procedure</a>.</p>
+<h3>Source checks</h3>
+<p>The <a href="https://github.com/KIM3310/SteadyTap/blob/main/scripts/verify_cli.sh" rel="noopener">shared-core CLI regression</a> compiles the Core sources without SwiftUI. The <a href="https://github.com/KIM3310/SteadyTap/blob/main/scripts/validate_app_store_readiness.py" rel="noopener">App Store metadata validator</a> checks the declared release policy, privacy manifest, icons, and submission metadata. Neither check proves physical-device behavior or Apple approval.</p>
+<p>The <a href="https://github.com/KIM3310/SteadyTap/blob/main/scripts/validate_architecture_blueprint.py" rel="noopener">architecture blueprint validator</a> checks the separate architecture manifest's structure. A passing manifest check does not establish that every design proposal in other architecture documents is implemented.</p>
+    </article>
     <aside class="source-basis">
       <strong>Source basis:</strong> <a href="https://github.com/KIM3310/SteadyTap/blob/main/docs/system-architecture.md" rel="noopener">docs/system-architecture.md</a>. Corrections can be proposed through the public repository without submitting private data.
     </aside>
