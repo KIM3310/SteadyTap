@@ -10,6 +10,7 @@ import sys
 import tempfile
 import threading
 import unittest
+from http.client import HTTPConnection
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlsplit
@@ -94,6 +95,49 @@ class PagesReleaseTests(unittest.TestCase):
         return self.run_cli(
             "verify", "--site", str(self.site), "--revision", self.revision, "--origin", origin,
         )
+
+    def request_fixture(self, origin, method, route):
+        connection = HTTPConnection(urlsplit(origin).netloc, timeout=5)
+        try:
+            connection.request(method, route)
+            response = connection.getresponse()
+            return response.status, response.read()
+        finally:
+            connection.close()
+
+    def test_http_fixture_rejects_file_links_outside_root(self):
+        remote, origin = self.serve()
+        sentinel = self.root / "remote-owned-sentinel.html"
+        sentinel.write_bytes(b"OWNED TEST SENTINEL outside serving root\n")
+        (remote / "guide.html").unlink()
+        (remote / "guide.html").symlink_to(sentinel)
+        for method in ("GET", "HEAD"):
+            for route in ("/guide", "/guide.html"):
+                with self.subTest(method=method, route=route):
+                    status, body = self.request_fixture(origin, method, route)
+                    self.assertEqual(status, 404, f"{method} {route} returned {status}: {body[:80]!r}")
+
+    def test_http_fixture_rejects_directory_links_outside_root(self):
+        remote, origin = self.serve()
+        outside = self.root / "remote-owned-directory"
+        outside.mkdir()
+        (outside / "index.html").write_bytes(b"OWNED DIRECTORY SENTINEL outside serving root\n")
+        (remote / "privacy/index.html").unlink()
+        (remote / "privacy").rmdir()
+        (remote / "privacy").symlink_to(outside, target_is_directory=True)
+        for method in ("GET", "HEAD"):
+            with self.subTest(method=method):
+                status, body = self.request_fixture(origin, method, "/privacy/")
+                self.assertEqual(status, 404, f"{method} /privacy/ returned {status}: {body[:80]!r}")
+
+    def test_http_fixture_rejects_raw_and_encoded_parent_routes(self):
+        _, origin = self.serve()
+        (self.root / "guide").write_bytes(b"OWNED PARENT SENTINEL outside serving root\n")
+        for method in ("GET", "HEAD"):
+            for route in ("/../guide", "/%2e%2e/guide", "/..%2fguide", "/../guide.html", "/%2e%2e%2fguide.html"):
+                with self.subTest(method=method, route=route):
+                    status, body = self.request_fixture(origin, method, route)
+                    self.assertEqual(status, 404, f"{method} {route} returned {status}: {body[:80]!r}")
 
     def test_push_without_credentials_reports_not_deployed(self):
         result = self.run_cli("prerequisites", "--event-name", "push")
