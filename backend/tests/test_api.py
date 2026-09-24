@@ -5,7 +5,9 @@ import os
 import sys
 from pathlib import Path
 
-from fastapi.testclient import TestClient
+import pytest
+
+pytestmark = pytest.mark.anyio
 
 BACKEND_ROOT = Path(__file__).resolve().parents[1]
 if str(BACKEND_ROOT) not in sys.path:
@@ -48,17 +50,17 @@ SAMPLE_SESSION_PAYLOAD = {
 # ---------------------------------------------------------------------------
 # 1. Health and meta endpoints return expected contract fields
 # ---------------------------------------------------------------------------
-def test_health_and_meta_report_runtime_state(tmp_path: Path):
+async def test_health_and_meta_report_runtime_state(tmp_path: Path, client_factory):
     main = load_main_module(tmp_path)
-    client = TestClient(main.app)
+    client = await client_factory(main.app)
 
-    health = client.get("/v1/health")
-    meta = client.get("/v1/meta")
-    brief = client.get("/v1/runtime-brief")
-    scorecard = client.get("/v1/runtime-scorecard")
-    progress_report = client.get("/v1/progress-report?user_id=kim")
-    architecture_pack = client.get("/v1/architecture-pack")
-    schema = client.get("/v1/schema/coach-report")
+    health = await client.get("/v1/health")
+    meta = await client.get("/v1/meta")
+    brief = await client.get("/v1/runtime-brief")
+    scorecard = await client.get("/v1/runtime-scorecard")
+    progress_report = await client.get("/v1/progress-report?user_id=kim")
+    architecture_pack = await client.get("/v1/architecture-pack")
+    schema = await client.get("/v1/schema/coach-report")
 
     assert health.status_code == 200
     assert health.json()["session_count"] == 0
@@ -107,7 +109,7 @@ def test_health_and_meta_report_runtime_state(tmp_path: Path):
     assert scorecard_body["links"]["review_queue"] == "/v1/review-queue?user_id=demo-user"
     assert scorecard_body["links"]["runtime_scorecard"] == "/v1/runtime-scorecard"
 
-    review_queue = client.get("/v1/review-queue?user_id=kim")
+    review_queue = await client.get("/v1/review-queue?user_id=kim")
     assert review_queue.status_code == 200
     review_queue_body = review_queue.json()
     assert review_queue_body["contract_version"] == "steadytap-review-queue-v1"
@@ -143,7 +145,7 @@ def test_health_and_meta_report_runtime_state(tmp_path: Path):
     assert "evidence_basis" in schema_body["required_sections"]
     assert "alignment_with_local" in schema_body["required_sections"]
 
-    coach_plan = client.post(
+    coach_plan = await client.post(
         "/v1/coach/plan",
         json={
             "user_id": "kim",
@@ -174,18 +176,18 @@ def test_health_and_meta_report_runtime_state(tmp_path: Path):
 # ---------------------------------------------------------------------------
 # 2. Progress report tracks weekly cadence and coach delta after session uploads
 # ---------------------------------------------------------------------------
-def test_progress_report_tracks_weekly_cadence_and_coach_delta(tmp_path: Path):
+async def test_progress_report_tracks_weekly_cadence_and_coach_delta(tmp_path: Path, client_factory):
     main = load_main_module(tmp_path)
-    client = TestClient(main.app)
+    client = await client_factory(main.app)
 
     payload = dict(SAMPLE_SESSION_PAYLOAD)
-    client.post("/v1/sessions", json=payload)
+    await client.post("/v1/sessions", json=payload)
     payload["id"] = "sess-002"
     payload["timestamp"] = "2026-03-11T09:00:00Z"
     payload["adaptive_score"] = 84
-    client.post("/v1/sessions", json=payload)
+    await client.post("/v1/sessions", json=payload)
 
-    response = client.get("/v1/progress-report?user_id=kim")
+    response = await client.get("/v1/progress-report?user_id=kim")
     assert response.status_code == 200
     body = response.json()
     assert body["weekly_cadence"]["sessions_completed"] == 2
@@ -193,7 +195,7 @@ def test_progress_report_tracks_weekly_cadence_and_coach_delta(tmp_path: Path):
     assert body["coach_delta"]["current_average_delta"] >= 9
     assert "copy_text" in body
 
-    review_queue = client.get("/v1/review-queue?user_id=kim")
+    review_queue = await client.get("/v1/review-queue?user_id=kim")
     assert review_queue.status_code == 200
     queue_body = review_queue.json()
     assert queue_body["summary"]["blocked"] is False
@@ -204,12 +206,12 @@ def test_progress_report_tracks_weekly_cadence_and_coach_delta(tmp_path: Path):
 # ---------------------------------------------------------------------------
 # 3. Protected routes require bearer token when API key is configured
 # ---------------------------------------------------------------------------
-def test_protected_routes_require_bearer_token_when_api_key_is_configured(tmp_path: Path):
+async def test_protected_routes_require_bearer_token_when_api_key_is_configured(tmp_path: Path, client_factory):
     main = load_main_module(tmp_path, api_key="top-secret")
-    client = TestClient(main.app)
+    client = await client_factory(main.app)
 
-    unauthorized = client.post("/v1/benchmarks", json={"user_id": "kim", "recent_sessions": []})
-    authorized = client.get("/v1/meta")
+    unauthorized = await client.post("/v1/benchmarks", json={"user_id": "kim", "recent_sessions": []})
+    authorized = await client.get("/v1/meta")
 
     assert unauthorized.status_code == 401
     assert authorized.status_code == 200
@@ -219,11 +221,11 @@ def test_protected_routes_require_bearer_token_when_api_key_is_configured(tmp_pa
 # ---------------------------------------------------------------------------
 # 4. Coach plan calibration logic: low delta yields precision focus
 # ---------------------------------------------------------------------------
-def test_coach_plan_low_delta_yields_precision_focus(tmp_path: Path):
+async def test_coach_plan_low_delta_yields_precision_focus(tmp_path: Path, client_factory):
     main = load_main_module(tmp_path)
-    client = TestClient(main.app)
+    client = await client_factory(main.app)
 
-    response = client.post(
+    response = await client.post(
         "/v1/coach/plan",
         json={
             "user_id": "test-user",
@@ -254,11 +256,11 @@ def test_coach_plan_low_delta_yields_precision_focus(tmp_path: Path):
 # ---------------------------------------------------------------------------
 # 5. Coach plan calibration logic: high delta yields speed focus
 # ---------------------------------------------------------------------------
-def test_coach_plan_high_delta_yields_speed_focus(tmp_path: Path):
+async def test_coach_plan_high_delta_yields_speed_focus(tmp_path: Path, client_factory):
     main = load_main_module(tmp_path)
-    client = TestClient(main.app)
+    client = await client_factory(main.app)
 
-    response = client.post(
+    response = await client.post(
         "/v1/coach/plan",
         json={
             "user_id": "test-user",
@@ -287,9 +289,9 @@ def test_coach_plan_high_delta_yields_speed_focus(tmp_path: Path):
 # ---------------------------------------------------------------------------
 # 6. Benchmark percentile reflects user delta vs global average
 # ---------------------------------------------------------------------------
-def test_benchmark_percentile_reflects_delta(tmp_path: Path):
+async def test_benchmark_percentile_reflects_delta(tmp_path: Path, client_factory):
     main = load_main_module(tmp_path)
-    client = TestClient(main.app)
+    client = await client_factory(main.app)
 
     # Upload some sessions to create a global average
     for i in range(3):
@@ -298,10 +300,10 @@ def test_benchmark_percentile_reflects_delta(tmp_path: Path):
         payload["user_id"] = "global-user"
         payload["baseline_score"] = 70
         payload["adaptive_score"] = 76
-        client.post("/v1/sessions", json=payload)
+        await client.post("/v1/sessions", json=payload)
 
     # Request benchmark for a user with higher delta
-    response = client.post(
+    response = await client.post(
         "/v1/benchmarks",
         json={
             "user_id": "test-user",
@@ -331,11 +333,11 @@ def test_benchmark_percentile_reflects_delta(tmp_path: Path):
 # ---------------------------------------------------------------------------
 # 7. Coaching recommendations: moderate delta yields balanced plan
 # ---------------------------------------------------------------------------
-def test_coach_plan_moderate_delta_yields_balanced(tmp_path: Path):
+async def test_coach_plan_moderate_delta_yields_balanced(tmp_path: Path, client_factory):
     main = load_main_module(tmp_path)
-    client = TestClient(main.app)
+    client = await client_factory(main.app)
 
-    response = client.post(
+    response = await client.post(
         "/v1/coach/plan",
         json={
             "user_id": "test-user",
@@ -365,54 +367,54 @@ def test_coach_plan_moderate_delta_yields_balanced(tmp_path: Path):
 # ---------------------------------------------------------------------------
 # 8. Sync queue behavior: session upload, lookup, and deduplication
 # ---------------------------------------------------------------------------
-def test_sync_queue_upload_lookup_and_dedup(tmp_path: Path):
+async def test_sync_queue_upload_lookup_and_dedup(tmp_path: Path, client_factory):
     main = load_main_module(tmp_path)
-    client = TestClient(main.app)
+    client = await client_factory(main.app)
 
     # Upload first session
     payload = dict(SAMPLE_SESSION_PAYLOAD)
-    resp = client.post("/v1/sessions", json=payload)
+    resp = await client.post("/v1/sessions", json=payload)
     assert resp.status_code == 200
     assert resp.json()["accepted"] is True
 
     # Lookup sessions for user
-    lookup = client.get("/v1/sessions/kim?limit=10")
+    lookup = await client.get("/v1/sessions/kim?limit=10")
     assert lookup.status_code == 200
     assert lookup.json()["count"] == 1
     assert lookup.json()["user_id"] == "kim"
     assert len(lookup.json()["items"]) == 1
 
     # Upload duplicate (INSERT OR REPLACE) -- same id, should not increase count
-    resp2 = client.post("/v1/sessions", json=payload)
+    resp2 = await client.post("/v1/sessions", json=payload)
     assert resp2.status_code == 200
-    lookup2 = client.get("/v1/sessions/kim?limit=10")
+    lookup2 = await client.get("/v1/sessions/kim?limit=10")
     assert lookup2.json()["count"] == 1
 
     # Upload second session with different id
     payload2 = dict(payload)
     payload2["id"] = "sess-002"
     payload2["adaptive_score"] = 85
-    client.post("/v1/sessions", json=payload2)
-    lookup3 = client.get("/v1/sessions/kim?limit=10")
+    await client.post("/v1/sessions", json=payload2)
+    lookup3 = await client.get("/v1/sessions/kim?limit=10")
     assert lookup3.json()["count"] == 2
 
 
 # ---------------------------------------------------------------------------
 # 9. Input validation rejects invalid payloads
 # ---------------------------------------------------------------------------
-def test_input_validation_rejects_invalid_payloads(tmp_path: Path):
+async def test_input_validation_rejects_invalid_payloads(tmp_path: Path, client_factory):
     main = load_main_module(tmp_path)
-    client = TestClient(main.app)
+    client = await client_factory(main.app)
 
     # Empty user_id in coach plan
-    resp = client.post(
+    resp = await client.post(
         "/v1/coach/plan",
         json={"user_id": "", "recent_sessions": []},
     )
     assert resp.status_code == 422
 
     # Missing required fields in session upload
-    resp2 = client.post(
+    resp2 = await client.post(
         "/v1/sessions",
         json={"id": "x"},
     )
@@ -421,24 +423,24 @@ def test_input_validation_rejects_invalid_payloads(tmp_path: Path):
     # Out-of-range stability_index
     bad_payload = dict(SAMPLE_SESSION_PAYLOAD)
     bad_payload["stability_index"] = 5.0
-    resp3 = client.post("/v1/sessions", json=bad_payload)
+    resp3 = await client.post("/v1/sessions", json=bad_payload)
     assert resp3.status_code == 422
 
     # Out-of-range confidence_score
     bad_payload2 = dict(SAMPLE_SESSION_PAYLOAD)
     bad_payload2["confidence_score"] = -1.0
-    resp4 = client.post("/v1/sessions", json=bad_payload2)
+    resp4 = await client.post("/v1/sessions", json=bad_payload2)
     assert resp4.status_code == 422
 
 
 # ---------------------------------------------------------------------------
 # 10. Structured error response format
 # ---------------------------------------------------------------------------
-def test_structured_error_response_format(tmp_path: Path):
+async def test_structured_error_response_format(tmp_path: Path, client_factory):
     main = load_main_module(tmp_path, api_key="secret-key")
-    client = TestClient(main.app)
+    client = await client_factory(main.app)
 
-    resp = client.post(
+    resp = await client.post(
         "/v1/sessions",
         json=SAMPLE_SESSION_PAYLOAD,
     )

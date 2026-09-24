@@ -51,7 +51,7 @@ source .venv/bin/activate
 python -m pip install -U pip
 python -m pip install -e ".[dev]"
 python -m compileall -q .
-python -m pytest
+python -m pytest -W error
 python scripts/exercise_runtime.py
 ```
 
@@ -59,3 +59,8 @@ python scripts/exercise_runtime.py
 - Keep runtime artifacts out of commits (`.codex_runs/`, cache folders, temporary venvs).
 - Prefer running runtime commands above before opening a PR.
 - Use `infra/terraform/README.md` for the Cloud Run deployment skeleton.
+
+API tests and the runtime exercise use `httpx2.AsyncClient` with `ASGITransport`.
+They exercise requests directly on the ASGI app and close clients after each test.
+This avoids Starlette 1.6.0’s deprecated AnyIO portal import while keeping warnings as errors.
+The app has no lifespan handlers; add explicit lifespan management if startup/shutdown hooks are introduced.

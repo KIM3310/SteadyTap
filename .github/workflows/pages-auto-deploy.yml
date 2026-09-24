@@ -13,7 +13,15 @@ permissions:
   contents: read
 
 jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - name: Validate static content before upload
+        run: make verify-site
+
   deploy:
+    needs: preflight
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -23,35 +31,15 @@ jobs:
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
-      - name: Skip deploy when Cloudflare secrets are missing
-        if: ${{ env.CLOUDFLARE_API_TOKEN == '' || env.CLOUDFLARE_ACCOUNT_ID == '' }}
-        run: echo "Cloudflare secrets are not configured; skipping Pages deploy."
-      - name: Ensure Cloudflare Pages project exists
-        if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
-        run: |
-          set -euo pipefail
-          if ! npx wrangler@4.114.0 pages project create steadytap --production-branch=main >/tmp/cf_pages_create.log 2>&1; then
-            grep -qi "already exists" /tmp/cf_pages_create.log || (cat /tmp/cf_pages_create.log && exit 1)
-          fi
+      - name: Check publication prerequisites
+        id: prerequisites
+        run: python3 scripts/pages_release.py prerequisites --event-name "$GITHUB_EVENT_NAME"
+      - name: Prepare revision evidence
+        if: steps.prerequisites.outputs.ready == 'true'
+        run: python3 scripts/pages_release.py prepare --revision "$GITHUB_SHA"
       - name: Deploy static site
-        if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
-        run: npx wrangler@4.114.0 pages deploy site --project-name=steadytap --branch=main --commit-dirty=true
-      - name: Verify App Store policy routes
-        if: ${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}
-        run: |
-          set -euo pipefail
-          verify_page() {
-            url="$1"
-            expected="$2"
-            for attempt in $(seq 1 12); do
-              html="$(curl --fail --silent --show-error --retry 3 --retry-all-errors "$url")"
-              if printf '%s' "$html" | grep --fixed-strings --quiet "$expected"; then
-                return 0
-              fi
-              sleep 5
-            done
-            printf 'Expected content was not deployed at %s\n' "$url" >&2
-            return 1
-          }
-          verify_page https://steadytap.pages.dev/privacy/ "<title>Privacy Policy | SteadyTap</title>"
-          verify_page https://steadytap.pages.dev/support/ "<title>Support | SteadyTap</title>"
+        if: steps.prerequisites.outputs.ready == 'true'
+        run: npx --yes wrangler@4.114.0 pages deploy site --project-name=steadytap --branch=main --commit-hash="$GITHUB_SHA"
+      - name: Verify published revision and all page bytes
+        if: steps.prerequisites.outputs.ready == 'true'
+        run: python3 scripts/pages_release.py verify --revision "$GITHUB_SHA" --origin https://steadytap.pages.dev

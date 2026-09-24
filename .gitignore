@@ -10,3 +10,4 @@ DerivedData/
 .env.*
 !.env.example
 .wrangler/
+site/revision.json

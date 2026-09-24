@@ -1,6 +1,6 @@
 SHELL := /bin/sh
 
-.PHONY: check-bootstrap-python generate-xcode-project verify verify-ios verify-app-store verify-backend deploy-pages
+.PHONY: check-bootstrap-python generate-xcode-project verify verify-ios verify-app-store verify-backend verify-site deploy-pages
 
 BOOTSTRAP_PYTHON ?= python3
 BACKEND_VENV := backend/.venv
@@ -47,5 +47,13 @@ verify-backend: $(BACKEND_STAMP)
 	cd backend && .venv/bin/python -m ruff check .
 	cd backend && .venv/bin/python -m pytest -W error -q
 
-deploy-pages:
-	npx --yes wrangler@latest pages deploy site --project-name steadytap
+verify-site:
+	PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s scripts/tests -p "test_*.py"
+	python3 scripts/validate_repository_surface.py
+	python3 scripts/validate_architecture_blueprint.py
+	python3 scripts/validate_app_store_readiness.py
+
+deploy-pages: verify-site
+	python3 scripts/pages_release.py prepare --revision "$$(git rev-parse HEAD)"
+	npx --yes wrangler@4.114.0 pages deploy site --project-name steadytap --branch=main --commit-hash="$$(git rev-parse HEAD)"
+	python3 scripts/pages_release.py verify --revision "$$(git rev-parse HEAD)" --origin https://steadytap.pages.dev

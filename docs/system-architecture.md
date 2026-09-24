@@ -1,113 +1,55 @@
-# System Architecture - SteadyTap
+# SteadyTap system architecture
 
-This document is the system-level architecture attachment for the repository. It keeps the technical stack, runtime boundary, data/control flow, deployment surface, and operating assumptions in one place.
+SteadyTap is a native SwiftUI touch-practice app for iPhone and iPad. The app measures tap and drag samples, builds an adaptive interaction profile, and compares baseline and adaptive practice. The website explains this flow but does not run the app in a browser.
 
-## Architecture Summary
+## Native practice flow
 
-| Area | Design |
-| --- | --- |
-| Repository | `SteadyTap` |
-| Primary domain | edge, mobile, and local-first runtime systems |
-| Primary stack | Python service or lab runtime, Terraform infrastructure modules, Container build surface, GitHub Actions validation |
-| Architecture axes | cloud architecture, AI engineering, reliability, security, operator experience |
-
-Repository-local proof surface for edge, mobile, and local-first runtime systems, backed by Python service or lab runtime, Terraform infrastructure modules, Container build surface.
-
-## Runtime And Data Flow
-
-```mermaid
-flowchart LR
-    User["User or technical evaluator"] --> Surface["Public demo, CLI, package, or README surface"]
-    Surface --> Runtime["Runtime boundary: Python service or lab runtime, Terraform infrastructure modules, Container build surface, GitHub Actions validation"]
-    Runtime --> Control["Control plane: configuration, policies, adapters, and jobs"]
-    Control --> Data["Data and artifacts: fixtures, reports, logs, exports, or model outputs"]
-    Runtime --> Observability["Observability and validation hooks"]
-    Observability --> Handoff["Documented handoff and operating boundary"]
-    Data --> Handoff
+```text
+Tap and drag samples
+        |
+        v
+CalibrationEngine.summarize
+        |
+        v
+Adaptive interaction profile
+        |
+        v
+Calibration review
+        |
+        v
+Baseline practice
+        |
+        v
+Adaptive practice
+        |
+        v
+Results and local history
 ```
 
-Primary domain: edge, mobile, and local-first runtime systems.
+[SteadyTapApp.swift](../SteadyTapApp.swift) starts the app. [RootView.swift](../RootView.swift) chooses the SwiftUI screen for the current phase. [Core/AppViewModel.swift](../Core/AppViewModel.swift) owns the calibration, practice, and result transitions.
 
-## Stack Surface
+[Core/CalibrationEngine.swift](../Core/CalibrationEngine.swift) filters unusable samples in `summarize` and derives bounded settings in `generateAdaptiveProfile`. These settings control button scale, grid spacing, hold duration, and swipe threshold. Calibration confidence is a coverage and consistency heuristic, not a clinical measure or a validated health outcome.
 
-| Layer | Current surface | Operating note |
-| --- | --- | --- |
-| Interface | Public demo, README, CLI, package, or static proof surface depending on repository shape | Keep the first screen or command path inspectable without private credentials. |
-| Runtime | Python service or lab runtime, Terraform infrastructure modules, Container build surface, GitHub Actions validation | Keep runtime adapters bounded by environment configuration and documented fallbacks. |
-| Control plane | Policies, configuration, job orchestration, tests, and release scripts | Keep operator-impacting changes traceable through docs and validation hooks. |
-| Data and artifacts | Fixtures, generated reports, screenshots, exports, logs, or model outputs | Keep sample and generated artifacts clearly separated from private or customer data. |
-| Operations | CI, local validation, architecture guard, and handoff notes | Keep the architecture docs current when runtime, data, or deployment boundaries change. |
+## On-device storage
 
-## Cloud Or Local Deployment Boundary
+[Core/PersistenceStore.swift](../Core/PersistenceStore.swift) encodes session history and preferences as JSON in UserDefaults. It keeps at most 12 history entries. `clearAll` removes the app's stored history, preferences, and debug cache entries. [Core/AppViewModel.swift](../Core/AppViewModel.swift) calls this storage layer after practice and when the user clears local data.
 
-Operating model: optional sync backends, signed release artifacts, edge observability, and constrained compute envelopes
+## Release and debug boundary
 
-### Deployment patterns
+[Core/DistributionPolicy.swift](../Core/DistributionPolicy.swift) sets `allowsDeveloperCloudFeatures` and `showsDeveloperTools` to false outside DEBUG builds. App Store Release operation is on-device. The app does not require the FastAPI service for calibration, practice, history, or local suggestions.
 
-- Infrastructure-as-code entrypoint with explicit variables, outputs, and provider boundaries
-- Containerized runtime path suitable for repeatable local, staging, or managed service deployment
-- Edge-first deployment model with server-side AI adapters and public-safe secrets handling
-- Local-first runtime that can add sync, edge telemetry, and signed release promotion without changing core logic
+FastAPI is a separate debug sandbox under [backend/](../backend/README.md). Debug builds can opt into HTTP calls through [Core/BackendClient.swift](../Core/BackendClient.swift). [backend/app/main.py](../backend/app/main.py) exposes session, plan, and benchmark endpoints. The sandbox stores synthetic or approved test summaries in SQLite and writes runtime-event files. It is not part of the release app or the static website.
 
-### Control boundaries
+The adaptive profile is deterministic Swift code. This native flow does not call a hosted AI model. Backend container and Terraform files describe the separate sandbox deployment, not an iOS runtime dependency.
 
-- identity boundary and least-privilege service access
-- environment separation for local, staging, and managed runtime paths
-- secret storage outside source and deterministic fallback for missing credentials
-- observability hooks for logs, metrics, traces, and audit events
-- rollback path for deployment, schema, and model changes
+## Static publication and native distribution
 
-### Resilience controls
+Cloudflare Pages serves the checked-in `site/` HTML, images, and policy pages. It cannot run the SwiftUI app or the FastAPI service unchanged. Publishing the website does not build, sign, distribute, or approve an iOS app.
 
-- bounded retries with explicit failure states
-- health/readiness checks before operator-facing flows are trusted
-- idempotent data or artifact writes where repeat execution is possible
-- cost and quota guardrails for hosted services and model adapters
+Native builds require full Xcode. Distribution also needs an Apple Developer team, signing, provisioning, and the relevant TestFlight or App Store process. See the [verification commands and limits](VERIFICATION.md) and [Pages publication procedure](deployment/CLOUDFLARE_PAGES.md).
 
-## AI And Automation Boundary
+## Source checks
 
-Operating model: offline-safe inference adapters, local telemetry summaries, graceful fallback, and privacy-preserving sync boundaries
+The [shared-core CLI regression](../scripts/verify_cli.sh) compiles the Core sources without SwiftUI. The [App Store metadata validator](../scripts/validate_app_store_readiness.py) checks the declared release policy, privacy manifest, icons, and submission metadata. Neither check proves physical-device behavior or Apple approval.
 
-### Engineering patterns
-
-- Keep local fallback behavior useful when network, sensors, or hosted model adapters are unavailable
-- Summarize device/runtime telemetry without making cloud sync a hard dependency
-- Separate deterministic checks from model-generated output so the system remains testable without external credentials
-- Capture prompts, inputs, outputs, and decision metadata as inspectable artifacts instead of hidden side effects
-- Gate model-assisted actions with policy, confidence, and fallback states before they reach an operator path
-
-### Evaluation and model-risk controls
-
-- deterministic fixtures for CI-safe verification
-- golden output or schema checks for generated artifacts
-- trace capture for prompts, tool calls, inputs, and outputs
-- quality gates that fail closed when evidence is missing
-
-### Risks to keep explicit
-
-- offline state divergence
-- device-specific failure
-- privacy leakage
-- unclear cloud dependency
-
-## Attached Architecture References
-
-- [Service architecture](service-architecture.md)
-- [Cloud + AI architecture](cloud-ai-architecture.md)
-- [Architecture manifest](architecture/blueprint.json)
-- [Product operating model](product-operating-model.md)
-- [Quality gate](quality-gate.md)
-
-## Local Architecture Guard
-
-```bash
-python3 scripts/validate_architecture_blueprint.py
-```
-
-CI workflow: `.github/workflows/architecture-blueprint.yml`.
-
-Update this document whenever runtime entrypoints, data stores, hosted services, model/provider boundaries, or operating assumptions change.
-
-## Revenue Architecture Overlay
-
-See [Revenue Architecture](./revenue-architecture.md) for the free-tier-first launch stack, productized offer, metering hooks, paywall boundary, and cost guardrails that turn this system architecture into a service path.
+The [architecture blueprint validator](../scripts/validate_architecture_blueprint.py) checks the separate architecture manifest's structure. A passing manifest check does not establish that every design proposal in other architecture documents is implemented.
